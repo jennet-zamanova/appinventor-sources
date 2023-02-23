@@ -14,6 +14,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.youngandroid.ProjectToolbar;
 import com.google.appinventor.client.tracking.Tracking;
+import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.LabeledTextBox;
 import com.google.appinventor.client.widgets.Validator;
 import com.google.appinventor.client.wizards.NewProjectWizard;
@@ -21,6 +22,7 @@ import com.google.appinventor.client.youngandroid.TextValidators;
 import com.google.appinventor.common.utils.StringUtils;
 import com.google.appinventor.shared.rpc.project.youngandroid.NewYoungAndroidProjectParameters;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
+//import com.google.appinventor.server.project.youngandroid.YoungAndroidSettingsBuilder;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -31,6 +33,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import com.google.common.collect.Lists;
+import java.util.List;
 
 /**
  * Wizard for creating new Young Android projects.
@@ -40,7 +44,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
   // UI element for project name
   private LabeledTextBox projectNameTextBox;
-
+  private DropDownButton dropDownButton;
+  public class setStyle {
+    public String property;
+    public void setStyle(String property){
+      this.property = "Classic";
+    }
+    public String getStyle() { return property; }
+    public void setProperty(String property){
+      this.property = property;
+    }
+  }
   /**
    * Creates a new YoungAndroid project wizard.
    */
@@ -49,7 +63,6 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
 
     // Initialize the UI
     setStylePrimaryName("ode-DialogBox");
-
     projectNameTextBox = new LabeledTextBox(MESSAGES.projectNameLabel(), new Validator() {
       @Override
       public boolean validate(String value) {
@@ -58,9 +71,9 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
           disableOkButton();
           return false;
         }
-          errorMessage = TextValidators.getWarningMessages(value);
-          enableOkButton();
-          return true;
+        errorMessage = TextValidators.getWarningMessages(value);
+        enableOkButton();
+        return true;
       }
 
       @Override
@@ -68,7 +81,39 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
         return errorMessage;
       }
     });
+    setStyle property = new setStyle();
+    List<DropDownButton.DropDownItem> items = Lists.newArrayList();
+    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.classicTheme(), new Command() {
+      @Override
+      public void execute() {
+        property.setProperty("Classic");
+        //updateValue();
+      }}));
+    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.defaultTheme(), new Command() {
+      @Override
+      public void execute() {
+        //newProperties.setValue("defaultTheme");
+        property.setProperty("AppTheme.Light.DarkActionBar");
+        //updateValue();
+      }}));
+    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.blackTitleTheme(), new Command() {
+      @Override
+      public void execute() {
+        //newProperties.setValue("blackTitleTheme");
+        property.setProperty("AppTheme.Light");
+        //updateValue();
+      }}));
+    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.darkTheme(), new Command() {
+      @Override
+      public void execute() {
+        //newProperties.setValue("darkTheme");
+        property.setProperty("AppTheme");
+        //updateValue();
+      }}));
 
+    dropDownButton = new DropDownButton("Theme Editor", "", items, false);
+    dropDownButton.setStylePrimaryName("ode-ChoicePropertyEditor");
+    initWidget(dropDownButton);
     projectNameTextBox.getTextBox().addKeyDownHandler(new KeyDownHandler() {
       @Override
       public void onKeyDown(KeyDownEvent event) {
@@ -91,6 +136,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     VerticalPanel page = new VerticalPanel();
 
     page.add(projectNameTextBox);
+    page.add(dropDownButton);
     addPage(page);
 
     // Create cancel command handler. This handler
@@ -119,7 +165,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
           String packageName = StringUtils.getProjectPackage(
               Ode.getInstance().getUser().getUserEmail(), projectName);
           NewYoungAndroidProjectParameters parameters = new NewYoungAndroidProjectParameters(
-              packageName);
+              packageName, property.getStyle());
           NewProjectCommand callbackCommand = new NewProjectCommand() {
               @Override
               public void execute(final Project project) {
@@ -137,7 +183,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
             };
 
           createNewProject(YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, projectName,
-              parameters, callbackCommand);
+                  parameters, callbackCommand);
           Tracking.trackEvent(Tracking.PROJECT_EVENT, Tracking.PROJECT_ACTION_NEW_YA, projectName);
         } else {
           show();
@@ -147,7 +193,14 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
       }
     });
   }
-
+//  protected void updateValue() {
+//    if (StringUtils.isNullOrEmpty(property)) {
+//      dropDownButton.setCaption("Default");
+//      dropDownButton.setWidth("");
+//    } else {
+//      dropDownButton.setCaption("Theme Defined");
+//    }
+//  }
   @Override
   public void show() {
     super.show();

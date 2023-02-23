@@ -233,7 +233,8 @@ public final class YoungAndroidProjectService extends CommonProjectService {
 
     YoungAndroidSettingsBuilder builder = new YoungAndroidSettingsBuilder()
         .setProjectName(projectName)
-        .setQualifiedFormName(qualifiedFormName);
+        .setQualifiedFormName(qualifiedFormName)
+        .setTheme(youngAndroidParams.getThemeName());
     String propertiesFileContents = builder.toProperties();
 
     String formFileName = YoungAndroidFormNode.getFormFileId(qualifiedFormName);
