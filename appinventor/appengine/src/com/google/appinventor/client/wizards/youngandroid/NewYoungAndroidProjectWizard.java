@@ -14,6 +14,10 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.youngandroid.ProjectToolbar;
 import com.google.appinventor.client.tracking.Tracking;
+import com.google.appinventor.client.widgets.properties.EditableProperties;
+import com.google.appinventor.client.widgets.properties.EditableProperty;
+import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditor;
+import com.google.appinventor.client.editor.youngandroid.properties.YoungAndroidThemeChoicePropertyEditor;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.LabeledTextBox;
 import com.google.appinventor.client.widgets.Validator;
@@ -31,9 +35,12 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.common.collect.Lists;
+
 import java.util.List;
 
 /**
@@ -44,17 +51,6 @@ import java.util.List;
 public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
   // UI element for project name
   private LabeledTextBox projectNameTextBox;
-  private DropDownButton dropDownButton;
-  public class setStyle {
-    public String property;
-    public void setStyle(String property){
-      this.property = "Classic";
-    }
-    public String getStyle() { return property; }
-    public void setProperty(String property){
-      this.property = property;
-    }
-  }
   /**
    * Creates a new YoungAndroid project wizard.
    */
@@ -81,39 +77,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
         return errorMessage;
       }
     });
-    setStyle property = new setStyle();
-    List<DropDownButton.DropDownItem> items = Lists.newArrayList();
-    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.classicTheme(), new Command() {
-      @Override
-      public void execute() {
-        property.setProperty("Classic");
-        //updateValue();
-      }}));
-    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.defaultTheme(), new Command() {
-      @Override
-      public void execute() {
-        //newProperties.setValue("defaultTheme");
-        property.setProperty("AppTheme.Light.DarkActionBar");
-        //updateValue();
-      }}));
-    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.blackTitleTheme(), new Command() {
-      @Override
-      public void execute() {
-        //newProperties.setValue("blackTitleTheme");
-        property.setProperty("AppTheme.Light");
-        //updateValue();
-      }}));
-    items.add(new DropDownButton.DropDownItem("Theme Editor", MESSAGES.darkTheme(), new Command() {
-      @Override
-      public void execute() {
-        //newProperties.setValue("darkTheme");
-        property.setProperty("AppTheme");
-        //updateValue();
-      }}));
-
-    dropDownButton = new DropDownButton("Theme Editor", "", items, false);
-    dropDownButton.setStylePrimaryName("ode-ChoicePropertyEditor");
-    initWidget(dropDownButton);
+    
     projectNameTextBox.getTextBox().addKeyDownHandler(new KeyDownHandler() {
       @Override
       public void onKeyDown(KeyDownEvent event) {
@@ -126,6 +90,60 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
       }
     });
 
+    EditableProperties toolkits = new EditableProperties(false);
+    EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 1, "", null);
+    SubsetJSONPropertyEditor toolkitEditor = new SubsetJSONPropertyEditor();
+    toolkitEditor.setProperty(toolkit);
+
+    EditableProperties themes = new EditableProperties(false);
+    // EditableProperty theme = new EditableProperty(themes, "theme", "", 1);
+    EditableProperty theme = new EditableProperty(themes, "theme", "", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 1, "", null);
+    YoungAndroidThemeChoicePropertyEditor themeEditor = new YoungAndroidThemeChoicePropertyEditor();
+    themeEditor.setProperty(theme);
+
+    HorizontalPanel horizontalThemePanel = new HorizontalPanel();
+    Label themeLabel = new Label(theme.getCaption());
+    horizontalThemePanel.add(themeLabel);
+    horizontalThemePanel.setCellVerticalAlignment(themeLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+    horizontalThemePanel.add(themeEditor);
+    horizontalThemePanel.setCellWidth(themeLabel, "40%");
+    horizontalThemePanel.setCellVerticalAlignment(themeEditor, HasVerticalAlignment.ALIGN_MIDDLE);
+
+    HorizontalPanel horizontalBlocksPanel = new HorizontalPanel();
+    Label blocksLabel = new Label(toolkit.getCaption());
+    horizontalBlocksPanel.add(blocksLabel);
+    horizontalBlocksPanel.setCellVerticalAlignment(blocksLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+    horizontalBlocksPanel.add(toolkitEditor);
+    horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
+    horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
+
+    // VerticalPanel labelPanel = new VerticalPanel();
+    // Label blocksToolkitLabel = new Label(toolkit.getCaption());
+    // Label themeLabel = new Label(theme.getCaption());
+    // labelPanel.add(blocksToolkitLabel);
+    // labelPanel.add(themeLabel);
+
+    // VerticalPanel propertyPanel = new VerticalPanel();
+    // propertyPanel.add(toolkitEditor);
+    // propertyPanel.add(themeEditor);
+
+    // labelPanel.setCellWidth(labelPanel, "40%");
+    // labelPanel.setCellVerticalAlignment(labelPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+    // propertyPanel.setCellVerticalAlignment(propertyPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+
+    VerticalPanel page = new VerticalPanel();
+    page.add(projectNameTextBox);
+    page.add(horizontalThemePanel);
+    page.add(horizontalBlocksPanel);
+    // page.setCellVerticalAlignment(labelPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+    addPage(page);
+
+    // VerticalPanel page = new VerticalPanel();
+    // page.add(projectNameTextBox);
+    // page.add(horizontalThemePanel);
+    // page.add(horizontalBlocksPanel);
+    // addPage(page);
+
     projectNameTextBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
       @Override
       public void onKeyUp(KeyUpEvent event) { //Validate the text each time a key is lifted
@@ -133,11 +151,12 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
       }
     });
 
-    VerticalPanel page = new VerticalPanel();
+    // VerticalPanel page = new VerticalPanel();
 
-    page.add(projectNameTextBox);
-    page.add(dropDownButton);
-    addPage(page);
+    
+    // page.add(toolkitEditor);
+    // page.add(horizontalThemePanel);
+    
 
     // Create cancel command handler. This handler
     // arranges to re-enable the project start button
@@ -165,7 +184,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
           String packageName = StringUtils.getProjectPackage(
               Ode.getInstance().getUser().getUserEmail(), projectName);
           NewYoungAndroidProjectParameters parameters = new NewYoungAndroidProjectParameters(
-              packageName, property.getStyle());
+              packageName, theme.getValue(), toolkit.getValue());
           NewProjectCommand callbackCommand = new NewProjectCommand() {
               @Override
               public void execute(final Project project) {
@@ -193,24 +212,17 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
       }
     });
   }
-//  protected void updateValue() {
-//    if (StringUtils.isNullOrEmpty(property)) {
-//      dropDownButton.setCaption("Default");
-//      dropDownButton.setWidth("");
-//    } else {
-//      dropDownButton.setCaption("Theme Defined");
-//    }
-//  }
+
   @Override
   public void show() {
     super.show();
     // Wizard size (having it resize between page changes is quite annoying)
-    int width = 340;
-    int height = 40;
+//    int width = 340;
+//    int height = 40;
     this.center();
 
-    setPixelSize(width, height);
-    super.setPagePanelHeight(85);
+//    setPixelSize(width, height);
+//    super.setPagePanelHeight(85);
 
     DeferredCommand.addCommand(new Command() {
       public void execute() {

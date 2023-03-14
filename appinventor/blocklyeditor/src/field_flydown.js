@@ -120,24 +120,13 @@ Blockly.FieldFlydown.prototype.init = function(block) {
 
   this.preventDefault();
   
-  if (!isTouchDevice()){
-    this.mouseOverWrapper_ =
-      Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this, this.onMouseOver_);
-    this.mouseOutWrapper_ =
-      Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
-  }else{
-    this.addEventListener('dblclick', this.onDblclick_, {capture : true});
-    Blockly.bindEvent_(this.fieldGroup_, 'dblclick', this, this.onDblclick_);
+
+  this.mouseOverWrapper_ =
+    Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this, this.onMouseOver_);
+  this.mouseOutWrapper_ =
+    Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
 };
 
-Blockly.FieldFlydown.prototype.onDblclick_ = function(e){
-  this.updateEditable();
-  if(!Blockly.FieldFlydown.showPid_){
-    this.onMouseOver_();
-  } else{
-    this.onMouseOut_();
-  }
-}
 
 Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
   if (!this.sourceBlock_.isInFlyout) { // [lyn, 10/22/13] No flydowns in a flyout!

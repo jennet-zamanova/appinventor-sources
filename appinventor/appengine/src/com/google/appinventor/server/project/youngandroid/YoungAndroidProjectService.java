@@ -230,11 +230,14 @@ public final class YoungAndroidProjectService extends CommonProjectService {
   public long newProject(String userId, String projectName, NewProjectParameters params) {
     NewYoungAndroidProjectParameters youngAndroidParams = (NewYoungAndroidProjectParameters) params;
     String qualifiedFormName = youngAndroidParams.getQualifiedFormName();
+    String themeName = youngAndroidParams.getThemeName();
+    String blocksToolkit = youngAndroidParams.getBlocksToolkit();
 
     YoungAndroidSettingsBuilder builder = new YoungAndroidSettingsBuilder()
         .setProjectName(projectName)
         .setQualifiedFormName(qualifiedFormName)
-        .setTheme(youngAndroidParams.getThemeName());
+        .setBlocksSubset(blocksToolkit)
+        .setTheme(themeName);
     String propertiesFileContents = builder.toProperties();
 
     String formFileName = YoungAndroidFormNode.getFormFileId(qualifiedFormName);

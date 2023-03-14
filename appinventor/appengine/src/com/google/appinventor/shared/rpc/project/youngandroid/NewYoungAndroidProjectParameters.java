@@ -25,6 +25,8 @@ public final class NewYoungAndroidProjectParameters implements NewProjectParamet
   private String formName;
 
   private String theme;
+
+  private String toolkit;
   /**
    * Creates new parameters for creating Young Android projects
    *
@@ -39,6 +41,13 @@ public final class NewYoungAndroidProjectParameters implements NewProjectParamet
     this.packageName = packageName;
     formName = YOUNG_ANDROID_FORM_NAME;
     this.theme = theme;
+  }
+
+  public NewYoungAndroidProjectParameters(String packageName, String theme, String toolkit) {
+    this.packageName = packageName;
+    formName = YOUNG_ANDROID_FORM_NAME;
+    this.theme = theme;
+    this.toolkit = toolkit;
   }
 
   // For serialization only
@@ -60,6 +69,13 @@ public final class NewYoungAndroidProjectParameters implements NewProjectParamet
       return "Classic";
     }
     return theme;
+  }
+
+  public String getBlocksToolkit() {
+    if (toolkit == null) {
+      return "All";
+    }
+    return toolkit;
   }
 
   /**
