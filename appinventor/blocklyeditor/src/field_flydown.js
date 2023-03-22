@@ -112,21 +112,11 @@ Blockly.FieldFlydown.prototype.init = function(block) {
   Blockly.utils.addClass(/** @type {!Element} */ (this.fieldGroup_),
       this.fieldCSSClassName);
 
-  this.addEventListener('touchStart', e => {
-    if (e.touches.length > 1){
-      this.onDblclick_;
-    }
-  }, {capture : true})
-
-  this.preventDefault();
-  
-
   this.mouseOverWrapper_ =
-    Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this, this.onMouseOver_);
+      Blockly.bindEvent_(this.fieldGroup_, 'mouseover', this, this.onMouseOver_);
   this.mouseOutWrapper_ =
-    Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
+      Blockly.bindEvent_(this.fieldGroup_, 'mouseout', this, this.onMouseOut_);
 };
-
 
 Blockly.FieldFlydown.prototype.onMouseOver_ = function(e) {
   if (!this.sourceBlock_.isInFlyout) { // [lyn, 10/22/13] No flydowns in a flyout!
