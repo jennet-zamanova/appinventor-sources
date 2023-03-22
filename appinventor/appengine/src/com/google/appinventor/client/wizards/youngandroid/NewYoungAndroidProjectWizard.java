@@ -91,13 +91,13 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     });
 
     EditableProperties toolkits = new EditableProperties(false);
-    EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 1, "", null);
+    EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
     SubsetJSONPropertyEditor toolkitEditor = new SubsetJSONPropertyEditor();
     toolkitEditor.setProperty(toolkit);
 
     EditableProperties themes = new EditableProperties(false);
     // EditableProperty theme = new EditableProperty(themes, "theme", "", 1);
-    EditableProperty theme = new EditableProperty(themes, "theme", "", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 1, "", null);
+    EditableProperty theme = new EditableProperty(themes, "theme", "", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
     YoungAndroidThemeChoicePropertyEditor themeEditor = new YoungAndroidThemeChoicePropertyEditor();
     themeEditor.setProperty(theme);
 

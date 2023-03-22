@@ -5,6 +5,7 @@
 // http://www.apache.org/licenses/LICENSE-2.0
 
 package com.google.appinventor.server.project.youngandroid;
+import com.google.appinventor.server.project.youngandroid.*;
 
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.apphosting.api.ApiProxy;
@@ -172,6 +173,28 @@ public final class YoungAndroidProjectService extends CommonProjectService {
         "\"$Version\":\"" + YaVersion.FORM_COMPONENT_VERSION + "\",\"Uuid\":\"" + 0 + "\"," +
         "\"Title\":\"" + formName + "\",\"AppName\":\"" + packageName +"\"}}\n|#";
   }
+  public static String getInitialFormPropertiesFileContents(String qualifiedName, NewYoungAndroidProjectParameters youngAndroidParams) {
+    initialFormProperties initialproperties = new initialFormProperties();
+    return initialproperties.initialProperties(qualifiedName, youngAndroidParams);
+    // final int lastDotPos = qualifiedName.lastIndexOf('.');
+    // String packageName = qualifiedName.split("\\.")[2];
+    // String formName = qualifiedName.substring(lastDotPos + 1);
+    // The initial Uuid is set to zero here since (as far as we know) we can't get random numbers
+    // in ode.shared.  This shouldn't actually matter since all Uuid's are random int's anyway (and
+    // 0 was randomly chosen, I promise).  The TODO(user) in MockComponent.java indicates that
+    // there will someday be assurance that these random Uuid's are unique.  Once that happens
+    // this will be perfectly acceptable.  Until that happens, choosing 0 is just as safe as
+    // allowing a random number to be chosen when the MockComponent is first created.
+    // String themeName = youngAndroidParams.getThemeName();
+    // String blocksToolkit = youngAndroidParams.getBlocksToolkit();
+    // return "#|\n$JSON\n" +
+    //     "{\"authURL\":[]," +
+    //     "\"YaVersion\":\"" + YaVersion.YOUNG_ANDROID_VERSION + "\",\"Source\":\"Form\"," +
+    //     "\"Properties\":{\"$Name\":\"" + formName + "\",\"$Type\":\"Form\"," +
+    //     "\"$Version\":\"" + YaVersion.FORM_COMPONENT_VERSION + "\",\"Uuid\":\"" + 0 + "\"," +
+    //     "\"Title\":\"" + formName + "\",\"AppName\":\"" + packageName +"\",\"Theme\":\"" + 
+    //     themeName + "\",\"Toolkit\":\"" + blocksToolkit + "\"}}\n|#";
+  }
 
   // public static String getInitialFormPropertiesFileContents(String qualifiedName, NewYoungAndroidProjectParameters youngAndroidProjectParameters) {
   //   final int lastDotPos = qualifiedName.lastIndexOf('.');
@@ -276,7 +299,7 @@ public final class YoungAndroidProjectService extends CommonProjectService {
     String propertiesFileContents = builder.toProperties();
 
     String formFileName = YoungAndroidFormNode.getFormFileId(qualifiedFormName);
-    String formFileContents = getInitialFormPropertiesFileContents(qualifiedFormName);
+    String formFileContents = getInitialFormPropertiesFileContents(qualifiedFormName, youngAndroidParams);
 
     String blocklyFileName = YoungAndroidBlocksNode.getBlocklyFileId(qualifiedFormName);
     String blocklyFileContents = getInitialBlocklySourceFileContents(qualifiedFormName);
