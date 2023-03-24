@@ -82,25 +82,27 @@ import java.util.logging.Logger;
 public class initialFormProperties {
 
     public String initialProperties (String qualifiedName, NewYoungAndroidProjectParameters youngAndroidParams){
-        Logger LOG = Logger.getLogger(initialFormProperties.class.getName());
         final int lastDotPos = qualifiedName.lastIndexOf('.');
         String packageName = qualifiedName.split("\\.")[2];
         String formName = qualifiedName.substring(lastDotPos + 1);
         String themeName = youngAndroidParams.getThemeName();
         String blocksToolkit = youngAndroidParams.getBlocksToolkit();
-        LOG.info("PROBLEM IS HERE!!!!! =" + blocksToolkit);
-        if (blocksToolkit.length() > 3){
-            blocksToolkit = "{" + blocksToolkit.substring(2, blocksToolkit.length()-2);
-        }
-        LOG.info("blocksToolkit here !!!!!!!!=" + blocksToolkit);
         String newString = "#|\n$JSON\n" +
             "{\"authURL\":[]," +
             "\"YaVersion\":\"" + YaVersion.YOUNG_ANDROID_VERSION + "\",\"Source\":\"Form\"," +
             "\"Properties\":{\"$Name\":\"" + formName + "\",\"$Type\":\"Form\"," +
             "\"$Version\":\"" + YaVersion.FORM_COMPONENT_VERSION + "\",\"Uuid\":\"" + 0 + "\"," +
             "\"Title\":\"" + formName + "\",\"AppName\":\"" + packageName +"\",\"Theme\":\"" + 
-            themeName + "\",\"BlocksSubset\":\"" + blocksToolkit + "\"}}\n|#";
-        LOG.info("Form file contents =" + newString);
+            themeName + "\"}}\n|#";
+        if (blocksToolkit.length() >= 1){
+            newString = "#|\n$JSON\n" +
+            "{\"authURL\":[]," +
+            "\"YaVersion\":\"" + YaVersion.YOUNG_ANDROID_VERSION + "\",\"Source\":\"Form\"," +
+            "\"Properties\":{\"$Name\":\"" + formName + "\",\"$Type\":\"Form\"," +
+            "\"$Version\":\"" + YaVersion.FORM_COMPONENT_VERSION + "\",\"Uuid\":\"" + 0 + "\"," +
+            "\"Title\":\"" + formName + "\",\"AppName\":\"" + packageName +"\",\"Theme\":\"" + 
+            themeName + "\",\"BlocksSubset\":" + blocksToolkit + "}}\n|#";
+        }
         return newString;
     }
     

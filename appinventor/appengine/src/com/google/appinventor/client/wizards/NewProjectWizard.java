@@ -12,6 +12,7 @@ import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.shared.rpc.project.NewProjectParameters;
 import com.google.appinventor.shared.rpc.project.UserProject;
+import java.util.logging.Logger;
 
 /**
  * Superclass for wizards creating new projects.
@@ -71,7 +72,8 @@ public abstract class NewProjectWizard extends Wizard {
 
     // Create the project on the back-end
     ode.getProjectService().newProject(projectType, projectName, params, callback);
-
+    Logger LOG = Logger.getLogger(NewProjectWizard.class.getName());
+    LOG.info("project succefully created!");
     projectIndex++;
   }
 }

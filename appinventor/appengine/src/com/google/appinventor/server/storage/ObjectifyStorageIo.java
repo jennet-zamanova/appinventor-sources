@@ -583,6 +583,7 @@ public class ObjectifyStorageIo implements  StorageIo {
           collectUserProjectErrorInfo(userId, projectId.t), e);
       }
     }
+    LOG.info("no errors during creation");
     return projectId.t;
   }
 
