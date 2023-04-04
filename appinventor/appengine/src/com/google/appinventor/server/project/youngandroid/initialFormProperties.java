@@ -80,7 +80,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 public class initialFormProperties {
-
+    private static final Logger LOG = Logger.getLogger(initialFormProperties.class.getName());
     public String initialProperties (String qualifiedName, NewYoungAndroidProjectParameters youngAndroidParams){
         final int lastDotPos = qualifiedName.lastIndexOf('.');
         String packageName = qualifiedName.split("\\.")[2];
@@ -101,8 +101,9 @@ public class initialFormProperties {
             "\"Properties\":{\"$Name\":\"" + formName + "\",\"$Type\":\"Form\"," +
             "\"$Version\":\"" + YaVersion.FORM_COMPONENT_VERSION + "\",\"Uuid\":\"" + 0 + "\"," +
             "\"Title\":\"" + formName + "\",\"AppName\":\"" + packageName +"\",\"Theme\":\"" + 
-            themeName + "\",\"BlocksSubset\":" + blocksToolkit + "}}\n|#";
+            themeName + "\",\"BlocksToolkit\":" + blocksToolkit + "}}\n|#";
         }
+        LOG.info("here is the newstring " + newString);
         return newString;
     }
     

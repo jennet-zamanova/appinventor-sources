@@ -584,6 +584,7 @@ public class ObjectifyStorageIo implements  StorageIo {
       }
     }
     LOG.info("no errors during creation");
+    LOG.info("here is the project id " + projectId.t);
     return projectId.t;
   }
 

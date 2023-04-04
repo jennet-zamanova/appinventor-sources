@@ -17,6 +17,7 @@ import com.google.appinventor.client.tracking.Tracking;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
 import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditor;
+import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditorNewYAProjectWizard;
 import com.google.appinventor.client.editor.youngandroid.properties.YoungAndroidThemeChoicePropertyEditor;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.LabeledTextBox;
@@ -92,12 +93,12 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
 
     EditableProperties toolkits = new EditableProperties(false);
     EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
-    SubsetJSONPropertyEditor toolkitEditor = new SubsetJSONPropertyEditor();
+    SubsetJSONPropertyEditorNewYAProjectWizard toolkitEditor = new SubsetJSONPropertyEditorNewYAProjectWizard();
     toolkitEditor.setProperty(toolkit);
 
-    EditableProperties themes = new EditableProperties(false);
+    EditableProperties themes = new EditableProperties(true);
     // EditableProperty theme = new EditableProperty(themes, "theme", "", 1);
-    EditableProperty theme = new EditableProperty(themes, "theme", "", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
+    EditableProperty theme = new EditableProperty(themes, "theme", "Classic", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
     YoungAndroidThemeChoicePropertyEditor themeEditor = new YoungAndroidThemeChoicePropertyEditor();
     themeEditor.setProperty(theme);
 

@@ -44,6 +44,7 @@ import com.google.appinventor.client.widgets.properties.PropertiesPanel;
 import com.google.appinventor.client.widgets.properties.PropertyChangeListener;
 import com.google.appinventor.client.youngandroid.YoungAndroidFormUpgrader;
 import com.google.appinventor.components.common.YaVersion;
+import com.google.appinventor.shared.properties.json.JSONString;
 import com.google.appinventor.shared.properties.json.JSONArray;
 import com.google.appinventor.shared.properties.json.JSONObject;
 import com.google.appinventor.shared.properties.json.JSONParser;
@@ -74,7 +75,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.logging.Logger;
 /**
  * Editor for Young Android Form (.scm) files.
  *
@@ -85,7 +86,8 @@ import java.util.Set;
  * @author lizlooney@google.com (Liz Looney)
  */
 public final class YaFormEditor extends SimpleEditor implements FormChangeListener, ComponentDatabaseChangeListener, PropertyChangeListener {
-
+  
+  private static final Logger LOG = Logger.getLogger(YaFormEditor.class.getName());
   private static class FileContentHolder {
     private String content;
 
@@ -170,6 +172,7 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     nonVisibleComponentsPanel = new SimpleNonVisibleComponentsPanel();
     componentDatabaseChangeListeners.add(nonVisibleComponentsPanel);
     visibleComponentsPanel = new SimpleVisibleComponentsPanel(this, nonVisibleComponentsPanel);
+    LOG.info("HERE IS THE visible component database" + COMPONENT_DATABASE);
     componentDatabaseChangeListeners.add(visibleComponentsPanel);
     DockPanel componentsPanel = new DockPanel();
     componentsPanel.setHorizontalAlignment(DockPanel.ALIGN_CENTER);
@@ -287,6 +290,7 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
   public String getRawFileContent() {
     String encodedProperties = encodeFormAsJsonString(false);
     JSONObject propertiesObject = JSON_PARSER.parse(encodedProperties).asObject();
+    LOG.info("HERE IS THE PROPERTY OBJECT on get raw file content" + propertiesObject);
     return YoungAndroidSourceAnalyzer.generateSourceFile(propertiesObject);
   }
 
@@ -531,6 +535,9 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
   private void onFileLoaded(String content) {
     JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
         content, JSON_PARSER);
+    LOG.info("HERE IS THE PROPERTY OBJECT");
+    LOG.info("HERE IS THE PROPERTY OBJECT" + propertiesObject);
+    OdeLog.wlog("HERE IS THE PROPERTY OBJECT" + propertiesObject);
     try {
       form = createMockForm(propertiesObject.getProperties().get("Properties").asObject());
     } catch(ComponentNotFoundException e) {
@@ -547,6 +554,7 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     form.select(null);
 
     String subsetjson = form.getPropertyValue(SettingsConstants.YOUNG_ANDROID_SETTINGS_BLOCK_SUBSET);
+    LOG.info("HERE IS subsetjson" + subsetjson);
     if (subsetjson.length() > 0) {
       reloadComponentPalette(subsetjson);
     }
@@ -624,7 +632,8 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
    */
   private MockComponent createMockComponent(JSONObject propertiesObject, MockContainer parent, Map<String, String> substitution) {
     Map<String, JSONValue> properties = propertiesObject.getProperties();
-
+    LOG.info("HERE IS THE PROPERTY OBJECT" + propertiesObject);
+    LOG.info("HERE IS THE PROPERTY OBJECT" + properties);
     // Component name and type
     String componentType = properties.get("$Type").asString().getString();
 
@@ -683,9 +692,27 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     }
 
     // Set component properties
+    // for (String name : properties.keySet()) {
+    //   if (name.charAt(0) != '$') { // Ignore special properties (name, type and nested components)
+    //     mockComponent.changeProperty(name, properties.get(name).asString().getString());
+    //   }
+    // }
+
     for (String name : properties.keySet()) {
       if (name.charAt(0) != '$') { // Ignore special properties (name, type and nested components)
-        mockComponent.changeProperty(name, properties.get(name).asString().getString());
+        JSONValue j = properties.get(name);
+        LOG.info("HERE IS THE PROPERTies name" + j);
+        OdeLog.wlog("properties!!!" + j);
+        if (j instanceof JSONString) {
+          mockComponent.changeProperty(name, j.asString().getString());
+        } else if (j instanceof JSONArray){
+          for (JSONValue nestedComponent : properties.get(j).asArray().getElements()) {
+            createMockComponent(nestedComponent.asObject(), (MockContainer) mockComponent, substitution);
+          }
+          // mockComponent.changeProperty(name, j.toJson());
+        }else {
+            mockComponent.changeProperty(name, j.toJson());
+        }
       }
     }
 
@@ -706,6 +733,8 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
 
     // Add nested components
     if (properties.containsKey("$Components")) {
+      OdeLog.wlog("recognized nested components!!!");
+      LOG.info("nested components!");
       for (JSONValue nestedComponent : properties.get("$Components").asArray().getElements()) {
         createMockComponent(nestedComponent.asObject(), (MockContainer) mockComponent, substitution);
       }
