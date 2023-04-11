@@ -116,9 +116,9 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
 
     VerticalPanel page = new VerticalPanel();
-    page.add(projectNameTextBox);
     page.add(horizontalThemePanel);
     page.add(horizontalBlocksPanel);
+    page.add(projectNameTextBox);
     addPage(page);
 
     projectNameTextBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {

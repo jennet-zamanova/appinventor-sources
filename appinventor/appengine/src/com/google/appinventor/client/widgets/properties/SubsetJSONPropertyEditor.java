@@ -96,13 +96,14 @@ public class SubsetJSONPropertyEditor  extends PropertyEditor
         property.setValue("");
         updateValue();
       }}));
+
     items.add(new DropDownButton.DropDownItem("Subset Property Editor", MESSAGES.matchProjectButton(), new Command() {
       @Override
       public void execute() {
         matchProject();
         property.setValue(createJSONString());
         updateValue();
-      }}));
+      }}));  
     items.add(new DropDownButton.DropDownItem("Subset Property Editor", MESSAGES.fileUploadWizardCaption(), new Command() {
       @Override
       public void execute() {
