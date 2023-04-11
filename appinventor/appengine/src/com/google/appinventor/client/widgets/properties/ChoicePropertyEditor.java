@@ -24,6 +24,7 @@ public class ChoicePropertyEditor extends PropertyEditor {
   /**
    * Caption/value pair for display in {@link ChoicePropertyEditor}.
    */
+    
   public static class Choice {
 
     // Caption/value pair
@@ -92,6 +93,27 @@ public class ChoicePropertyEditor extends PropertyEditor {
           boolean multiple = isMultipleValues();
           setMultipleValues(false);
           property.setValue(choice.value, multiple);
+        }
+      }));
+    }
+    dropDownButton = new DropDownButton("Choice Property Editor", choices[0].caption, items, false);
+    dropDownButton.setStylePrimaryName("ode-ChoicePropertyEditor");
+
+    initWidget(dropDownButton);
+  }
+
+  public ChoicePropertyEditor(Choice[] choices, Boolean change) {
+    // Initialize UI
+    this.choices = choices;
+    List<DropDownItem> items = Lists.newArrayList();
+    for(final Choice choice : choices) {
+      items.add(new DropDownItem("Choice Property Editor", choice.caption, new Command() {
+        @Override
+        public void execute() {
+          boolean multiple = isMultipleValues();
+          setMultipleValues(false);
+          property.setValue(choice.value, multiple);
+          updateValue();
         }
       }));
     }

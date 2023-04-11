@@ -73,7 +73,6 @@ public abstract class NewProjectWizard extends Wizard {
     // Create the project on the back-end
     ode.getProjectService().newProject(projectType, projectName, params, callback);
     Logger LOG = Logger.getLogger(NewProjectWizard.class.getName());
-    LOG.info("project succefully created!");
     projectIndex++;
   }
 }

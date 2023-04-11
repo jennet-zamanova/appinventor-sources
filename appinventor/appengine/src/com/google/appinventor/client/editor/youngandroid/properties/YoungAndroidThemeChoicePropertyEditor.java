@@ -25,4 +25,8 @@ public class YoungAndroidThemeChoicePropertyEditor extends ChoicePropertyEditor 
   public YoungAndroidThemeChoicePropertyEditor() {
     super(textAlignments);
   }
+
+  public YoungAndroidThemeChoicePropertyEditor(Boolean change) {
+    super(textAlignments, change);
+  }
 }

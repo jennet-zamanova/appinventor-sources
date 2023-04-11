@@ -27,7 +27,6 @@ import com.google.appinventor.client.youngandroid.TextValidators;
 import com.google.appinventor.common.utils.StringUtils;
 import com.google.appinventor.shared.rpc.project.youngandroid.NewYoungAndroidProjectParameters;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
-//import com.google.appinventor.server.project.youngandroid.YoungAndroidSettingsBuilder;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -78,7 +77,6 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
         return errorMessage;
       }
     });
-    
     projectNameTextBox.getTextBox().addKeyDownHandler(new KeyDownHandler() {
       @Override
       public void onKeyDown(KeyDownEvent event) {
@@ -96,10 +94,9 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     SubsetJSONPropertyEditorNewYAProjectWizard toolkitEditor = new SubsetJSONPropertyEditorNewYAProjectWizard();
     toolkitEditor.setProperty(toolkit);
 
-    EditableProperties themes = new EditableProperties(true);
-    // EditableProperty theme = new EditableProperty(themes, "theme", "", 1);
+    EditableProperties themes = new EditableProperties(false);
     EditableProperty theme = new EditableProperty(themes, "theme", "Classic", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
-    YoungAndroidThemeChoicePropertyEditor themeEditor = new YoungAndroidThemeChoicePropertyEditor();
+    YoungAndroidThemeChoicePropertyEditor themeEditor = new YoungAndroidThemeChoicePropertyEditor(true);
     themeEditor.setProperty(theme);
 
     HorizontalPanel horizontalThemePanel = new HorizontalPanel();
@@ -118,32 +115,11 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
     horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
 
-    // VerticalPanel labelPanel = new VerticalPanel();
-    // Label blocksToolkitLabel = new Label(toolkit.getCaption());
-    // Label themeLabel = new Label(theme.getCaption());
-    // labelPanel.add(blocksToolkitLabel);
-    // labelPanel.add(themeLabel);
-
-    // VerticalPanel propertyPanel = new VerticalPanel();
-    // propertyPanel.add(toolkitEditor);
-    // propertyPanel.add(themeEditor);
-
-    // labelPanel.setCellWidth(labelPanel, "40%");
-    // labelPanel.setCellVerticalAlignment(labelPanel, HasVerticalAlignment.ALIGN_MIDDLE);
-    // propertyPanel.setCellVerticalAlignment(propertyPanel, HasVerticalAlignment.ALIGN_MIDDLE);
-
     VerticalPanel page = new VerticalPanel();
     page.add(projectNameTextBox);
     page.add(horizontalThemePanel);
     page.add(horizontalBlocksPanel);
-    // page.setCellVerticalAlignment(labelPanel, HasVerticalAlignment.ALIGN_MIDDLE);
     addPage(page);
-
-    // VerticalPanel page = new VerticalPanel();
-    // page.add(projectNameTextBox);
-    // page.add(horizontalThemePanel);
-    // page.add(horizontalBlocksPanel);
-    // addPage(page);
 
     projectNameTextBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
       @Override
@@ -151,12 +127,6 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
         projectNameTextBox.validate();
       }
     });
-
-    // VerticalPanel page = new VerticalPanel();
-
-    
-    // page.add(toolkitEditor);
-    // page.add(horizontalThemePanel);
     
 
     // Create cancel command handler. This handler
