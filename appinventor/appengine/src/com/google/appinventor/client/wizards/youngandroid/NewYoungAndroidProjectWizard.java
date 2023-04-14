@@ -17,7 +17,6 @@ import com.google.appinventor.client.tracking.Tracking;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
 import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditor;
-import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditorNewYAProjectWizard;
 import com.google.appinventor.client.editor.youngandroid.properties.YoungAndroidThemeChoicePropertyEditor;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.LabeledTextBox;
@@ -91,7 +90,7 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
 
     EditableProperties toolkits = new EditableProperties(false);
     EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
-    SubsetJSONPropertyEditorNewYAProjectWizard toolkitEditor = new SubsetJSONPropertyEditorNewYAProjectWizard();
+    SubsetJSONPropertyEditor toolkitEditor = new SubsetJSONPropertyEditor(true);
     toolkitEditor.setProperty(toolkit);
 
     EditableProperties themes = new EditableProperties(false);
@@ -116,9 +115,10 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
 
     VerticalPanel page = new VerticalPanel();
+    page.add(projectNameTextBox);
     page.add(horizontalThemePanel);
     page.add(horizontalBlocksPanel);
-    page.add(projectNameTextBox);
+    
     addPage(page);
 
     projectNameTextBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
