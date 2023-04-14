@@ -12,6 +12,7 @@ import com.google.appinventor.client.ComponentsTranslation;
 import com.google.appinventor.client.editor.youngandroid.YaProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.project.ProjectChangeListener;
+import com.google.appinventor.client.output.OdeLog;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.youngandroid.TextValidators;
 import com.google.appinventor.common.utils.StringUtils;
@@ -59,6 +60,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import java.util.logging.Logger;
+
 interface BeginnerToolkit extends ClientBundle {
   BeginnerToolkit INSTANCE = GWT.create(BeginnerToolkit.class);
 
@@ -75,7 +78,7 @@ interface IntermediateToolkit extends ClientBundle {
 
 public class SubsetJSONPropertyEditor  extends PropertyEditor
         implements ProjectChangeListener {
-
+  
   private static SubsetJSONPropertyEditor INSTANCE;
   Tree componentTree;
   Tree blockTree;

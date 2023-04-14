@@ -78,7 +78,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 
+import java.util.logging.Logger;
+
 public class initialFormProperties {
+
     public String initialProperties (String qualifiedName, NewYoungAndroidProjectParameters youngAndroidParams){
         final int lastDotPos = qualifiedName.lastIndexOf('.');
         String packageName = qualifiedName.split("\\.")[2];
