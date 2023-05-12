@@ -114,10 +114,15 @@ public final class NewYoungAndroidProjectWizard extends NewProjectWizard {
     horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
     horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
 
+    VerticalPanel optionalPanel = new VerticalPanel();
+    optionalPanel.add(horizontalBlocksPanel);
+    optionalPanel.add(horizontalThemePanel);
     VerticalPanel page = new VerticalPanel();
     page.add(projectNameTextBox);
-    page.add(horizontalThemePanel);
-    page.add(horizontalBlocksPanel);
+    page.add(optionalPanel);
+    // page.add(projectNameTextBox);
+    // page.add(horizontalThemePanel);
+    // page.add(horizontalBlocksPanel);
     
     addPage(page);
 

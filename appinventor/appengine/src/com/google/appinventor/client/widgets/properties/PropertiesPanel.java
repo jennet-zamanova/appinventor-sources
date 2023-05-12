@@ -53,14 +53,16 @@ public class PropertiesPanel extends Composite implements ComponentDatabaseChang
   void addProperty(EditableProperty property) {
     Label label = new Label(property.getCaption());
     label.setStyleName("ode-PropertyLabel");
-    panel.add(label);
     PropertyEditor editor = property.getEditor();
     // Since UIObject#setStyleName(String) clears existing styles, only
     // style the editor if it hasn't already been styled during instantiation.
     if(!editor.getStyleName().contains("PropertyEditor")) {
       editor.setStyleName("ode-PropertyEditor");
     }
-    panel.add(editor);
+    if (property.getCaption() != "BlocksToolkit"){
+      panel.add(label);
+      panel.add(editor);
+    }
   }
 
   /**

@@ -16,6 +16,9 @@ import com.google.appinventor.client.editor.simple.palette.SimplePaletteItem;
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.explorer.project.ComponentDatabaseChangeListener;
+import com.google.appinventor.client.widgets.properties.EditableProperties;
+import com.google.appinventor.client.widgets.properties.EditableProperty;
+import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditor;
 import com.google.appinventor.client.wizards.ComponentImportWizard;
 import com.google.appinventor.common.version.AppInventorFeatures;
 import com.google.appinventor.components.common.ComponentCategory;
@@ -30,8 +33,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -88,6 +94,21 @@ public class YoungAndroidPalettePanel extends Composite implements SimplePalette
   private String lastSearch = "";
   private Map<String, SimplePaletteItem> searchSimplePaletteItems =
       new HashMap<String, SimplePaletteItem>();
+
+  // moved here in hopes it would not create new toolkit choice selector each time pallete is created
+  EditableProperties toolkits = new EditableProperties(false);
+  EditableProperty toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
+  SubsetJSONPropertyEditor toolkitEditor = new SubsetJSONPropertyEditor(false);
+  // toolkitEditor.setProperty(toolkit);
+
+  HorizontalPanel horizontalBlocksPanel = new HorizontalPanel();
+  Label blocksLabel = new Label(toolkit.getCaption());
+  // blocksLabel.setStyleName("ode-PropertyLabel");
+  // horizontalBlocksPanel.add(blocksLabel);
+  // horizontalBlocksPanel.setCellVerticalAlignment(blocksLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+  // horizontalBlocksPanel.add(toolkitEditor);
+  // horizontalBlocksPanel.setCellWidth(blocksLabel, "60%");
+  // horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
 
   @SuppressWarnings("checkstyle:LineLength")
   private native NativeArray filter(String match)/*-{
@@ -166,8 +187,19 @@ public class YoungAndroidPalettePanel extends Composite implements SimplePalette
     categoryOrder = new ArrayList<Integer>();
 
     translationMap = new HashMap<String, String>();
+
+    toolkitEditor.setProperty(toolkit);
+    blocksLabel.setStyleName("ode-PropertyLabel");
+    horizontalBlocksPanel.add(blocksLabel);
+    horizontalBlocksPanel.setCellVerticalAlignment(blocksLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+    horizontalBlocksPanel.add(toolkitEditor);
+    horizontalBlocksPanel.setCellWidth(blocksLabel, "60%");
+    horizontalBlocksPanel.setCellVerticalAlignment(toolkitEditor, HasVerticalAlignment.ALIGN_MIDDLE);
+
+
     panel = new VerticalPanel();
     panel.setWidth("100%");
+    panel.add(horizontalBlocksPanel);
 
     for (String component : COMPONENT_DATABASE.getComponentNames()) {
       String translationName = ComponentsTranslation.getComponentName(component).toLowerCase();
@@ -527,6 +559,7 @@ public class YoungAndroidPalettePanel extends Composite implements SimplePalette
   public void reloadComponents() {
     clearComponents();
     loadComponents();
+    // toolkitEditor.updateValue();  maybe will update? in case just moving up won't work; though it's protected.
   }
 
 }
