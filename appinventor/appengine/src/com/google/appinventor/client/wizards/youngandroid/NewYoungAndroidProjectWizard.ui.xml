@@ -24,12 +24,7 @@
                                         helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
             </g:HorizontalPanel>
             <!--Blocks-->
-            <g:HorizontalPanel ui:field="horizontalBlocksPanel">
-                <g:Label text="BlocksToolkit:" ui:field="blocksLabel"/>
-                <s:SubsetJSONPropertyEditor ui:field="blockstoolkitEditor"/>
-                <p:ComponentHelpWidget name="Blocks Toolkit" helpString="A JSON string representing the subset for the screen. Authors of template apps can use this to control what components, designer properties, and blocks are available in the project."
-                                        helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
-            </g:HorizontalPanel>
+            <w:BlocksToolkit ui:field="blocksToolkit" isProjectLoaded='false'/>
             <g:FlowPanel styleName="buttonRow" >
                 <g:Button ui:field='cancelButton' text='{messages.cancelButton}'  />
                 <g:Button ui:field='addButton' text='{messages.okButton}' />

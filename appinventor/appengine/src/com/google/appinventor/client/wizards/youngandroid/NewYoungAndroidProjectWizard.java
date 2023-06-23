@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.youngandroid.ProjectToolbar;
 import com.google.appinventor.client.tracking.Tracking;
+import com.google.appinventor.client.widgets.BlocksToolkit;
 import com.google.appinventor.client.widgets.LabeledTextBox;
 import com.google.appinventor.client.widgets.Validator;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
@@ -49,6 +50,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.common.collect.Lists;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.Widget;
+
 
 import java.util.logging.Logger;
 
@@ -73,11 +76,11 @@ public final class NewYoungAndroidProjectWizard {
   @UiField Button cancelButton;
   @UiField LabeledTextBox projectNameTextBox;
   @UiField YoungAndroidThemeChoicePropertyEditor themeEditor;
-  @UiField SubsetJSONPropertyEditor blockstoolkitEditor;
+  // @UiField SubsetJSONPropertyEditor blockstoolkitEditor;
   @UiField HorizontalPanel horizontalThemePanel;
-  @UiField HorizontalPanel horizontalBlocksPanel;
+  // @UiField HorizontalPanel horizontalBlocksPanel;
   @UiField Label themeLabel;
-  @UiField Label blocksLabel;
+  @UiField BlocksToolkit blocksToolkit;
   String errorMessage = "";
   
   /**
@@ -92,15 +95,17 @@ public final class NewYoungAndroidProjectWizard {
     theme = new EditableProperty(themes, "theme", "Classic", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
     themeEditor.setProperty(theme);
 
-    EditableProperties toolkits = new EditableProperties(false);
-    toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
-    blockstoolkitEditor.setProperty(toolkit);
+    // EditableProperties toolkits = new EditableProperties(false);
+    // toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
+    // blockstoolkitEditor.setProperty(toolkit);
 
     horizontalThemePanel.setCellWidth(themeLabel, "40%");
     horizontalThemePanel.setCellWidth(themeEditor, "40%");
 
-    horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
-    horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
+    initWidget(blocksToolkit);
+
+    // horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
+    // horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
   }
 
   @UiHandler("cancelButton")
@@ -148,7 +153,7 @@ public final class NewYoungAndroidProjectWizard {
       String packageName = StringUtils.getProjectPackage(
           Ode.getInstance().getUser().getUserEmail(), projectName);
       NewYoungAndroidProjectParameters parameters = new NewYoungAndroidProjectParameters(
-          packageName, theme.getValue(), toolkit.getValue());
+          packageName, theme.getValue(), blocksToolkit.getValue());
       NewProjectWizard.NewProjectCommand callbackCommand = new NewProjectWizard.NewProjectCommand() {
         @Override
         public void execute(final Project project) {

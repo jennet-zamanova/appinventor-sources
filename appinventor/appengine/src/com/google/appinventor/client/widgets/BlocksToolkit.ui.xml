@@ -1,0 +1,19 @@
+<!--BlocksToolkit.ui.xml -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:p="urn:import:com.google.appinventor.client.editor.simple.palette"
+             xmlns:s="urn:import:com.google.appinventor.client.widgets.properties"
+             ui:generatedFormat="com.google.gwt.i18n.server.PropertyCatalogFactory"
+             ui:generatedKeys="com.google.gwt.i18n.server.keygen.MethodNameKeyGenerator"
+             ui:generateLocales="default">
+    <ui:with field="messages" type="com.google.appinventor.client.OdeMessages" />
+    <!--BlocksToolkit-->
+    <g:HorizontalPanel ui:field="horizontalBlocksPanel">
+        <g:Label text="BlocksToolkit:" ui:field="blocksLabel"/>
+        <s:SubsetJSONPropertyEditor ui:field="blockstoolkitEditor"/>
+        <p:ComponentHelpWidget name="Blocks Toolkit" helpString="A JSON string representing the subset for the screen. Authors of template apps can use this to control what components, designer properties, and blocks are available in the project."
+                                helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
+    </g:HorizontalPanel>
+</ui:UiBinder>
+
+
