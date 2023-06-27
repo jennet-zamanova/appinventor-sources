@@ -206,7 +206,8 @@ public class Ode implements EntryPoint {
   @UiField(provided = true) DeckPanel deckPanel;
   @UiField(provided = true) FlowPanel overDeckPanel;
   @UiField TutorialPanel tutorialPanel;
-  @UiField HorizontalPanel horizontalBlocksPanel;
+  @UiField FlowPanel toolkitEditor;
+  @UiField Label blocksLabel;
 
   private int projectsTabIndex;
   private int designTabIndex;
@@ -386,7 +387,8 @@ public class Ode implements EntryPoint {
   }
 
   public void addPropertyToDesigner(EditableProperty property) {
-    horizontalBlocksPanel.add(property.getEditor());
+    blocksLabel.setText(property.getCaption());
+    toolkitEditor.add(property.getEditor());
   }
 
   /**

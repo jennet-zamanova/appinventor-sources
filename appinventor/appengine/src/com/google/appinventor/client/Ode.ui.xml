@@ -24,7 +24,8 @@
           <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
             <g:FlowPanel width="240px">
             <g:HorizontalPanel ui:field="horizontalBlocksPanel" width="100%">
-              <g:Label text="BlocksToolkit:" ui:field="blocksLabel" width="40%"/>
+              <g:Label  ui:field="blocksLabel" width="40%"/>
+              <g:FlowPanel ui:field="toolkitEditor" />
               <p:ComponentHelpWidget name="Blocks Toolkit" helpString="A JSON string representing the subset for the screen. Authors of template apps can use this to control what components, designer properties, and blocks are available in the project."
                                      helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
             </g:HorizontalPanel>
