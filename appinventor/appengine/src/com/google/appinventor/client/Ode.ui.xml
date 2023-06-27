@@ -5,6 +5,8 @@
              xmlns:ex="urn:import:com.google.appinventor.client.explorer.youngandroid"
              xmlns:ode="urn:import:com.google.appinventor.client"
              xmlns:box="urn:import:com.google.appinventor.client.boxes"
+             xmlns:p="urn:import:com.google.appinventor.client.editor.simple.palette"
+             xmlns:s="urn:import:com.google.appinventor.client.widgets.properties"
              ui:generatedFormat="com.google.gwt.i18n.server.PropertyCatalogFactory"
              ui:generatedKeys="com.google.gwt.i18n.server.keygen.MethodNameKeyGenerator"
              ui:generateLocales="default">
@@ -20,7 +22,14 @@
         <g:FlowPanel styleName="ode-ProjectEditor" ui:field="projectEditor">
           <ed:DesignToolbar ui:field="bindDesignToolbar" />
           <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
-            <box:PaletteBox width="240px" ui:field="paletteBox"/>
+            <g:FlowPanel width="240px">
+            <g:HorizontalPanel ui:field="horizontalBlocksPanel" width="100%">
+              <g:Label text="BlocksToolkit:" ui:field="blocksLabel" width="40%"/>
+              <p:ComponentHelpWidget name="Blocks Toolkit" helpString="A JSON string representing the subset for the screen. Authors of template apps can use this to control what components, designer properties, and blocks are available in the project."
+                                     helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
+            </g:HorizontalPanel>
+            <box:PaletteBox width="100%" ui:field="paletteBox"/>
+            </g:FlowPanel>
             <box:ViewerBox ui:field="bindViewerBox" />
             <g:FlowPanel ui:field="structureAndAssets">
               <box:SourceStructureBox ui:field="bindSourceStructureBox" />

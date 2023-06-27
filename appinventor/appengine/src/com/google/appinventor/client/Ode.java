@@ -39,11 +39,8 @@ import com.google.appinventor.client.tracking.Tracking;
 import com.google.appinventor.client.utils.HTML5DragDrop;
 import com.google.appinventor.client.utils.PZAwarePositionCallback;
 import com.google.appinventor.client.widgets.DropDownButton;
-import com.google.appinventor.client.widgets.ExpiredServiceOverlay;
-import com.google.appinventor.client.widgets.boxes.Box;
-import com.google.appinventor.client.widgets.boxes.ColumnLayout.Column;
-import com.google.appinventor.client.widgets.boxes.ColumnLayout;
 import com.google.appinventor.client.widgets.boxes.WorkAreaPanel;
+import com.google.appinventor.client.widgets.properties.EditableProperty;
 import com.google.appinventor.client.wizards.NewProjectWizard.NewProjectCommand;
 import com.google.appinventor.client.wizards.TemplateUploadWizard;
 import com.google.appinventor.common.version.AppInventorFeatures;
@@ -209,6 +206,8 @@ public class Ode implements EntryPoint {
   @UiField(provided = true) DeckPanel deckPanel;
   @UiField(provided = true) FlowPanel overDeckPanel;
   @UiField TutorialPanel tutorialPanel;
+  @UiField HorizontalPanel horizontalBlocksPanel;
+
   private int projectsTabIndex;
   private int designTabIndex;
   private int debuggingTabIndex;
@@ -384,6 +383,10 @@ public class Ode implements EntryPoint {
 
   public FlowPanel getOverDeckPanel() {
     return overDeckPanel;
+  }
+
+  public void addPropertyToDesigner(EditableProperty property) {
+    horizontalBlocksPanel.add(property.getEditor());
   }
 
   /**
