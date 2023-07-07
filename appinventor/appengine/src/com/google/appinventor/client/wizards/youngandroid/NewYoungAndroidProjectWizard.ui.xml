@@ -16,15 +16,20 @@
             <!--ProjectName-->
             <w:LabeledTextBox ui:field="projectNameTextBox" caption="{messages.projectNameLabel}"
                               stylePrimaryName="ode-LabeledTextBox" />
+            <!--Blocks-->
+            <g:HorizontalPanel ui:field="horizontalBlocksPanel">
+                <g:Label text="BlocksToolkit:" ui:field="blocksLabel"/>
+                <s:SubsetJSONPropertyEditor ui:field="blockstoolkitEditor"/>
+                <p:ComponentHelpWidget name="Blocks Toolkit" helpString="{messages.toolkitDescription}"
+                                        helpURL="{messages.toolkitDescriptionLink}"/>
+            </g:HorizontalPanel>
             <!--Theme-->
             <g:HorizontalPanel ui:field="horizontalThemePanel">
                 <g:Label text="Theme:" ui:field="themeLabel" />
                 <e:YoungAndroidThemeChoicePropertyEditor ui:field="themeEditor"/>
-                <p:ComponentHelpWidget name="Theme" helpString ="Selects the theme for the application. Theme can only be set at compile time and the Companion will approximate changes during live development. Possible options are: Classic, which is the same as older versions of App Inventor; Device Default, which gives the same theme as the version of Android running on the device and uses PrimaryColor for the Action Bar and has light buttons; Black Title Text, which is the Device Default theme but with black title text; and Dark, which is a dark version of the Device Default theme using PrimaryColorDark and having dark grey components."
-                                        helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
+                <p:ComponentHelpWidget name="Theme" helpString ="{messages.themeDescription}"
+                                        helpURL="{messages.themeDescriptionLink}"/>
             </g:HorizontalPanel>
-            <!--Blocks-->
-            <w:BlocksToolkit ui:field="blocksToolkit" isProjectLoaded='false'/>
             <g:FlowPanel styleName="buttonRow" >
                 <g:Button ui:field='cancelButton' text='{messages.cancelButton}'  />
                 <g:Button ui:field='addButton' text='{messages.okButton}' />

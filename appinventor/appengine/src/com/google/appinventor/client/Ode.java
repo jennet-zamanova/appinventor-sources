@@ -104,6 +104,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import com.google.gwt.dom.client.Style;
+
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -225,6 +227,8 @@ public class Ode implements EntryPoint {
   @UiField AssetListBox bindAssetListBox = AssetListBox.getAssetListBox();
   @UiField SourceStructureBox bindSourceStructureBox;
   @UiField PropertiesBox bindPropertiesBox = PropertiesBox.getPropertiesBox();
+  @UiField HorizontalPanel horizontalBlocksPanel;
+
 
   // Is the tutorial toolbar currently displayed?
   private boolean tutorialVisible = false;
@@ -387,7 +391,12 @@ public class Ode implements EntryPoint {
   }
 
   public void addPropertyToDesigner(EditableProperty property) {
+    horizontalBlocksPanel.getElement().getStyle().setBackgroundColor("white");
+    horizontalBlocksPanel.getElement().getStyle().setProperty("margin", "5px");
     blocksLabel.setText(property.getCaption());
+    blocksLabel.getElement().getStyle().setProperty("margin", "5px");
+    blocksLabel.getElement().getStyle().setProperty("color", "#555555");
+    toolkitEditor.clear();
     toolkitEditor.add(property.getEditor());
   }
 

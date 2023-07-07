@@ -10,6 +10,8 @@
              ui:generatedFormat="com.google.gwt.i18n.server.PropertyCatalogFactory"
              ui:generatedKeys="com.google.gwt.i18n.server.keygen.MethodNameKeyGenerator"
              ui:generateLocales="default">
+  <ui:with field="messages" type="com.google.appinventor.client.OdeMessages" />
+
   <g:FlowPanel styleName="ode-Root">
     <ode:TopPanel ui:field="topPanel" />
     <g:FlowPanel styleName="ode-TutorialWrapper" ui:field="overDeckPanel">
@@ -23,11 +25,13 @@
           <ed:DesignToolbar ui:field="bindDesignToolbar" />
           <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
             <g:FlowPanel width="240px">
-            <g:HorizontalPanel ui:field="horizontalBlocksPanel" width="100%">
-              <g:Label  ui:field="blocksLabel" width="40%"/>
-              <g:FlowPanel ui:field="toolkitEditor" />
-              <p:ComponentHelpWidget name="Blocks Toolkit" helpString="A JSON string representing the subset for the screen. Authors of template apps can use this to control what components, designer properties, and blocks are available in the project."
-                                     helpURL="http://ai2.appinventor.mit.edu/reference/components/userinterface.html#Screen"/>
+            <g:HorizontalPanel ui:field="horizontalBlocksPanel" verticalAlignment="ALIGN_MIDDLE" width="95%">
+              <g:cell horizontalAlignment="ALIGN_CENTER">
+                <g:Label  ui:field="blocksLabel"/>
+              </g:cell>
+                <g:FlowPanel ui:field="toolkitEditor"/>
+                <p:ComponentHelpWidget name="Blocks Toolkit" helpString="{messages.toolkitDescription}"
+                                    helpURL="{messages.toolkitDescriptionLink}"/>
             </g:HorizontalPanel>
             <box:PaletteBox width="100%" ui:field="paletteBox"/>
             </g:FlowPanel>

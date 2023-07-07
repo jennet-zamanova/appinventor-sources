@@ -76,11 +76,11 @@ public final class NewYoungAndroidProjectWizard {
   @UiField Button cancelButton;
   @UiField LabeledTextBox projectNameTextBox;
   @UiField YoungAndroidThemeChoicePropertyEditor themeEditor;
-  // @UiField SubsetJSONPropertyEditor blockstoolkitEditor;
+  @UiField SubsetJSONPropertyEditor blockstoolkitEditor;
   @UiField HorizontalPanel horizontalThemePanel;
-  // @UiField HorizontalPanel horizontalBlocksPanel;
+  @UiField HorizontalPanel horizontalBlocksPanel;
   @UiField Label themeLabel;
-  @UiField BlocksToolkit blocksToolkit;
+  @UiField Label blocksLabel;
   String errorMessage = "";
   
   /**
@@ -95,17 +95,15 @@ public final class NewYoungAndroidProjectWizard {
     theme = new EditableProperty(themes, "theme", "Classic", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
     themeEditor.setProperty(theme);
 
-    // EditableProperties toolkits = new EditableProperties(false);
-    // toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
-    // blockstoolkitEditor.setProperty(toolkit);
+    EditableProperties toolkits = new EditableProperties(false);
+    toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
+    blockstoolkitEditor.setProperty(toolkit);
 
     horizontalThemePanel.setCellWidth(themeLabel, "40%");
     horizontalThemePanel.setCellWidth(themeEditor, "40%");
 
-    initWidget(blocksToolkit);
-
-    // horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
-    // horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
+    horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
+    horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
   }
 
   @UiHandler("cancelButton")
@@ -138,12 +136,6 @@ public final class NewYoungAndroidProjectWizard {
     }
   }
 
-//    projectNameTextBox.getTextBox().addKeyUpHandler(new KeyUpHandler() {
-//      @Override
-//      public void onKeyUp(KeyUpEvent event) { //Validate the text each time a key is lifted
-//        projectNameTextBox.validate();
-//      }
-//    });
 
   public void createProject() {
     String projectName = projectNameTextBox.getText().trim();
@@ -153,7 +145,7 @@ public final class NewYoungAndroidProjectWizard {
       String packageName = StringUtils.getProjectPackage(
           Ode.getInstance().getUser().getUserEmail(), projectName);
       NewYoungAndroidProjectParameters parameters = new NewYoungAndroidProjectParameters(
-          packageName, theme.getValue(), blocksToolkit.getValue());
+          packageName, theme.getValue(), toolkit.getValue());
       NewProjectWizard.NewProjectCommand callbackCommand = new NewProjectWizard.NewProjectCommand() {
         @Override
         public void execute(final Project project) {
