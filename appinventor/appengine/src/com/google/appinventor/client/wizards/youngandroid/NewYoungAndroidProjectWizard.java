@@ -96,7 +96,7 @@ public final class NewYoungAndroidProjectWizard {
     themeEditor.setProperty(theme);
 
     EditableProperties toolkits = new EditableProperties(false);
-    toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
+    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), new SubsetJSONPropertyEditor(), 0x01, "", null);
     blockstoolkitEditor.setProperty(toolkit);
 
     horizontalThemePanel.setCellWidth(themeLabel, "40%");

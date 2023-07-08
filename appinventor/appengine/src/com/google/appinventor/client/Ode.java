@@ -210,6 +210,7 @@ public class Ode implements EntryPoint {
   @UiField TutorialPanel tutorialPanel;
   @UiField FlowPanel toolkitEditor;
   @UiField Label blocksLabel;
+  @UiField FlowPanel helpToolkit;
 
   private int projectsTabIndex;
   private int designTabIndex;
@@ -393,11 +394,16 @@ public class Ode implements EntryPoint {
   public void addPropertyToDesigner(EditableProperty property) {
     horizontalBlocksPanel.getElement().getStyle().setBackgroundColor("white");
     horizontalBlocksPanel.getElement().getStyle().setProperty("margin", "5px");
-    blocksLabel.setText(property.getCaption());
-    blocksLabel.getElement().getStyle().setProperty("margin", "5px");
+    blocksLabel.getElement().getStyle().setProperty("padding", "9px");
     blocksLabel.getElement().getStyle().setProperty("color", "#555555");
+    helpToolkit.getElement().getStyle().setProperty("padding-top", "7px");
     toolkitEditor.clear();
     toolkitEditor.add(property.getEditor());
+    toolkitEditor.getElement().getStyle().setProperty("horizontalAlignment", "ALIGN_RIGHT");
+    toolkitEditor.getElement().getStyle().setProperty("padding", "5px");
+
+    horizontalBlocksPanel.setCellWidth(blocksLabel, "45%");
+    horizontalBlocksPanel.setCellWidth(toolkitEditor, "45%");
   }
 
   /**

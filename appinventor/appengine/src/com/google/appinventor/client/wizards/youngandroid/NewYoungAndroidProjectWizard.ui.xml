@@ -18,9 +18,9 @@
                               stylePrimaryName="ode-LabeledTextBox" />
             <!--Blocks-->
             <g:HorizontalPanel ui:field="horizontalBlocksPanel">
-                <g:Label text="BlocksToolkit:" ui:field="blocksLabel"/>
+                <g:Label text="{messages.blocksToolkitTitle}:" ui:field="blocksLabel"/>
                 <s:SubsetJSONPropertyEditor ui:field="blockstoolkitEditor"/>
-                <p:ComponentHelpWidget name="Blocks Toolkit" helpString="{messages.toolkitDescription}"
+                <p:ComponentHelpWidget name="{messages.blocksToolkitTitle}" helpString="{messages.toolkitDescription}"
                                         helpURL="{messages.toolkitDescriptionLink}"/>
             </g:HorizontalPanel>
             <!--Theme-->

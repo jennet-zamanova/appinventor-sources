@@ -1,5 +1,7 @@
 package com.google.appinventor.client.widgets;
 
+import static com.google.appinventor.client.Ode.MESSAGES;
+
 import com.google.appinventor.client.editor.youngandroid.properties.YoungAndroidThemeChoicePropertyEditor;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
@@ -41,7 +43,7 @@ public class BlocksToolkit extends Composite{
 
   public void setIsProjectLoaded(Boolean isProjectLoaded){
     EditableProperties toolkits = new EditableProperties(isProjectLoaded);
-    toolkit = new EditableProperty(toolkits, "blocks toolkit", "", "Blooks Toolkit", new SubsetJSONPropertyEditor(), 0x01, "", null);
+    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), new SubsetJSONPropertyEditor(), 0x01, "", null);
     blockstoolkitEditor.setProperty(toolkit);
     horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
   }
