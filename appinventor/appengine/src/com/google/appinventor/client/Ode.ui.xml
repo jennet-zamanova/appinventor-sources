@@ -25,10 +25,11 @@
           <ed:DesignToolbar ui:field="bindDesignToolbar" />
           <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
             <g:FlowPanel width="240px">
-            <g:HorizontalPanel ui:field="horizontalBlocksPanel" verticalAlignment="ALIGN_MIDDLE" width="95%">
+            <g:HorizontalPanel styleName="ode-Box-header ode-Box-toolkit"
+                               verticalAlignment="ALIGN_MIDDLE">
               <g:Label text="{messages.blocksToolkitTitle}" ui:field="blocksLabel"/>
-              <g:cell horizontalAlignment="ALIGN_RIGHT">
-                <g:FlowPanel ui:field="toolkitEditor"/> 
+              <g:cell horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_MIDDLE">
+                <g:FlowPanel ui:field="toolkitEditor"/>
               </g:cell>
               <g:FlowPanel ui:field="helpToolkit">
                 <p:ComponentHelpWidget name="{messages.blocksToolkitTitle}" helpString="{messages.toolkitDescription}"

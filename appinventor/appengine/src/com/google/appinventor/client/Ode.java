@@ -228,7 +228,6 @@ public class Ode implements EntryPoint {
   @UiField AssetListBox bindAssetListBox = AssetListBox.getAssetListBox();
   @UiField SourceStructureBox bindSourceStructureBox;
   @UiField PropertiesBox bindPropertiesBox = PropertiesBox.getPropertiesBox();
-  @UiField HorizontalPanel horizontalBlocksPanel;
 
 
   // Is the tutorial toolbar currently displayed?
@@ -392,18 +391,8 @@ public class Ode implements EntryPoint {
   }
 
   public void addPropertyToDesigner(EditableProperty property) {
-    horizontalBlocksPanel.getElement().getStyle().setBackgroundColor("white");
-    horizontalBlocksPanel.getElement().getStyle().setProperty("margin", "5px");
-    blocksLabel.getElement().getStyle().setProperty("padding", "9px");
-    blocksLabel.getElement().getStyle().setProperty("color", "#555555");
-    helpToolkit.getElement().getStyle().setProperty("padding-top", "7px");
     toolkitEditor.clear();
     toolkitEditor.add(property.getEditor());
-    toolkitEditor.getElement().getStyle().setProperty("horizontalAlignment", "ALIGN_RIGHT");
-    toolkitEditor.getElement().getStyle().setProperty("padding", "5px");
-
-    horizontalBlocksPanel.setCellWidth(blocksLabel, "45%");
-    horizontalBlocksPanel.setCellWidth(toolkitEditor, "45%");
   }
 
   /**

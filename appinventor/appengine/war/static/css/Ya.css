@@ -191,6 +191,14 @@ div.StatusPanel {
   border-color: #d2d2d2 #d2d2d2 #b0b2a7 #d2d2d2;
 }
 
+.ode-Box-toolkit {
+  width: 96%;
+  margin: 5px;
+  font-size: 13px;
+  font-weight: bold;
+  padding-left: 9px;
+}
+
 .ode-Box-header-caption,
 .ode-Box-header-caption-highlighted {
   font-size: 13px;
