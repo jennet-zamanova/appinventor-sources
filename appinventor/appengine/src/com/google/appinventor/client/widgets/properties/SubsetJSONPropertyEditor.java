@@ -149,7 +149,7 @@ public class SubsetJSONPropertyEditor  extends PropertyEditor
         file.click();
       }}));
 
-    items.add(new DropDownItem("Subset Property Editor", MESSAGES.viewAndModifyButton(), new Command() {
+    items.add(new DropDownItem("Subset Property Editor", MESSAGES.customEllipsis(), new Command() {
       @Override
       public void execute() {
         showCustomSubsetPanel();
@@ -636,12 +636,12 @@ public class SubsetJSONPropertyEditor  extends PropertyEditor
     if (StringUtils.isNullOrEmpty(property.getValue())) {
       dropDownButton.setCaption(MESSAGES.expertToolkitButton());
       dropDownButton.setWidth("");
-    } else if (property.getValue() == BeginnerToolkit.INSTANCE.getToolkit().getText()){
+    } else if (property.getValue().trim() == BeginnerToolkit.INSTANCE.getToolkit().getText().trim()){
       dropDownButton.setCaption(MESSAGES.beginnerToolkitButton());
     } else if (property.getValue() == IntermediateToolkit.INSTANCE.getToolkit().getText()){
       dropDownButton.setCaption(MESSAGES.intermediateToolkitButton());
     } else {
-      dropDownButton.setCaption("Toolkit Defined");
+      dropDownButton.setCaption(MESSAGES.customEllipsis());
     }
   }
 
