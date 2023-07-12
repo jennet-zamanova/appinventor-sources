@@ -59,6 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import java.util.logging.Logger;
@@ -79,7 +80,8 @@ interface IntermediateToolkit extends ClientBundle {
 
 public class SubsetJSONPropertyEditor  extends PropertyEditor
         implements ProjectChangeListener {
-  
+
+  private static final Logger LOG = Logger.getLogger(Ode.class.getName());
   private static SubsetJSONPropertyEditor INSTANCE;
 
   Tree componentTree;
@@ -633,12 +635,13 @@ public class SubsetJSONPropertyEditor  extends PropertyEditor
   }
 
   protected void updateValue() {
+    LOG.info("Comparing " + property.getValue() + " to " + BeginnerToolkit.INSTANCE.getToolkit().getText());
     if (StringUtils.isNullOrEmpty(property.getValue())) {
       dropDownButton.setCaption(MESSAGES.expertToolkitButton());
       dropDownButton.setWidth("");
-    } else if (property.getValue().trim() == BeginnerToolkit.INSTANCE.getToolkit().getText().trim()){
+    } else if (Objects.equals(property.getValue().replaceAll("\\s+",""), BeginnerToolkit.INSTANCE.getToolkit().getText().replaceAll("\\s+",""))){
       dropDownButton.setCaption(MESSAGES.beginnerToolkitButton());
-    } else if (property.getValue() == IntermediateToolkit.INSTANCE.getToolkit().getText()){
+    } else if (Objects.equals(property.getValue(), IntermediateToolkit.INSTANCE.getToolkit().getText())){
       dropDownButton.setCaption(MESSAGES.intermediateToolkitButton());
     } else {
       dropDownButton.setCaption(MESSAGES.customEllipsis());
