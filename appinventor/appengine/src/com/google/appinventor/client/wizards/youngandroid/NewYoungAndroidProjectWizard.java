@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.youngandroid.ProjectToolbar;
@@ -52,7 +53,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.Widget;
 
-
+import com.google.gwt.user.client.Window.Location;
 import java.util.logging.Logger;
 
 
@@ -61,9 +62,17 @@ import java.util.logging.Logger;
  *
  * @author markf@google.com (Mark Friedman)
  */
+
 public final class NewYoungAndroidProjectWizard {
+
+  // public static final String design = "com.google.appinventor.style.classic."; 
+  public static final String design = Ode.classicLinkString;
+  public static final String last = "NewYoungAndroidProjectWizard.ui.xml";
+
+  @UiTemplate(design + last)
   interface NewYoungAndroidProjectWizardUiBinder extends UiBinder<Dialog, NewYoungAndroidProjectWizard> {}
   private static final NewYoungAndroidProjectWizardUiBinder UI_BINDER = GWT.create(NewYoungAndroidProjectWizardUiBinder.class);
+
 
   private static final Logger LOG = Logger.getLogger(NewYoungAndroidProjectWizard.class.getName());
 

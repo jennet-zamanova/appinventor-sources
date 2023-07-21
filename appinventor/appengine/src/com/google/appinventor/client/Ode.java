@@ -126,6 +126,8 @@ public class Ode implements EntryPoint {
   // Global instance of the Ode object
   private static Ode instance;
 
+  public static final String classicLinkString = "com.google.appinventor.style.classic."; 
+
   // Application level image bundle
   private static final Images IMAGES = GWT.create(Images.class);
 
