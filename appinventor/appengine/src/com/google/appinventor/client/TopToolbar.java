@@ -12,17 +12,21 @@ import com.google.appinventor.client.actions.EnableAutoloadAction;
 import com.google.appinventor.client.actions.SetFontDyslexicAction;
 import com.google.appinventor.client.actions.WindowOpenAction;
 import com.google.appinventor.client.boxes.ProjectListBox;
+import com.google.appinventor.client.components.Button;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.YaBlocksEditor;
 import com.google.appinventor.client.widgets.DropDownButton;
+import com.google.appinventor.client.widgets.DropDownItem;
 import com.google.appinventor.common.version.AppInventorFeatures;
 import com.google.appinventor.shared.rpc.user.Config;
 import com.google.appinventor.shared.storage.StorageUtil;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -83,6 +87,8 @@ public class TopToolbar extends Composite {
   @UiField public DropDownButton buildDropDown;
   @UiField public DropDownButton settingsDropDown;
   @UiField public DropDownButton adminDropDown;
+  // @UiField public Button lightMode;
+  // @UiField public Button darkMode;
 
   private final boolean isReadOnly;
 
@@ -101,6 +107,12 @@ public class TopToolbar extends Composite {
    * This flag is the cached result of an earlier check for android.keystore.
    */
   private volatile boolean isKeystorePresent = false;
+
+
+  // @UiHandler("darkMode")
+  // public void switchToDarkMode(ClickEvent e) {
+  //   Ode.switchToDarkMode();
+  // }
 
   public void updateMoveToTrash(String menu_item){
     if (menu_item.equals("Move To Trash")) {

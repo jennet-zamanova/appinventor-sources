@@ -65,15 +65,8 @@ import java.util.logging.Logger;
 
 public final class NewYoungAndroidProjectWizard {
 
-  // public static final String design = "com.google.appinventor.style.classic."; 
-  public static final String design = Ode.classicLinkString;
-  public static final String last = "NewYoungAndroidProjectWizard.ui.xml";
-
-  @UiTemplate(design + last)
   interface NewYoungAndroidProjectWizardUiBinder extends UiBinder<Dialog, NewYoungAndroidProjectWizard> {}
   private static final NewYoungAndroidProjectWizardUiBinder UI_BINDER = GWT.create(NewYoungAndroidProjectWizardUiBinder.class);
-
-
   private static final Logger LOG = Logger.getLogger(NewYoungAndroidProjectWizard.class.getName());
 
 

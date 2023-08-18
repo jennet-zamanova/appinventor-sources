@@ -68,6 +68,7 @@ import com.google.appinventor.shared.rpc.user.UserInfoServiceAsync;
 import com.google.appinventor.shared.settings.SettingsConstants;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.core.client.Callback;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -77,6 +78,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -125,8 +127,6 @@ public class Ode implements EntryPoint {
 
   // Global instance of the Ode object
   private static Ode instance;
-
-  public static final String classicLinkString = "com.google.appinventor.style.classic."; 
 
   // Application level image bundle
   private static final Images IMAGES = GWT.create(Images.class);
@@ -231,6 +231,8 @@ public class Ode implements EntryPoint {
   @UiField SourceStructureBox bindSourceStructureBox;
   @UiField PropertiesBox bindPropertiesBox = PropertiesBox.getPropertiesBox();
 
+  @UiField(provided=true)
+  static Resources.Style style;
 
   // Is the tutorial toolbar currently displayed?
   private boolean tutorialVisible = false;
@@ -937,6 +939,8 @@ public class Ode implements EntryPoint {
     deckPanel.sinkEvents(Event.ONCONTEXTMENU);
 
     OdeUiBinder uiBinder = GWT.create(OdeUiBinder.class);
+    style = Ode.getUserDarkThemeEnabled() ? Resources.INSTANCE.styleDark() : Resources.INSTANCE.styleLight();
+    style.ensureInjected();
     FlowPanel mainPanel = uiBinder.createAndBindUi(this);
 
     deckPanel.showWidget(0);
@@ -1310,6 +1314,43 @@ public class Ode implements EntryPoint {
       });
   }
 
+  
+  /**
+   * Returns the dark theme setting.
+   *
+   * @return true if the user has opted to use a dark theme, false otherwise
+   */
+  public static boolean getUserDarkThemeEnabled() {
+    String value = userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS).
+            getPropertyValue(SettingsConstants.DARK_THEME_ENABLED);
+    if (value == null){
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  /**
+   * Set user dark theme setting.
+   *
+   * @param enabled new value for the user's UI preference
+   */
+  public static void setUserDarkThemeEnabled(boolean enabled) {
+    userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS).
+            changePropertyValue(SettingsConstants.DARK_THEME_ENABLED,
+                    "" + enabled);
+    userSettings.saveSettings(new Command() {
+        @Override
+        public void execute() {
+          // Reload for the UI preferences to take effect. We
+          // do this here because we need to make sure that
+          // the user settings were saved before we terminate
+          // this browsing session. This is particularly important
+          // for Firefox
+          Window.Location.reload();
+        }
+      });
+  }
+
   /**
    * Returns user new layout usage setting.
    *
@@ -1330,39 +1371,6 @@ public class Ode implements EntryPoint {
     userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS).
             changePropertyValue(SettingsConstants.USER_NEW_LAYOUT,
                     "" + newLayout);
-    userSettings.saveSettings(new Command() {
-        @Override
-        public void execute() {
-          // Reload for the UI preferences to take effect. We
-          // do this here because we need to make sure that
-          // the user settings were saved before we terminate
-          // this browsing session. This is particularly important
-          // for Firefox
-          Window.Location.reload();
-        }
-      });
-  }
-
-  /**
-   * Returns the dark theme setting.
-   *
-   * @return true if the user has opted to use a dark theme, false otherwise
-   */
-  public static boolean getUserDarkThemeEnabled() {
-    String value = userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS).
-            getPropertyValue(SettingsConstants.DARK_THEME_ENABLED);
-    return Boolean.parseBoolean(value);
-  }
-
-  /**
-   * Set user dark theme setting.
-   *
-   * @param enabled new value for the user's UI preference
-   */
-  public static void setUserDarkThemeEnabled(boolean enabled) {
-    userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS).
-            changePropertyValue(SettingsConstants.DARK_THEME_ENABLED,
-                    "" + enabled);
     userSettings.saveSettings(new Command() {
         @Override
         public void execute() {
@@ -2535,5 +2543,22 @@ public class Ode implements EntryPoint {
       top.proxy.close();
     }
   }-*/;
+  public interface Resources extends ClientBundle {
 
+    public static final Resources INSTANCE =  GWT.create(Resources.class);
+
+    @Source({
+      "com/google/appinventor/client/light.css",
+      "com/google/appinventor/client/Ya.css"
+    })
+    Style styleLight();
+
+    @Source({
+      "com/google/appinventor/client/dark.css",
+      "com/google/appinventor/client/Ya.css"
+    })
+    Style styleDark();
+    public interface Style extends CssResource {
+    }
+  }
 }

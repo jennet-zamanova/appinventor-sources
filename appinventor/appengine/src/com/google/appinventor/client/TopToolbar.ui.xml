@@ -113,6 +113,12 @@
       <ai:DropDownItem name="DyslexicFont" caption="{messages.disableOpenDyslexic}">
         <actions:SetFontRegularAction />
       </ai:DropDownItem>
+      <ai:DropDownItem name="ToggleLightDarkMode" caption="Toggle Light/Dark Mode">
+        <actions:SwitchThemeAction />
+      </ai:DropDownItem>
+      <!-- <ai:DropDownItem name="Dark" caption="darkMode"> 
+        <actions:SwitchToDarkModeAction />
+      </ai:DropDownItem> -->
     </ai:DropDownButton>
 
     <!-- Help Menu -->
