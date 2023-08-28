@@ -107,6 +107,9 @@ body {
   color: panel-shadow;
 }
 
+.ode-ProjectTable {
+  background-color: background-color;
+}
 .ode-ProjectRowHighlighted {
   background-color: project-background-color !important;
 }
@@ -187,8 +190,12 @@ body {
   color: label-color;
 }
 
-.ode-TopPanelAccount a {
+/* .ode-TopPanelAccount a {
   color: label-color;
+} */
+
+.ode-TopPanelAccount a {
+  color: selected-color;
 }
 
 .ode-TopPanelAccount .linkdivider {
@@ -226,7 +233,8 @@ body {
 .ActionDropDown-Options {
   border: transparent;
   background: transparent;
-  color: label-color;
+  /* color: label-color; */
+  color: top-panel-color;
 }
 
 .ode-TopPanelButton:hover,
@@ -234,6 +242,7 @@ body {
 .ActionDropDown-Options:hover {
   background: border-color;
   color: panel-shadow;
+  /* color: tab-bar-color; */
 }
 
 .ode-NavArrow {
@@ -317,13 +326,13 @@ body {
 .gwt-Button {
   color: panel-shadow;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-  background-color: text-button-background;
+  background-color: top-panel-background-color;
   *background-color: border-color;
-  /* background-image: -moz-linear-gradient(top, background-color, border-color);
+  background-image: -moz-linear-gradient(top, background-color, border-color);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(background-color), to(border-color));
   background-image: -webkit-linear-gradient(top, background-color, border-color);
   background-image: -o-linear-gradient(top, background-color, border-color);
-  background-image: linear-gradient(to bottom, background-color, border-color); */
+  background-image: linear-gradient(to bottom, background-color, border-color);
   background-repeat: repeat-x;
   border: 1px solid border-color;
   *border: 0;
@@ -491,11 +500,17 @@ body {
   border-bottom: 1px solid border-color;
 }
 
+/* .ode-PropertyEditor {
+  color: panel-shadow;
+  background-color: background-color;
+  border: 1px solid border-color;
+} */
+
 .ode-ChoicePropertyEditor {
   border: thin solid border-color;
   background-color: background-color;
   box-shadow: border-color;
-  color: label-color;
+  color: panel-shadow;
 }
 
 .ode-ChoicePropertyEditor:hover {
@@ -596,12 +611,6 @@ path.ode-SimpleMockMapFeature-selected {
 
 .ode-SimpleMockContainer .leaflet-container .leaflet-toolbar-icon:hover {
   color: simple-panel-border;
-}
-
-.ode-SimpleMockButton {
-  background-color: border-color;
-  border-bottom: 2px #b9b9b9 solid;
-  color: rgba(0, 0, 0, 0.87);
 }
   
 .listViewItemStyle {
@@ -777,7 +786,7 @@ a.ode-ExtensionAnchor:hover {
   * Bootstrap Inputs
   */
 
-/* select,
+select,
 textarea,
 input[type="text"],
 input[type="password"],
@@ -792,12 +801,12 @@ input[type="email"],
 input[type="url"],
 input[type="search"],
 input[type="tel"],
-input[type="color"], */
+input[type="color"],
 .uneditable-input {
   color: panel-shadow;
 }
 
-/* textarea,
+textarea,
 input[type="text"],
 input[type="password"],
 input[type="datetime"],
@@ -811,7 +820,7 @@ input[type="email"],
 input[type="url"],
 input[type="search"],
 input[type="tel"],
-input[type="color"], */
+input[type="color"],
 .uneditable-input {
   background-color: background-color;
   border: 1px solid border-color;
@@ -820,7 +829,7 @@ input[type="color"], */
   box-shadow: inset 0 1px 1px shadow-color;
 }
 
-/* textarea:focus,
+textarea:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="datetime"]:focus,
@@ -834,7 +843,7 @@ input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
-input[type="color"]:focus, */
+input[type="color"]:focus,
 .uneditable-input:focus {
   border-color: rgba(82, 168, 236, 0.8);
 

@@ -49,7 +49,7 @@ a, a:visited, a:hover {
   font-size: small;
   cursor: pointer;
   cursor: hand;
-  background: url("../images/hborder.png") repeat-x 0px -27px;
+  /* background: url("../images/hborder.png") repeat-x 0px -27px; */
   border: 1px outset #ccc;
 }
 .gwt-Button:active {

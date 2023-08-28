@@ -1,4 +1,4 @@
-@def background-image                   url(images/squairy_light.png);
+@def background-image                   url('static/images/squairy_dark.jpg');
 @def text-button-background            #222;
 /* Greens */
 @def box-background                     rgba(0, 51, 0, 0.3);
@@ -12,6 +12,7 @@
 @def top-panel-background-color         #222;
 @def border-color                       #555;
 @def label-color                        #ddd;
+@def top-panel-color                    #eee;
 @def panel-shadow                       #f2f2f2;
 @def tab-bar-color                      #aaa;
 @def top-panel-end-color                rgba(17, 17, 17, 0.95);

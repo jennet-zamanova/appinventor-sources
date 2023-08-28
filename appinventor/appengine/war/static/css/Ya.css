@@ -12,16 +12,6 @@ they get cut off in Windows.
 @import url("http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold");
 */
 
- /* 
-
-.yaToolbar {
-  background-color: red;
-  margin-bottom: 4px;
-  padding: 2px;
-} */
-
-/* @external .*; */
-
 @font-face {
   font-family: Roboto;
   src: url('../fonts/Roboto-Regular.ttf');
@@ -56,7 +46,6 @@ body, html {
 body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   /* TODO(opensource): Change to commented version below once we're ready */
-  background: border-color background-image;
 }
 
 .dyslexic * {
@@ -67,7 +56,6 @@ body {
 .floatingBox {
   width: 300px;
   height: 250px;
-  background-color: background-color;
   position: absolute;
   top:0;
   bottom: 0;
@@ -75,9 +63,7 @@ body {
   right: 0;
   margin: auto;
   padding: 16px;
-  box-shadow: 0 0 4px shadow-color;
   text-align: center;
-  border: 1px panel-shadow;
 }
 
 .ode-Root {
@@ -115,14 +101,9 @@ div.StatusPanel {
  * Context menus
  */
 
-.ode-ContextMenu {
-  background-color: background-color;
-}
-
 .ode-ContextMenuItem-Red,
 .ode-ContextMenuItem,
 .ode-CurrentColor {
-  color: panel-shadow;
   cursor: pointer;
   padding-top: 3px;
   padding-left: 9px;
@@ -130,7 +111,7 @@ div.StatusPanel {
   font-size: small;
 }
 
-/* .ode-ContextMenuItem {
+.ode-ContextMenuItem {
   min-width: 50px;
   padding: 4px 12px;
   -o-transition:color .1s ease-out, background .1s ease-in;
@@ -138,11 +119,10 @@ div.StatusPanel {
   -moz-transition:color .1s ease-out, background .1s ease-in;
   -webkit-transition:color .1s ease-out, background .1s ease-in;
   /* ...and now override with proper CSS property */
-  /* transition:color .1s ease-out, background .1s ease-in;
+  transition:color .1s ease-out, background .1s ease-in;
 }
 
 .ode-ContextMenuItem-Red {
-  color: item-color-red;
   min-width: 50px;
   padding: 4px 12px;
   -o-transition:color .1s ease-out, background .1s ease-in;
@@ -150,8 +130,8 @@ div.StatusPanel {
   -moz-transition:color .1s ease-out, background .1s ease-in;
   -webkit-transition:color .1s ease-out, background .1s ease-in;
   /* ...and now override with proper CSS property */
-  /* transition:color .1s ease-out, background .1s ease-in;
-}  */
+  transition:color .1s ease-out, background .1s ease-in;
+} 
 
 .ode-ContextMenuItemSeparator {
   *width: 100%;
@@ -159,46 +139,22 @@ div.StatusPanel {
   margin: 9px 1px;
   *margin: -5px 0 5px;
   overflow: hidden;
-  background-color: border-color;
-  border-bottom: 1px solid background-color;
 }
 
 .ode-CurrentColor {
   padding-left: 0;
 }
 
-.ode-ContextMenuItem-selected {
-  color: background-color;
-  background: selected-color;
-}
-
-.ode-ContextMenuItem-Red-selected {
-  color: item-color-red;
-  background: selected-color;
-}
-
-.ode-ContextMenuItem-disabled {
-  color: label-color;
-}
-
 .ode-Box-content {
   font-size: 13px;
-  background-color: bar-color;
   /* TODO(opensource): Delete the background-image line below once we're ready */
   background-image: url(../images/watermark.png);
-  color: panel-shadow;
-  border-left: 1px solid border-color;
-  border-bottom: 1px solid border-color;
-  border-right: 1px solid border-color;
   margin: 4px;
-  box-shadow: 0 0 4px shadow-color;
 }
 
 .ode-Box-header {
-  background: box-background;
   height: 31px;
   border: 1px solid;
-  border-color: border-color border-color border-color border-color;
 }
 
 .ode-Box-toolkit {
@@ -207,8 +163,6 @@ div.StatusPanel {
   font-size: 13px;
   font-weight: bold;
   padding-left: 9px;
-  color: panel-shadow;
-  background: box-background;
 }
 
 .ode-Box-header-caption,
@@ -219,25 +173,13 @@ div.StatusPanel {
   padding-left: 9px;
 }
 
-.ode-Box-header-caption {
-  color: panel-shadow;
-}
-
-.ode-Box-header-caption-highlighted {
-  color: item-color-red; /* too strong, but use red for now */
-}
-
-.ode-Box-body {
-}
-
 .ode-Box-body-padding {
   padding: 6px;
 }
 
 .ode-BoxResizeControl {
-  background-color: darklabel-color !important;
   /* Override glass panel to 90% opacity (= 10% transparency) */
-  /* filter: alpha(opacity = 90) !important; IE */
+  filter: alpha(opacity = 90) !important; IE
   opacity: 0.9 !important; /* non-IE */
   padding: 10px;
 }
@@ -247,7 +189,6 @@ div.StatusPanel {
  */
 
 .ode-MessagesOutput {
-  background-color: background-color;
   font-size: small;
 }
 
@@ -256,9 +197,7 @@ div.StatusPanel {
  */
 
 .ode-Motd {
-  background-color: bar-color;
   font-size: small;
-  color: panel-shadow;
 }
 
 /*
@@ -273,7 +212,6 @@ div.StatusPanel {
 .ode-ProjectNameLabel {
   font-weight: bold;
   font-size: small;
-  color: panel-shadow;
   cursor: pointer;
   vertical-align: top;
   padding-right: 10px;
@@ -284,7 +222,6 @@ div.StatusPanel {
 
 .ode-ProjectFieldLabel {
   font-size: small;
-  color: panel-shadow;
   vertical-align: top;
   padding-right: 10px;
   text-align: left;
@@ -299,10 +236,7 @@ div.StatusPanel {
   border-radius: 4px;
   height: auto;
   width: 100%;
-}
-
-.ode-ProjectRowHighlighted {
-  background-color: project-background-color !important;
+  /* background-color: background-color; */
 }
 
 .ode-ProjectRowUnHighlighted {
@@ -310,7 +244,6 @@ div.StatusPanel {
   align-items: center;
   grid-gap: 10px;
   border-bottom: 0;
-  background-color: background-color;
   width: 100%;
   vertical-align: center;
 }
@@ -338,7 +271,6 @@ div.StatusPanel {
   grid-gap: 10px;
 
   border: 1px;
-  border-bottom: 1px solid explorer-border;
   position: relative;
   flex-direction: row;
   width: 100%;
@@ -346,7 +278,6 @@ div.StatusPanel {
 
 .ode-ProjectHeaderLabel {
   text-indent: initial;
-  color: project-color;
   font-size: 11px !important;
   cursor: pointer;
   text-align: left;
@@ -365,17 +296,12 @@ div.StatusPanel {
   width: 200px;
 }
 
-.ode-CheckpointProjectTable {
-  border: 1px solid darklabel-color;
-}
-
 /*
  * ComponentList
  */
 .ode-ComponentNameLabel {
   font-weight: bold;
   font-size: small;
-  color: panel-shadow;
 }
 
 .ode-ComponentTable {
@@ -387,30 +313,20 @@ div.StatusPanel {
 .ode-ComponentTable td {
   border-collapse: collapse;
   font-size: small;
-  color: panel-shadow;
   text-align: left;
   margin: 0;
 }
 
 .ode-ComponentRowHighlighted {
-  border-bottom: 1px solid border-color;
-  background-color: project-background-color;
   border-collapse: collapse;
 }
-
-.ode-ComponentRowUnHighlighted {
-  border-bottom: 1px solid border-color;
-  background-color: background-color
-}
-
+  
 .ode-ComponentHeaderRow {
   background: url(../images/toolbarBG.png) repeat;
   border: 1px;
-  border-bottom: 1px solid explorer-border;
 }
 
 .ode-ComponentHeaderLabel {
-  color: project-color;
   font-size: 11px;
   cursor: pointer;
 }
@@ -427,19 +343,15 @@ div.StatusPanel {
   margin-bottom: 4px;
   padding-right: 4px;
   padding-left: 4px;
-  background-color: top-panel-background;
   /* background-image: -moz-linear-gradient(top, top-panel-background, top-panel-background );
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(top-panel-background ));
   background-image: -webkit-linear-gradient(top, top-panel-background, top-panel-background );
   background-image: -o-linear-gradient(top, top-panel-background, top-panel-background );  */
-  background-image: linear-gradient(to bottom, top-panel-background, top-panel-background );
   background-repeat: repeat-x;
-  border: 1px solid border-color;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='background-color', endColorstr='top-panel-end-color', GradientType=0);
   *zoom: 1;
   /* -webkit-box-shadow: 0 1px 4px shadow-color;
   -moz-box-shadow: 0 1px 4px shadow-color;  */
-  box-shadow: 0 1px 4px shadow-color;
   position: relative;
   box-sizing: border-box;
 }
@@ -459,9 +371,7 @@ div.StatusPanel {
 
 .ode-LogoText {
   font-size: 16px;
-  color: label-color;
   font-weight: 500;
-  text-shadow: 0 0 0 panel-shadow;
   margin-bottom: 15px;
 }
 
@@ -471,16 +381,7 @@ div.StatusPanel {
 
 .ode-TopPanelAccount {
   font-size: 15px;
-  color: label-color;
   padding-right: 8px;
-}
-
-.ode-TopPanelAccount a {
-  color: account-color;
-}
-
-.ode-TopPanelAccount .linkdivider {
-  color: border-color;
 }
 
 .ode-TopPanelLinks {
@@ -491,25 +392,13 @@ div.StatusPanel {
 .ode-TopPanelLinks .gwt-Anchor,
 .ode-TopPanelLinks .gwt-TitleLabel {
   cursor: pointer;
-  color: label-color;
   font-weight: 300;
   font-size: 12px;
   margin-right: 16px;
   text-decoration: none;
 }
 
-.ode-TopPanelLinks .gwt-Label:hover,
-.ode-TopPanelLinks .gwt-Anchor:hover,
-.ode-TopPanelLinks .gwt-TitleLabel:hover {
-  text-shadow: 0 0 1px label-color;
-}
-
-.ode-TopPanelWarningLabel {
-  color: item-color-red;
-}
-
 .ode-TopPanelLabel {
-  color: label-color;
   font-size: 15px;
 }
 
@@ -520,11 +409,6 @@ div.StatusPanel {
 
 .ode-TopPanelIconButton:hover {
   /* -webkit-filter: drop-shadow(0px 0px 3px panel-shadow); */
-  filter:         drop-shadow(0px 0px 3px panel-shadow);
-}
-
-.ode-TopPanelIconButton:active {
-
 }
 
 .ode-TopPanelButton,
@@ -539,26 +423,13 @@ div.StatusPanel {
   height: 46px;
   border: transparent;
   background: transparent;
-  color: label-color;
+  /* color: label-color; */
   /* -o-transition:color .2s ease-out, background .2s ease-in;
   -ms-transition:color .2s ease-out, background .2s ease-in;
   -moz-transition:color .2s ease-out, background .2s ease-in;
   -webkit-transition:color .2s ease-out, background .2s ease-in; */
   /* ...and now override with proper CSS property */
   transition:color .2s ease-out, background .2s ease-in;
-}
-
-.ode-TopPanelButton:hover,
-.ActionDropDown-Default:hover,
-.ActionDropDown-Options:hover {
-  background: border-color;
-  color: panel-shadow;
-}
-
-.ode-TopPanelButton:active,
-.ActionDropDown-Default:active,
-.ActionDropDown-Options:active {
-
 }
 
 .ActionDropDown-Default {
@@ -637,7 +508,6 @@ div.StatusPanel {
 
 .ode-NavArrow {
   border: transparent;
-  background: label-color;
   /* -o-transition:color .2s ease-out, background .2s ease-in;
   -ms-transition:color .2s ease-out, background .2s ease-in;
   -moz-transition:color .2s ease-out, background .2s ease-in;
@@ -645,30 +515,18 @@ div.StatusPanel {
   /* ...and now override with proper CSS property */
   transition:color .2s ease-out, background .2s ease-in;}
 
-.ode-NavArrow:hover {
-  background-color: darklabel-color;
-}
-
-
-
 /*
  * StatusPanel
  */
 
 .ode-StatusPanel {
   font-size: 12px;
-  color: label-color;
   padding: 4px 12px;
   background: url(../images/toolbarBG.png) repeat;
   border: 1px;
-  border-bottom: 1px solid explorer-border;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-}
-
-.ode-StatusPanel a {
-  color: label-color;
 }
 
 /*
@@ -678,7 +536,6 @@ div.StatusPanel {
 .ya-NonVisibleComponentsHeader {
   font-size: 13px;
   font-weight: bold;
-  color: panel-shadow;
   padding: 5px;
 }
 
@@ -689,7 +546,6 @@ div.StatusPanel {
 
 .ode-SimpleUiDesignerNonVisibleComponents .gwt-Label {
   font-size: 12px;
-  color: panel-shadow;
 }
 
 .ode-Icon, .ode-Icon-selected {
@@ -699,7 +555,6 @@ div.StatusPanel {
 
 .ode-Icon-selected {
   padding: 0 2px 0 2px;
-  border: 2px solid selected-color;
 }
 
 .gwt-TabBar {
@@ -714,26 +569,18 @@ div.StatusPanel {
   margin: 0 5px 0 0;
   padding: 3px 6px 3px 6px;
   cursor: pointer;
-  color: tab-bar-color;
   font-size: 13px;
   text-align: center;
-  background-color: bar-color;
-  border: 2px solid bar-color;
 }
 
 .gwt-TabBar .gwt-TabBarItem-selected {
   cursor: default;
-  background-color: selected-color;
-  border: 2px solid selected-color;
 }
 
 .gwt-RadioButton {
   font-size: small;
 }
 
-.gwt-VerticalSplitPanel, .gwt-HorizontalSplitPanel {
-  background: background-color;
-}
 
 .gwt-TextBox {
   padding: 0;
@@ -746,7 +593,6 @@ div.StatusPanel {
 
 .gwt-Tree .gwt-TreeItem {
   font-size: 12px;
-  color: panel-shadow;
   cursor: default;
   display: block !important;
 }
@@ -760,26 +606,18 @@ div.StatusPanel {
   cursor: pointer;
 }
 
-.gwt-Tree .gwt-TreeItem span:hover,
-.gwt-Tree .gwt-TreeItem-selected span {
-  background-color: bar-color;
-}
-
 /* Young Android Toolbar */
 
  .ya-Toolbar {
-  background-color: selected-color;
   margin-bottom: 4px;
   padding: 2px;
 } 
 
 .ya-Toolbar .ya-ProjectName {
-  color: background-color;
   font-weight: bold;
   font-size: 18px;
   padding-top: 2px;
   padding-left: 8px;
-  text-shadow: 0 0 1px panel-shadow;
 }
 
 .ode-TextButton,
@@ -791,40 +629,23 @@ div.StatusPanel {
   *margin-left: .3em;
   font-size: 14px;
   line-height: 20px;
-  color: panel-shadow;
   text-align: center;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   vertical-align: middle;
   cursor: pointer;
-  background-color: text-button-background;
-  *background-color: border-color;
-  /* background-image: -moz-linear-gradient(top, background-color, border-color);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(background-color), to(border-color));
-  background-image: -webkit-linear-gradient(top, background-color, border-color);
-  background-image: -o-linear-gradient(top, background-color, border-color); */
-  background-image: linear-gradient(to bottom, background-color, border-color);
   background-repeat: repeat-x;
-  border: 1px solid border-color;
   *border: 0;
-  border-color: border-color border-color #bfbfbf;
-  border-color: shadow-color shadow-color button-shadow-color;
   border-bottom-color: #b3b3b3;
   /* -webkit-border-radius: 4px;
   -moz-border-radius: 4px; */
   border-radius: 4px;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='background-color', endColorstr='#ffe6e6e6', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
   *zoom: 1;
   /* -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px shadow-color;
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px shadow-color; */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px shadow-color;
 }
 
 .ode-TextButton-up-disabled,
 .gwt-Button-up-disabled {
-  color: panel-shadow;
-  background-color: border-color;
-  *background-color: border-color;
   cursor: default;
   background-image: none;
   opacity: 0.65;
@@ -836,17 +657,11 @@ div.StatusPanel {
 
 .ode-TextButton:hover,
 .gwt-Button:hover {
-  color: panel-shadow;
-  border-color: border-color border-color #bfbfbf;
-  border-color: shadow-color shadow-color button-shadow-color;
-  background-color: border-color;
-  *background-color: border-color;
   text-decoration: none;
   background-position: 0 -15px;
   /* -webkit-transition: background-position 0.1s linear;
   -moz-transition: background-position 0.1s linear;
   -o-transition: background-position 0.1s linear; */
-  transition: background-position 0.1s linear;
 }
 
 .ode-TextButton:active,
@@ -855,25 +670,14 @@ div.StatusPanel {
   outline: 0;
   /* -webkit-box-shadow: inset 0 2px 4px button-shadow-color, 0 1px 2px shadow-color;
   -moz-box-shadow: inset 0 2px 4px button-shadow-color, 0 1px 2px shadow-color; */
-  box-shadow: inset 0 2px 4px button-shadow-color, 0 1px 2px shadow-color;
 }
 
 .destructive-action {
-  background: item-color-red;
-  color: background-color;
   text-shadow: none;
 }
 
 .destructive-action:hover {
-  background: destructive-action-hover;
-  color: background-color;
   text-shadow: none;
-}
-
-.destructive-action[disabled],
-.destructive-action[disabled]:hover {
-  background: destructive-action-hover;
-  color: label-color;
 }
 
 .ya-Toolbar .ode-TextButton {
@@ -885,44 +689,28 @@ div.StatusPanel {
 }
 
 .ode-BlocksDesignerButton {
-  color: background-color;
-  text-shadow: 0 -1px 0 button-shadow-color;
   background-color: #faa732;
-  *background-color: blocks-designer-color;
   /* background-image: -moz-linear-gradient(top, #fbb450, blocks-designer-color);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbb450), to(blocks-designer-color));
   background-image: -webkit-linear-gradient(top, #fbb450, blocks-designer-color);
   background-image: -o-linear-gradient(top, #fbb450, blocks-designer-color); */
-  background-image: linear-gradient(to bottom, #fbb450, blocks-designer-color);
   background-repeat: repeat-x;
-  border-color: blocks-designer-color blocks-designer-color blocks-designer-color;
-  border-color: shadow-color shadow-color button-shadow-color;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbb450', endColorstr='#fff89406', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
 .ode-BlocksDesignerButton:hover,
 .ode-BlocksDesignerButon:disabled {
-  color: background-color;
-  background-color: blocks-designer-color;
-  *background-color: blocks-designer-color;
   background-position: 0 -15px;
   /* -webkit-transition: background-position 0.1s linear;
   -moz-transition: background-position 0.1s linear;
   -o-transition: background-position 0.1s linear; */
-  transition: background-position 0.1s linear;
 }
 
 /* Palette */
 
 .gwt-StackPanelItem div {
-  border-top: 1px solid border-color;
-  border-bottom: 1px solid border-color;
-  background-color: tab-bar-background-color;
   font-size: 13px;
   cursor: pointer;
   height: 14px;
-  color: panel-shadow;
   padding: 8px 16px;
 }
 
@@ -940,7 +728,6 @@ div.StatusPanel {
 /* Overrides for gwt.css */
 .gwt-StackPanel .gwt-StackPanelContent {
   padding: 8px 4px 8px 8px;
-  background-color: background-color; /* needed for dark mmode */
 }
 .gwt-StackPanel .gwt-StackPanelItem {
   padding: 0;
@@ -949,7 +736,6 @@ div.StatusPanel {
 
 
 .ode-SimplePaletteItem {
-  background-color: background-color; /* needed on Firefox */
   height: 15px;
   cursor: pointer;
   padding: 5px;
@@ -962,84 +748,51 @@ div.StatusPanel {
 
 .ode-SimplePaletteItem-caption {
   font-size: 12px;
-  color: panel-shadow;
 }
 
 .ode-SimplePaletteItem-button {
   padding: 2px;
 }
 
-.ode-SimplePaletteItem-Selected {
-  background-color: bar-color !important;
-}
-
-.gwt-SimplePanel {
-  border: 1px solid simple-panel-border;
-  background-color: background-color;
-}
-
-.gwt-ListBox {
-  color: panel-shadow;
-}
-
 .ode-ExplorerContent {
   height: 100%;
   padding: 0 1ex;
-  border-left: 1px solid explorer-border;
-  border-right: 1px solid explorer-border;
   font-size: small;
 }
 
-.ode-CollapsiblePanelExpanded {
-  background-color: explorer-border;
-}
-
 .ode-CollapsiblePanelCollapsedLeft {
-  background-color: explorer-border;
   margin-right: 2px;
 }
 
 .ode-CollapsiblePanelCollapsedBottom {
-  background-color: explorer-border;
   margin-top: 2px;
 }
 
 .ode-CollapsiblePanelTitle {
-  background-color: explorer-border;
-  color: tab-bar-color;
   font-size: small;
   margin-bottom: 2px;
 }
 
 .ode-HeaderPanel {
   width: 100%;
-  border: 1px solid explorer-border;
-  background-color: background-color;
 }
 
 .ode-HeaderPanelTitleBar {
-  background-color: explorer-border;
-  color: tab-bar-color;
   font-size: small;
 }
 
 .ode-PropertiesPanel {
-  background-color: box-background-color;
   padding-left: 9px;
   padding-right: 9px;
   padding-bottom: 9px;
 }
 
 .ode-PropertiesPanel td {
-  color: panel-shadow;
   font-size: 12px;
 }
 
 .ode-PropertiesComponentName {
-  background-color: bar-color;
-  color: panel-shadow;
   font-size: 13px;
-  border-bottom: 1px solid border-color;
   padding: 9px 9px 8px 10px;
 }
 
@@ -1059,13 +812,8 @@ div.StatusPanel {
 
 .ode-ChoicePropertyEditor {
   padding: 3px;
-  border: thin solid border-color;
   border-radius: 3px;
   cursor: pointer;
-  background-color: background-color;
-
-  box-shadow: border-color;
-  color: label-color;
   width: auto;
   text-align: center;
   display: inline-block;
@@ -1079,32 +827,18 @@ div.StatusPanel {
   transition:color .2s ease-out, background .2s ease-in;
 }
 
-.ode-ChoicePropertyEditor:hover {
-  background: border-color;
-  color: panel-shadow;
-}
-
 .ode-ChoicePropertyEditor:focus {
-  border-color: border-color;
   outline: 0;
   outline: thin dotted \9;
   /* IE6-9 */
 
   /* -webkit-box-shadow: inset 0 1px 1px shadow-color, 0 0 8px border-color;
   -moz-box-shadow: inset 0 1px 1px shadow-color, 0 0 8px border-color; */
-  box-shadow: inset 0 1px 1px shadow-color, 0 0 8px border-color;
-}
-
-select.ode-PropertyEditor[disabled] {
-  background-color: label-color;
 }
 
 .ode-MultipleChoicePropertyEditor {
   min-width: 150px;
-  background-color: background-color;
   font-size: small;
-  color: tab-bar-color;
-  border: 1px solid label-color;
   padding: 2px;
 }
 
@@ -1134,8 +868,6 @@ select.ode-PropertyEditor[disabled] {
 
 .ode-SimpleMockForm {
   height: auto !important;
-  background-color: bar-color;
-  border: 2px solid tab-bar-color;
   /* -webkit-display: flex; */
   display: flex;
 }
@@ -1194,21 +926,13 @@ select.ode-PropertyEditor[disabled] {
 }
 /* ==== end: skins for Android */
 
-.ode-SimpleMockForm-selected {
-  border: 2px solid selected-color;
-}
-
 .ode-SimpleMockFormTitleBar {
-  background-color: label-color;
-  color: background-color;
   font-size: 90%;
   position: relative;
   border-bottom: 1px solid lightgray;
 }
 
 .ode-SimpleMockFormTitleBar-ActionBar {
-  background-color: selected-color;
-  color: background-color;
   font-size: 20px;
   position: relative;
 }
@@ -1234,17 +958,11 @@ select.ode-PropertyEditor[disabled] {
   background-color: transparent;
   font-size: 20px;
   font-weight: bold;
-  color: background-color;
   display: none;
 }
 
 .ode-SimpleMockFormTitleBar-ActionBar .ode-SimpleMockFormMenuButton {
   display: inline-block;
-}
-
-.ode-SimpleMockFormNavigationBarPortrait,
-.ode-SimpleMockFormNavigationBarLandscape {
-  background-color: tab-bar-color;
 }
 
 .ode-SimpleMockFormNavigationBarPortrait {
@@ -1265,11 +983,6 @@ select.ode-PropertyEditor[disabled] {
 
 .ode-SimpleMockContainer {
   background-color: transparent;
-  border: 2px solid tab-bar-color;
-}
-
-.ode-SimpleMockContainer-selected {
-  border: 2px solid selected-color;
 }
 
 .ode-SimpleMockComponent {
@@ -1278,21 +991,11 @@ select.ode-PropertyEditor[disabled] {
   border: 2px solid transparent;
 }
 
-.ode-SimpleMockComponent-disabled {
-  color: label-color;
-}
-
-.ode-SimpleMockComponent-selected {
-  border: 2px solid selected-color;
-}
-
 .ode-SimpleMockMapFeature-selected svg * {
-  stroke: selected-color;
   stroke-opacity: 1;
 }
 
 path.ode-SimpleMockMapFeature-selected {
-  stroke: selected-color;
   stroke-opacity: 1;
 }
 
@@ -1302,15 +1005,6 @@ path.ode-SimpleMockMapFeature-selected {
 
 .ode-SimpleMockMapFeature-selected img {
   padding: 0;
-  border: 2px solid selected-color;
-}
-
-.ode-SimpleMockContainer .leaflet-container .leaflet-toolbar-icon {
-  color: label-color;
-}
-
-.ode-SimpleMockContainer .leaflet-container .leaflet-toolbar-icon:hover {
-  color: simple-panel-border;
 }
 
 .ode-SimpleMockContainer .leaflet-container .leaflet-toolbar-icon.locked .fa-unlock,
@@ -1345,10 +1039,10 @@ path.ode-SimpleMockMapFeature-selected {
 
 .ode-SimpleMockButton {
   padding: 4px 8px;
-  background-color: explorer-border;
-  border-radius: 0px;
-  border-bottom: 2px #b9b9b9 solid;
+  border-radius: 0px;    
+  background-color: #ddd;
   color: rgba(0, 0, 0, 0.87);
+  border-bottom: 2px #b9b9b9 solid;    
 }
 
 /* class for the ListView Mock component */
@@ -1359,7 +1053,6 @@ path.ode-SimpleMockMapFeature-selected {
 }
 
 .listViewItemStyle {
-  border-bottom: 1px solid label-color;
   min-height: 40px;
   display: table-cell;
   vertical-align: middle;
@@ -1384,18 +1077,11 @@ path.ode-SimpleMockMapFeature-selected {
 /* Component Help */
 
 .ode-ComponentHelpPopup {
-  background-color: background-color;
-  border-left: 4px solid selected-color;
-  border-right: 4px solid selected-color;
-  border-bottom: 4px solid selected-color;
   width: 20%;
-  box-shadow: 0 0 4px shadow-color;
   z-index: 1000;
 }
 
 .ode-ComponentHelpPopup-TitleBar {
-  background-color: selected-color;
-  color: background-color;
   font-weight: bold;
   font-size: 13px;
   padding: 5px 10px;
@@ -1403,26 +1089,18 @@ path.ode-SimpleMockMapFeature-selected {
 
 .ode-ComponentHelpPopup-Body {
   padding: 10px;
-  color: panel-shadow;
   font-size: 12px;
 }
 
 .ode-ComponentHelpPopup-Link {
   padding: 0 10px 10px 10px;
-  font-size: 12px;
+  font-size: 12px;  
+}
 
-}
-.ode-ComponentHelpPopup-Link a {
-  color: selected-color;
-}
 
 .ode-ComponentHelpPopup > .popupContent > table {
   width: 100%;
   word-break: break-word;
-}
-
-.compiler-ErrorMarker {
-  color: item-color-red;
 }
 
 .compiler-WarningMarker {
@@ -1433,21 +1111,10 @@ path.ode-SimpleMockMapFeature-selected {
   text-align: center;
 }
 
-.hsplitter, .vsplitter {
-  background-color: explorer-border;
-}
-
 .ode-RpcStatusMessage .popupMiddleCenterInner {
   font-weight: bold;
   font-size: small;
   padding: 2px 2px 0 2px;
-}
-
-.ode-RpcStatusMessage .popupMiddleLeft,
-.ode-RpcStatusMessage .popupMiddleCenter,
-.ode-RpcStatusMessage .popupMiddleRight,
-.ode-RpcStatusMessage .popupBottomCenter {
-  background-color: project-background-color;
 }
 
 .ode-RpcStatusMessage .popupBottomLeft {
@@ -1463,7 +1130,6 @@ path.ode-SimpleMockMapFeature-selected {
 }
 
 .ode-ErrorMessage {
-  color: item-color-red;
   font-weight: bold;
   font-size: 13px;
   margin: 8px 16px;
@@ -1505,15 +1171,12 @@ path.ode-SimpleMockMapFeature-selected {
 
 /* Start of NoProjectsDialogBox. */
 .ode-noDialogDiv {
-  box-shadow: 0 0 10px label-color;
   min-width: 700px;
   width: 60%;
-  background-color: background-color;
   padding-bottom: 25px;
 }
 
 .ode-noDialogDivHeader {
-  background-color: selected-color;
   height: 10%;
   padding: 10px;
   border-bottom: 1px #e9e9e9 solid;
@@ -1532,14 +1195,12 @@ path.ode-SimpleMockMapFeature-selected {
 }
 
 .ode-headerTitle {
-  color: background-color;
   text-transform: uppercase;
   font-size: 16px;
   text-align: center;
 }
 
 .ode-tutorialsTitle {
-  color: tab-bar-color;
   text-transform: uppercase;
   text-align: center;
   font-size: 14px;
@@ -1561,7 +1222,6 @@ path.ode-SimpleMockMapFeature-selected {
   width: 25%;
   min-width: 182px;
   min-height: 300px;
-  box-shadow: 0 0 2px label-color;
   border-radius: 15px;
   padding: 15px;
   margin: 10px 0;
@@ -1609,16 +1269,10 @@ path.ode-SimpleMockMapFeature-selected {
 /* End of NoProjectsDialogBox. */
 
 .ode-DialogBox {
-  background-color: background-color;
-  border-left: 4px solid selected-color;
-  border-right: 4px solid selected-color;
-  border-bottom: 4px solid selected-color;
   z-index: 1000;
   min-width: 340px;
   min-height: 40px;
 }
-
-.DialogBox-message {}
 
 .ode-DialogBox .gwt-CheckBox {
   font-size: 12px;
@@ -1631,7 +1285,6 @@ path.ode-SimpleMockMapFeature-selected {
 .ode-DialogBox .gwt-Label {
   padding-left: 10px;
   font-size: 12px;
-  color: panel-shadow;
 }
 
 .ode-TreeLabel {
@@ -1639,7 +1292,6 @@ path.ode-SimpleMockMapFeature-selected {
 }
 
 .ode-DialogBox .gwt-Tree {
-  border: thin solid border-color;
   border-radius: 3px;
   font-size: 12px;
   margin-left: 10px;
@@ -1650,29 +1302,19 @@ path.ode-SimpleMockMapFeature-selected {
   padding-left: 4px;
 }
 
-.ode-DialogBox .dialogTop {
-  background-color: selected-color;
-}
-
 .ode-DialogBox .Caption {
-  background-color: selected-color;
-  color: background-color;
   font-weight: bold;
   font-size: 13px;
-  padding: 5px 10px;
-  box-shadow: 0 0 4px shadow-color;
-
+  padding: 5px 10px;  
 }
 
 .ode-DialogBox .dialogContent {
   padding: 5px 10px;
-  color: panel-shadow;
 }
 
 .ode-DialogBox .dialogContent td {
   padding: 2px 10px;
   font-size: 12px;
-  color: panel-shadow;
 }
 
 .ode-DialogBox .gwt-Button {
@@ -1699,17 +1341,12 @@ a.ode-ExtensionAnchor {
   display: inline-block;
   padding-bottom: 8px;
   font-style: italic;
-  color: label-color;
   /* -o-transition:color .2s ease-out;
   -ms-transition:color .2s ease-out;
   -moz-transition:color .2s ease-out;
   -webkit-transition:color .2s ease-out; */
   /* ...and now override with proper CSS property */
   transition:color .2s ease-out;
-}
-
-a.ode-ExtensionAnchor:hover {
-  color: panel-shadow;
 }
 
 /* Settings dialog boxes */
@@ -1732,8 +1369,6 @@ a.ode-ExtensionAnchor:hover {
 }
 
 .ode-Android-caption {
-  background-color: selected-color;
-  color: background-color;
   font-size: medium;
 }
 
@@ -1745,27 +1380,18 @@ a.ode-ExtensionAnchor:hover {
   height: 12px;
   font-size: x-small;
   text-align: center;
-  background-color: explorer-border;
-  color: tab-bar-color;
   padding: 4px;
 }
 
 .gwt-ProgressBar-shell {
-  border: 2px solid project-background-color;
-  border-right: 2px solid panel-shadow;
-  border-bottom: 2px solid panel-shadow;
-  background-color: label-color;
   height: 30pt;
   width: 100%;
 }
-.gwt-ProgressBar-shell .gwt-ProgressBar-bar {
-  background-color: selected-color;
-}
+
 .gwt-ProgressBar-shell .gwt-ProgressBar-text {
   position: absolute;
   top:0; left:0;
   padding-top: 10px;
-  color: background-color;
   text-align: center;
   width: 100%;
   font-size:large;
@@ -1784,8 +1410,6 @@ a.ode-ExtensionAnchor:hover {
   padding: 5px 0;
   margin: 2px 0 0;
   list-style: none;
-  background-color: background-color;
-  border: 1px solid button-shadow-color;
   *border-right-width: 2px;
   *border-bottom-width: 2px;
   /* -webkit-border-radius: 4px;
@@ -1793,7 +1417,6 @@ a.ode-ExtensionAnchor:hover {
   border-radius: 4px;
   /* -webkit-box-shadow: 0 5px 10px button-shadow-color;
   -moz-box-shadow: 0 5px 10px button-shadow-color; */
-  box-shadow: 0 5px 10px button-shadow-color;
   /* -webkit-background-clip: padding-box;
   -moz-background-clip: padding; */
   background-clip: padding-box;
@@ -1830,16 +1453,10 @@ input[type="color"],
   margin-bottom: 4px;
   font-size: 12px;
   line-height: 20px;
-  color: panel-shadow;
   vertical-align: middle;
   /* -webkit-border-radius: 4px;
   -moz-border-radius: 4px; */
   border-radius: 4px;
-}
-
-input,
-textarea,
-.uneditable-input {
 }
 
 textarea {
@@ -1862,15 +1479,11 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-  background-color: background-color;
-  border: 1px solid border-color;
   /* -webkit-box-shadow: inset 0 1px 1px shadow-color;
   -moz-box-shadow: inset 0 1px 1px shadow-color; */
-  box-shadow: inset 0 1px 1px shadow-color;
   /* -webkit-transition: border linear 0.2s, shadow-color linear 0.2s;
   -moz-transition: border linear 0.2s, shadow-color linear 0.2s;
   -o-transition: border linear 0.2s, shadow-color linear 0.2s; */
-  transition: border linear 0.2s, shadow-color linear 0.2s;
   font-size: 10px
 }
 
@@ -1929,11 +1542,6 @@ input[type="file"] {
   line-height: 30px;
 }
 
-select {
-  background-color: background-color;
-  border: 1px solid border-color;
-}
-
 select[multiple],
 select[size] {
   height: auto;
@@ -1943,7 +1551,6 @@ select:focus,
 input[type="file"]:focus,
 input[type="radio"]:focus,
 input[type="checkbox"]:focus {
-  outline: thin dotted panel-shadow;
   /* outline: 5px auto -webkit-focus-ring-color; */
   outline-offset: -2px;
 
@@ -1951,13 +1558,11 @@ input[type="checkbox"]:focus {
 
 .uneditable-input,
 .uneditable-textarea {
-  color: label-color;
   cursor: not-allowed;
   background-color: #fcfcfc;
   border-color: border-color;
   /* -webkit-box-shadow: inset 0 1px 2px shadow-color;
   -moz-box-shadow: inset 0 1px 2px shadow-color; */
-  box-shadow: inset 0 1px 2px shadow-color;
 }
 
 .uneditable-input {
@@ -1968,21 +1573,6 @@ input[type="checkbox"]:focus {
 .uneditable-textarea {
   width: auto;
   height: auto;
-}
-
-input:-moz-placeholder,
-textarea:-moz-placeholder {
-  color: label-color;
-}
-
-input:-ms-input-placeholder,
-textarea:-ms-input-placeholder {
-  color: label-color;
-}
-
-input::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-  color: label-color;
 }
 
 .radio,
@@ -2017,7 +1607,6 @@ textarea::-webkit-input-placeholder {
 
 /* Gallery Toolbar*/
 .ya-GalleryToolbar {
-  background-color: selected-color;
   margin-bottom: 4px;
   clear: both;
 }
@@ -2047,10 +1636,8 @@ textarea::-webkit-input-placeholder {
   float: left;
   position: relative;
   margin: 0 15px 15px 0;
-  background: background-color;
   vertical-align: top;
   text-decoration: none;
-  box-shadow: 0 2px 4px container-shadow;
   /* -moz-box-shadow: 0 2px 4px container-shadow;
   -ms-box-shadow: 0 2px 4px container-shadow;
   -webkit-box-shadow: 0 2px 4px container-shadow; */
@@ -2093,11 +1680,9 @@ textarea::-webkit-input-placeholder {
 }
 .ode-UserProfileWrapper .profile-textdisplay {
   width: 50%;
-  color: panel-shadow;
 }
 .ode-UserProfileWrapper .profile-textlabel {
   width: 150px;
-  color: label-color;
 }
 .ode-UserProfileWrapper .profile-textbox {
   display: inline-block;
@@ -2122,7 +1707,6 @@ textarea::-webkit-input-placeholder {
 }
 .profile-textlabel-emaildescription {
   width: 385px;
-  color: label-color;
   margin-bottom: 6px;
 }
 
@@ -2153,11 +1737,9 @@ textarea::-webkit-input-placeholder {
   padding: 5px 5px 5px 0;
 }
 .gallery .gwt-TabBar .gwt-TabBarItem {
-  color: label-color;
   font-weight: 100;
 }
 .gallery .gwt-TabBar .gwt-TabBarItem-selected {
-  color: panel-shadow;
   font-weight: 300;
 }
 .gallery .gwt-TabPanelBottom { /* GWT wrapper for the selected tab content */
@@ -2191,21 +1773,10 @@ textarea::-webkit-input-placeholder {
 .gallery-report-next .gwt-Label{
   width:100px;
 }
-.gallery-nav-prev .active,
-.gallery-nav-next .active,
-.gallery-report-next .active {
-  color: label-color;
-}
-.gallery-nav-prev .disabled,
-.gallery-nav-next .disabled,
-.gallery-report-next .disabled {
-  color: border-color;
-}
 .gallery-nav-prev .active:hover,
 .gallery-nav-next .active:hover,
 .gallery-report-next .active:hover {
   cursor: pointer;
-  background-color: background-color;
 }
 .gallery-nav-prev .disabled:hover,
 .gallery-nav-next .disabled:hover,
@@ -2217,14 +1788,8 @@ textarea::-webkit-input-placeholder {
   padding: 30px 0 0;
   float: right;
 }
-.gallery-nav-return .gwt-Label {
-  color: selected-color;
-}
 .gallery-nav-return:hover {
   cursor: pointer;
-}
-.gallery-app-collection {
-
 }
 .gallery-card {
   width: 160px;
@@ -2235,8 +1800,6 @@ textarea::-webkit-input-placeholder {
   position: relative;
   text-decoration: none;
   vertical-align: top;
-  background: background-color;
-  box-shadow: 0 2px 4px container-shadow;
   /* -moz-box-shadow: 0 2px 4px container-shadow;
   -ms-box-shadow: 0 2px 4px container-shadow;
   -webkit-box-shadow: 0 2px 4px container-shadow; */
@@ -2308,7 +1871,6 @@ textarea::-webkit-input-placeholder {
 .gallery-card-content .gallery-subtitle {
   font-size: 12px;
   line-height: 15px;
-  color: label-color;
   display: block;
   font-weight: 900;
   margin-bottom: 0;
@@ -2327,7 +1889,6 @@ textarea::-webkit-input-placeholder {
   text-decoration: none;
   display: inline;
   padding: 10px 10px 0 0;
-  color: label-color;
 }
 .gallery-card-content .gwt-Image,
 .app-stats .gwt-Image { /* Mini meta images */
@@ -2352,11 +1913,9 @@ textarea::-webkit-input-placeholder {
 }
 .gallery-search-textarea {
   display: block;
-  color: panel-shadow;
   line-height: 36px;
   width: 200px;
   text-shadow: none;
-  background-color: background-color;
   background-position: 0 0;
   background-image: none;
   /* -webkit-box-shadow: none;
@@ -2377,15 +1936,12 @@ textarea::-webkit-input-placeholder {
   float: left;
 }
 .gallery-editbox {
-  border: 1px dashed border-color!important;
-  background-color: background-color!important;
   /* -moz-border-radius: 3px;
   -webkit-border-radius: 3px; */
   border-radius: 3px;
 }
 .gallery-editprompt {
   text-align: center;
-  color: panel-shadow;
   font-weight: normal;
   font-size: 16px;
   padding: 40px 20px;
@@ -2469,12 +2025,10 @@ textarea::-webkit-input-placeholder {
 .gallery-app-details .app-action-button,
 .gallery-app-details .app-comments-submit,
 .ode-UserProfileWrapper .profile-submit {
-  color: background-color;
   line-height: 36px;
   text-shadow: none;
   border-radius: 0;
   text-transform: uppercase;
-  background-color: selected-color;
   background-position: 0 0;
   background-image: none;
   /* -webkit-box-shadow: none;
@@ -2519,22 +2073,16 @@ textarea::-webkit-input-placeholder {
 }
 .app-otherinfo-textdisplay {
   width: 50%;
-  color: panel-shadow;
   vertical-align:top;
 }
 .app-otherinfo-textlink {
-  color: selected-color;
-  border-bottom: 1px dotted selected-color;
   font-weight: 300; font-size: 14px;
 }
 .app-otherinfo-textlink:hover {
-  background-color: selected-color;
-  color: background-color;
   cursor: pointer;
 }
 .app-otherinfo-textlabel {
   width: 110px;
-  color: label-color;
 }
 .app-otherinfo-textbox {
   width: 100%;
@@ -2576,19 +2124,11 @@ textarea::-webkit-input-placeholder {
   margin: 0;
   display: inline;
 }
-.gallery-app-details .app-username {
-  color: selected-color;
-  border-bottom: 1px dotted selected-color;
-}
 .gallery-app-details .app-username:hover {
-  background-color: selected-color;
-  color: background-color;
   cursor: pointer;
 }
 .gallery-app-details .app-attributor-username {
   margin-right: 5px;
-  color: selected-color;
-  border-bottom: 1px dotted selected-color;
   display: inline;
 }
 .gallery-app-details .app-attributor-label {
@@ -2601,7 +2141,6 @@ textarea::-webkit-input-placeholder {
   text-decoration: none;
   display: inline;
   padding: 10px 0 0 15px;
-  color: label-color;
 }
 .app-stats .gwt-Image { /* Mini meta images */
   display: inline;
@@ -2622,7 +2161,6 @@ textarea::-webkit-input-placeholder {
   line-height: 175%;
   font-weight: 300;
   margin: 0 15px 0 0;
-  color: label-color;
   width: 50%;
   display: inline-block;
   vertical-align: top;
@@ -2631,7 +2169,6 @@ textarea::-webkit-input-placeholder {
   line-height: 175%;
   font-weight: 300;
   margin: 0 15px 0 0;
-  color: label-color;
   width: auto;
   display: inline-block;
   vertical-align: top;
@@ -2653,12 +2190,9 @@ textarea::-webkit-input-placeholder {
   margin: 5px 8px 5px 0;
 }
 .gallery-app-details .app-tags .gwt-Label:hover {
-  background-color: label-color;
-  color: background-color;
   /* -webkit-transition: background-color 1s ease;
   -moz-transition: background-color 1s ease;
   -o-transition: background-color 1s ease; */
-  transition: background-color 1s ease;
 }
 .app-stats .note-header {
   display: block;
@@ -2709,7 +2243,6 @@ textarea::-webkit-input-placeholder {
 .comment-meta .comment-date {
   display: inline-block;
   margin-left: 5px;
-  color: label-color;
 }
 .comment-item .comment-text {
   font-size: 14px;
@@ -2725,7 +2258,6 @@ textarea::-webkit-input-placeholder {
 }
 .gallery-page-single .gwt-TabBar .gwt-TabBarItem-selected,
 .gallery-app-single .gwt-TabBar .gwt-TabBarItem-selected {
-  color: selected-color;
   font-weight: 300;
 }
 .gallery-nav-return .gwt-Label,
@@ -2742,14 +2274,10 @@ textarea::-webkit-input-placeholder {
   font-size: 12px;
 }
 .primary-link-small {
-  color: selected-color;
-  border-bottom: 1px dotted selected-color;
   font-weight: 300; font-size: 11.5px; line-height: 1.75;
 }
 .primary-link,
 .moderator-link {
-  color: selected-color;
-  border-bottom: 1px dotted selected-color;
   font-weight: 300; font-size: 14px; line-height: 1.75;
 }
 .moderator-link {
@@ -2760,8 +2288,6 @@ textarea::-webkit-input-placeholder {
 .primary-link:hover,
 .primary-link-small:hover,
 .moderator-link:hover {
-  background-color: selected-color;
-  color: background-color;
   cursor: pointer;
   width: auto;
 }
@@ -2787,12 +2313,6 @@ textarea::-webkit-input-placeholder {
 .all-reports {
   float: right;
 }
-.ode-ModerationTable {
-
-}
-.ode-ModerationTable .primary-link {
-  color: tab-bar-color;
-}
 .inline-label{
   display:inline;
   margin-right:5px;
@@ -2805,7 +2325,6 @@ textarea::-webkit-input-placeholder {
 }
 .seemore-link {
   color: #333399;
-  border-bottom: 1px dotted selected-color;
   font-weight: 300; font-size: 14px; line-height: 1.75;
   display:inline;
   margin-right:5px;
@@ -2820,7 +2339,6 @@ textarea::-webkit-input-placeholder {
 
 /* General gallery helper styles */
 .message-popup {
-  background-color: background-color;
   border: 1px solid lightgrey;
   padding: 20px;
 }
@@ -2851,7 +2369,6 @@ textarea::-webkit-input-placeholder {
 .ac-renderer {
   font: normal 13px Arial, sans-serif;
   position: absolute;
-  background: background-color;
   border: 1px solid #666;
   /* -moz-box-shadow: 2px 2px 2px rgba(102, 102, 102, .4);
   -webkit-box-shadow: 2px 2px 2px rgba(102, 102, 102, .4); */
@@ -2966,7 +2483,6 @@ div.dropdiv p {
 
 .download-barcode:before {
     content: "";
-    background-color: label-color;
     position: absolute;
     width: 1px;
     height: 160px;
