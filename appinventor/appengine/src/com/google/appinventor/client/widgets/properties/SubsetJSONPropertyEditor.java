@@ -5,10 +5,11 @@
 
 package com.google.appinventor.client.widgets.properties;
 
+import static com.google.appinventor.client.Ode.MESSAGES;
+
+import com.google.appinventor.client.ComponentsTranslation;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.simple.SimpleComponentDatabase;
-import static com.google.appinventor.client.Ode.MESSAGES;
-import com.google.appinventor.client.ComponentsTranslation;
 import com.google.appinventor.client.editor.youngandroid.YaProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.project.ProjectChangeListener;
@@ -56,7 +57,6 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -151,7 +151,7 @@ public class SubsetJSONPropertyEditor  extends PropertyEditor
         file.click();
       }}));
 
-    items.add(new DropDownItem("Subset Property Editor", MESSAGES.customEllipsis(), new Command() {
+    items.add(new DropDownItem("Subset Property Editor", MESSAGES.viewAndModifyButton(), new Command() {
       @Override
       public void execute() {
         showCustomSubsetPanel();

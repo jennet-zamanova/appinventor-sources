@@ -5,12 +5,13 @@
 
 package com.google.appinventor.client.explorer.folder;
 
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.explorer.project.Project;
+
 import com.google.appinventor.shared.settings.SettingsConstants;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +29,20 @@ public final class FolderManager {
 
   private boolean foldersLoaded;
 
-  private ArrayList<FolderManagerEventListener> folderManagerEventListeners;
+  private final List<FolderManagerEventListener> folderManagerEventListeners;
 
   public FolderManager() {
     folderManagerEventListeners = new ArrayList<FolderManagerEventListener>();
     LOG.info("Created new folder manager");
   }
 
-  public void loadFolders()
-  {
+  public void loadFolders() {
     String foldersAsString = Ode.getUserSettings()
         .getSettings(SettingsConstants.USER_GENERAL_SETTINGS)
         .getPropertyValue(SettingsConstants.FOLDERS);
     foldersLoaded = true;
 
-    if (foldersAsString.isEmpty())
-    {
+    if (foldersAsString.isEmpty()) {
       LOG.info("Initialize folders");
       initializeFolders();
       fireFoldersLoaded();
@@ -51,9 +50,8 @@ public final class FolderManager {
     }
 
     JSONObject folderJSON = JSONParser.parse(foldersAsString).isObject();
-    if (folderJSON.get(FolderJSONKeys.PROJECTS).isArray().size() == 0 &&
-            folderJSON.get(FolderJSONKeys.CHILD_FOLDERS).isArray().size() == 0)
-    {
+    if (folderJSON.get(FolderJSONKeys.PROJECTS).isArray().size() == 0
+        && folderJSON.get(FolderJSONKeys.CHILD_FOLDERS).isArray().size() == 0) {
       LOG.info("Global folder is empty");
       initializeFolders();
       fireFoldersLoaded();
@@ -78,7 +76,8 @@ public final class FolderManager {
   }
 
   public ProjectFolder createFolder(String name, ProjectFolder parent) {
-    ProjectFolder folder = new ProjectFolder(name, System.currentTimeMillis(), System.currentTimeMillis(), parent);
+    ProjectFolder folder = new ProjectFolder(name, System.currentTimeMillis(),
+        System.currentTimeMillis(), parent);
     parent.addChildFolder(folder);
     while ((parent = parent.getParentFolder()) != null) {
       parent.clearCache();
@@ -95,25 +94,21 @@ public final class FolderManager {
     saveAllFolders();
   }
 
-  public void moveItemsToFolder(List<Project> projects, List<ProjectFolder> folders, ProjectFolder destination) {
+  public void moveItemsToFolder(List<Project> projects, List<ProjectFolder> folders,
+      ProjectFolder destination) {
     LOG.info("Moving projects count " + projects.size() + " to " + destination.getName());
     for (Project project : projects) {
-      LOG.info("Moving project " + project.getProjectName()  + " from " + project.getHomeFolder().getName() +
-                   " to " + destination.getName());
+      LOG.info("Moving project " + project.getProjectName()  + " from "
+          + project.getHomeFolder().getName() + " to " + destination.getName());
       destination.addProject(project);
     }
     for (ProjectFolder folder : folders) {
-      LOG.info("Moving folder " + folder.getName()  + " from " + folder.getParentFolder().getName() +
-                   " to " + destination.getName());
+      LOG.info("Moving folder " + folder.getName()  + " from " + folder.getParentFolder().getName()
+          + " to " + destination.getName());
       destination.addChildFolder(folder);
     }
     saveAllFolders();
     fireFoldersChanged();
-  }
-
-  // relative to *global*
-  public ProjectFolder createFolder(String path) {
-    return null;
   }
 
   public ProjectFolder getGlobalFolder() {
@@ -144,15 +139,11 @@ public final class FolderManager {
 
   // If users are switching back and forth between old and new view, they may have created
   // projects with the old view. Find those and assign to global root folder.
-  private void checkForUnassignedProjects()
-  {
-    for (Project project : Ode.getInstance().getProjectManager().getProjectsWithoutFolder())
-    {
-      if (project.isInTrash())
-      {
+  private void checkForUnassignedProjects() {
+    for (Project project : Ode.getInstance().getProjectManager().getProjectsWithoutFolder()) {
+      if (project.isInTrash()) {
         trashFolder.addProject(project);
-      } else
-      {
+      } else {
         globalFolder.addProject(project);
       }
     }

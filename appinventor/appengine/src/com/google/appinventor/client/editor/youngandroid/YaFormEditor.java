@@ -6,6 +6,9 @@
 
 package com.google.appinventor.client.editor.youngandroid;
 
+import static com.google.appinventor.client.Ode.MESSAGES;
+import static com.google.appinventor.client.editor.simple.components.MockComponent.PROPERTY_NAME_NAME;
+
 import com.google.appinventor.client.ErrorReporter;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
@@ -42,7 +45,6 @@ import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.shared.properties.json.JSONArray;
 import com.google.appinventor.shared.properties.json.JSONObject;
 import com.google.appinventor.shared.properties.json.JSONParser;
-import com.google.appinventor.shared.properties.json.JSONString;
 import com.google.appinventor.shared.properties.json.JSONValue;
 import com.google.appinventor.shared.rpc.project.ChecksumedFileException;
 import com.google.appinventor.shared.rpc.project.ChecksumedLoadFile;
@@ -68,9 +70,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static com.google.appinventor.client.Ode.MESSAGES;
-import static com.google.appinventor.client.editor.simple.components.MockComponent.PROPERTY_NAME_NAME;
 
 /**
  * Editor for Young Android Form (.scm) files.
@@ -209,22 +208,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
   // FileEditor methods
 
   @Override
-  public DropTargetProvider getDropTargetProvider() {
-    return new DropTargetProvider() {
-      @Override
-      public DropTarget[] getDropTargets() {
-        // TODO(markf): Figure out a good way to memorize the targets or refactor things so that
-        // getDropTargets() doesn't get called for each component.
-        // NOTE: These targets must be specified in depth-first order.
-        List<DropTarget> dropTargets = form.getDropTargetsWithin();
-        dropTargets.add(visibleComponentsPanel);
-        dropTargets.add(nonVisibleComponentsPanel);
-        return dropTargets.toArray(new DropTarget[dropTargets.size()]);
-      }
-    };
-  }
-
-  @Override
   public void loadFile(final Command afterFileLoaded) {
     final long projectId = getProjectId();
     final String fileId = getFileId();
@@ -262,10 +245,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
       }
     };
     Ode.getInstance().getProjectService().load2(projectId, fileId, callback);
-  }
-
-  public SourceStructureExplorer getSourceStructureExplorer() {
-    return sourceStructureExplorer;
   }
 
   @Override
@@ -416,8 +395,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
   public void onComponentRenamed(MockComponent component, String oldName) {
     if (loadComplete) {
       onFormStructureChange();
-      Ode.getInstance().refreshSourceStructure();
-      Ode.getInstance().refreshProperties();
     } else {
       LOG.severe("onComponentRenamed called when loadComplete is false");
     }
@@ -428,8 +405,8 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     if (loadComplete) {
       // TODO: SMRL Not sure this class should keep a pointer to source structure
       sourceStructureExplorer.selectItem(component.getSourceStructureExplorerItem());
-      Ode.getInstance().refreshSourceStructure();
-      Ode.getInstance().refreshProperties();
+      SourceStructureBox.getSourceStructureBox().show(form);
+      PropertiesBox.getPropertiesBox().show(this, true);
     } else {
       LOG.severe("onComponentSelectionChange called when loadComplete is false");
     }
@@ -718,18 +695,8 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     // Set component properties
     for (String name : properties.keySet()) {
       if (name.charAt(0) != '$') { // Ignore special properties (name, type and nested components)
-        JSONValue j = properties.get(name);
-        if (j instanceof JSONString) {
-          mockComponent.changeProperty(name, j.asString().getString());
-        } else if (j instanceof JSONArray){
-          for (JSONValue nestedComponent : properties.get(j).asArray().getElements()) {
-            createMockComponent(nestedComponent.asObject(), (MockContainer) mockComponent, substitution);
-          }
-          // mockComponent.changeProperty(name, j.toJson());
-        }else {
-            mockComponent.changeProperty(name, j.toJson());
-        } 
-      }     
+        mockComponent.changeProperty(name, properties.get(name).asString().getString());
+      }
     }
 
 
@@ -781,15 +748,13 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     SourceStructureBox.getSourceStructureBox().setVisible(true);
 
     // Set the properties box's content.
-    // TODO: This should be a method on Ode
-    Ode.getInstance().refreshSourceStructure();
-    Ode.getInstance().refreshProperties();
+    SourceStructureBox.getSourceStructureBox().show(form);
+    PropertiesBox.getPropertiesBox().show(this, true);
 
     Ode.getInstance().showComponentDesigner();
   }
 
-
-  public void onFormStructureChange() {
+  private void onFormStructureChange() {
     Ode.getInstance().getEditorManager().scheduleAutoSave(this);
 
     // Update source structure panel
@@ -891,11 +856,6 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
     AssetListBox assetListBox = AssetListBox.getAssetListBox();
     assetListBox.setVisible(false);
 
-    // Clear and hide the properties box.
-    PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
-    propertiesBox.clear();
-    propertiesBox.setVisible(false);
-
     Ode.getInstance().hideComponentDesigner();
   }
 
@@ -927,11 +887,9 @@ public final class YaFormEditor extends SimpleEditor implements FormChangeListen
       // TODO: Refactor calls to to Source Structure
       cdbChangeListener.onComponentTypeAdded(componentTypes);
     }
-    //Update Mock Components
     updateMockComponents(componentTypes);
-    //Update the Properties Panel
-    Ode.getInstance().refreshProperties();
-    Ode.getInstance().refreshSourceStructure();
+    PropertiesBox.getPropertiesBox().show(this, true);
+    SourceStructureBox.getSourceStructureBox().show(form);
   }
 
   @Override
