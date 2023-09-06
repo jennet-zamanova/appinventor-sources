@@ -7,6 +7,7 @@
 package com.google.appinventor.client.widgets.properties;
 
 import com.google.appinventor.client.Ode;
+import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.properties.Properties;
 import com.google.appinventor.shared.settings.SettingsConstants;
 
@@ -53,7 +54,7 @@ public class EditableProperties extends Properties<EditableProperty> {
 
   public void addProperty(String name, String defaultValue, String caption,
       PropertyEditor editor, int type, String editorType, String[] editorArgs) {
-    addProperty(new EditableProperty(this, name, defaultValue, caption, editor, type, editorType, editorArgs));
+    addProperty(new EditableProperty(this, name, defaultValue, caption, null, null, editor, type, editorType, editorArgs));
   }
 
   @Override
@@ -108,6 +109,8 @@ public class EditableProperties extends Properties<EditableProperty> {
   void addToPropertiesPanel(PropertiesPanel panel) {
     for (EditableProperty property : this) {
       if (property.getName().equals(SettingsConstants.YOUNG_ANDROID_SETTINGS_BLOCK_SUBSET)) {
+        // need to add description?
+        property.setDescription(MESSAGES.toolkitDescription());
         Ode.getInstance().addPropertyToDesigner(property);
       } else if (property.isVisible()) {
         panel.addProperty(property);

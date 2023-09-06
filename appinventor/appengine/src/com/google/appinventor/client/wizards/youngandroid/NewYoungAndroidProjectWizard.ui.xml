@@ -20,15 +20,11 @@
             <g:HorizontalPanel ui:field="horizontalBlocksPanel">
                 <g:Label text="{messages.blocksToolkitTitle}:" ui:field="blocksLabel"/>
                 <s:SubsetJSONPropertyEditor ui:field="blockstoolkitEditor"/>
-                <p:ComponentHelpWidget name="{messages.blocksToolkitTitle}" helpString="{messages.toolkitDescription}"
-                                        helpURL="{messages.toolkitDescriptionLink}"/>
             </g:HorizontalPanel>
             <!--Theme-->
             <g:HorizontalPanel ui:field="horizontalThemePanel">
                 <g:Label text="Theme:" ui:field="themeLabel" />
                 <e:YoungAndroidThemeChoicePropertyEditor ui:field="themeEditor"/>
-                <p:ComponentHelpWidget name="Theme" helpString ="{messages.themeDescription}"
-                                        helpURL="{messages.themeDescriptionLink}"/>
             </g:HorizontalPanel>
             <g:FlowPanel styleName="buttonRow" >
                 <g:Button ui:field='cancelButton' text='{messages.cancelButton}'  />

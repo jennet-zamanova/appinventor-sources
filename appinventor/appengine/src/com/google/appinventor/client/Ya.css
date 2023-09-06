@@ -506,6 +506,12 @@ body {
   border: 1px solid border-color;
 } */
 
+.ode-PropertyEditor button{
+  color: panel-shadow;
+  background-color: background-color;
+  border: 1px solid border-color;
+}
+
 .ode-ChoicePropertyEditor {
   border: thin solid border-color;
   background-color: background-color;

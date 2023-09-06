@@ -8,6 +8,7 @@ package com.google.appinventor.client.wizards.youngandroid;
 
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.OdeMessages;
 
 import static com.google.appinventor.client.Ode.MESSAGES;
 
@@ -30,6 +31,7 @@ import com.google.appinventor.client.widgets.LabeledTextBox;
 import com.google.appinventor.client.widgets.Validator;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
+import com.google.appinventor.client.widgets.properties.PropertyHelpWidget;
 import com.google.appinventor.client.widgets.properties.SubsetJSONPropertyEditor;
 import com.google.appinventor.client.wizards.NewProjectWizard;
 import com.google.appinventor.client.youngandroid.TextValidators;
@@ -69,7 +71,6 @@ public final class NewYoungAndroidProjectWizard {
   private static final NewYoungAndroidProjectWizardUiBinder UI_BINDER = GWT.create(NewYoungAndroidProjectWizardUiBinder.class);
   private static final Logger LOG = Logger.getLogger(NewYoungAndroidProjectWizard.class.getName());
 
-
   EditableProperty theme;
   EditableProperty toolkit;
   // UI element for project name
@@ -94,18 +95,22 @@ public final class NewYoungAndroidProjectWizard {
     projectNameTextBox.setFocus(true);
 
     EditableProperties themes = new EditableProperties(false);
-    theme = new EditableProperty(themes, "theme", "Classic", "Theme", new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
+    theme = new EditableProperty(themes, MESSAGES.themeTitle(), MESSAGES.classicTheme(), MESSAGES.themeTitle(), null, MESSAGES.themeDescription(), new YoungAndroidThemeChoicePropertyEditor(), 0x01, "", null);
     themeEditor.setProperty(theme);
+    PropertyHelpWidget themeHelpWidget = new PropertyHelpWidget(theme);
 
     EditableProperties toolkits = new EditableProperties(false);
-    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), new SubsetJSONPropertyEditor(), 0x01, "", null);
+    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), null, MESSAGES.toolkitDescription(), new SubsetJSONPropertyEditor(), 0x01, "", null);
     blockstoolkitEditor.setProperty(toolkit);
+    PropertyHelpWidget blocksHelpWidget = new PropertyHelpWidget(toolkit);
 
     horizontalThemePanel.setCellWidth(themeLabel, "40%");
     horizontalThemePanel.setCellWidth(themeEditor, "40%");
+    horizontalThemePanel.add(themeHelpWidget);
 
     horizontalBlocksPanel.setCellWidth(blocksLabel, "40%");
     horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
+    horizontalBlocksPanel.add(blocksHelpWidget);
   }
 
   @UiHandler("cancelButton")

@@ -13,7 +13,7 @@
 'use strict';
 
 Blockly.HSV_SATURATION = 0.7;
-Blockly.CONTROL_CATEGORY_HUE = "#B18E35";  // [177, 143, 53]
+Blockly.CONTROL_CATEGORY_HUE = "#B18F35";  // [177, 143, 53]
 Blockly.LOGIC_CATEGORY_HUE = "#77AB41";  // [119, 171, 65]
 Blockly.MATH_CATEGORY_HUE = "#3F71B5";  // [63, 113, 181]
 Blockly.TEXT_CATEGORY_HUE = "#B32D5E";  // [179, 45, 94]

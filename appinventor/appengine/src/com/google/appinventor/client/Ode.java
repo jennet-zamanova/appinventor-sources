@@ -41,6 +41,7 @@ import com.google.appinventor.client.utils.PZAwarePositionCallback;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.boxes.WorkAreaPanel;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
+import com.google.appinventor.client.widgets.properties.PropertyHelpWidget;
 import com.google.appinventor.client.wizards.NewProjectWizard.NewProjectCommand;
 import com.google.appinventor.client.wizards.TemplateUploadWizard;
 import com.google.appinventor.common.version.AppInventorFeatures;
@@ -297,6 +298,9 @@ public class Ode implements EntryPoint {
   private boolean warnedBuild1 = false;
   private boolean warnedBuild2 = false;
 
+  // toolkit help widget
+  PropertyHelpWidget blocksHelpWidget;
+
   /**
    * Returns global instance of Ode.
    *
@@ -397,6 +401,9 @@ public class Ode implements EntryPoint {
   public void addPropertyToDesigner(EditableProperty property) {
     toolkitEditor.clear();
     toolkitEditor.add(property.getEditor());
+    blocksHelpWidget = new PropertyHelpWidget(property);
+    helpToolkit.clear();
+    helpToolkit.add(blocksHelpWidget);
   }
 
   /**

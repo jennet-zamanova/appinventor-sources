@@ -43,7 +43,7 @@ public class BlocksToolkit extends Composite{
 
   public void setIsProjectLoaded(Boolean isProjectLoaded){
     EditableProperties toolkits = new EditableProperties(isProjectLoaded);
-    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), new SubsetJSONPropertyEditor(), 0x01, "", null);
+    toolkit = new EditableProperty(toolkits, MESSAGES.blocksToolkitTitle(), "", MESSAGES.blocksToolkitTitle(), null, MESSAGES.toolkitDescription(), new SubsetJSONPropertyEditor(), 0x01, "", null);
     blockstoolkitEditor.setProperty(toolkit);
     horizontalBlocksPanel.setCellWidth(blockstoolkitEditor, "40%");
   }

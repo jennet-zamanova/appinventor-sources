@@ -32,8 +32,6 @@
                 <g:FlowPanel ui:field="toolkitEditor"/>
               </g:cell>
               <g:FlowPanel ui:field="helpToolkit">
-                <p:ComponentHelpWidget name="{messages.blocksToolkitTitle}" helpString="{messages.toolkitDescription}"
-                                  helpURL="{messages.toolkitDescriptionLink}"/>
               </g:FlowPanel>
             </g:HorizontalPanel>
             <box:PaletteBox width="100%" ui:field="paletteBox"/>
