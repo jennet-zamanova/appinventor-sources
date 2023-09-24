@@ -211,8 +211,9 @@ public class Ode implements EntryPoint {
   @UiField(provided = true) DeckPanel deckPanel;
   @UiField(provided = true) FlowPanel overDeckPanel;
   @UiField TutorialPanel tutorialPanel;
+  @UiField FlowPanel palettePanel;
+  @UiField FlowPanel toolkitPanel;
   @UiField FlowPanel toolkitEditor;
-  @UiField Label blocksLabel;
   @UiField FlowPanel helpToolkit;
 
   private int projectsTabIndex;
@@ -399,11 +400,16 @@ public class Ode implements EntryPoint {
   }
 
   public void addPropertyToDesigner(EditableProperty property) {
-    toolkitEditor.clear();
+    toolkitPanel.setVisible(true);
+    palettePanel.setVisible(true);
     toolkitEditor.add(property.getEditor());
     blocksHelpWidget = new PropertyHelpWidget(property);
     helpToolkit.clear();
     helpToolkit.add(blocksHelpWidget);
+  }
+  public void removePropertyFromDesigner() {
+    toolkitPanel.setVisible(false);
+    palettePanel.setVisible(false); //need to add otherwise there's just empty space
   }
 
   /**
