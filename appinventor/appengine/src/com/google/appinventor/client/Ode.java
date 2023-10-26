@@ -124,6 +124,7 @@ public class Ode implements EntryPoint {
 
   private static final Logger LOG = Logger.getLogger(Ode.class.getName());
 
+  @SuppressWarnings("css")  //suppress warnings probablu shouldn't do
   interface OdeUiBinder extends UiBinder<FlowPanel, Ode> {}
 
   // Global instance of the Ode object
@@ -2562,13 +2563,13 @@ public class Ode implements EntryPoint {
 
     @Source({
       "com/google/appinventor/client/light.css",
-      "com/google/appinventor/client/Ya.css"
+      "com/google/appinventor/client/variableColors.css"
     })
     Style styleLight();
 
     @Source({
       "com/google/appinventor/client/dark.css",
-      "com/google/appinventor/client/Ya.css"
+      "com/google/appinventor/client/variableColors.css"
     })
     Style styleDark();
     public interface Style extends CssResource {

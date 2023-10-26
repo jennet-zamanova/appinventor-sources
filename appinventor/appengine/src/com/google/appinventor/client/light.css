@@ -1,4 +1,5 @@
 @def background-image                   url('static/images/squairy_light.png');
+@def closed-backpack                    url('../bloclyeditor/media/backpack-closed-copy.png');
 @def text-button-background            #f5f5f5;
 /* Greens */
 @def box-background                     rgba(102, 153, 0, 0.3);
@@ -10,6 +11,7 @@
 /* Greys */
 @def background-color                   #fff;
 @def top-panel-background-color         #f2f2f2;
+@def top-panel-background-image         #f3f3f3;
 @def border-color                       #ddd;
 @def label-color                        #aaaaaa;
 @def top-panel-color                    #808080;
