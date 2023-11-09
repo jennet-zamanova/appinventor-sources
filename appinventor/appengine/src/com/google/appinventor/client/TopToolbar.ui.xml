@@ -116,9 +116,9 @@
       <ai:DropDownItem name="ToggleLightDarkMode" caption="Toggle Light/Dark Mode">
         <actions:SwitchThemeAction />
       </ai:DropDownItem>
-      <!-- <ai:DropDownItem name="Dark" caption="darkMode"> 
-        <actions:SwitchToDarkModeAction />
-      </ai:DropDownItem> -->
+      <ai:DropDownItem name="Design Settings" caption="design settings"> 
+        <yaactions:DesignSettingsDialogAction />
+      </ai:DropDownItem>
     </ai:DropDownButton>
 
     <!-- Help Menu -->
