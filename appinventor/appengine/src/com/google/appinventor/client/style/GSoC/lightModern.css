@@ -26,29 +26,30 @@
 @def gwt-button-background              #A5CF47;
 
 /* Colors */
-    /* orange */
+/* orange */
 @def blocks-designer-color              #f89406;
 @def project-background-color           #fff6c3;
-    /* blue */
+/* blue */
 @def explorer-border                    #D6E9F8;
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
-    /* red */
+/* red */
 @def destructive-action-hover           #FF6666;
-@def item-color-red                     #ff0000;@def item-color-red                     #ff0000;
+@def item-color-red                     #ff0000;
+@def item-color-red                     #ff0000;
 /* Mockforms */
 
 /* @def phoneLandscape                      url('static/images/phoneLandscape.png');
 @def phonePortrait                       url('static/images/phonePortraitModern.png');
 @def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
-@def phonePortraitTablet                 url('static/images/phonePortraitTablet.png');
+@def phonePortraitTablet                 url('static/images/phonePortraitTabletModern.png');
 @def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
 @def phonePortraitMonitor                url('static/images/phonePortraitMonitor.png'); */
 /* currently same image for all */
 @def phoneLandscape                      url('static/images/phoneLandscapeModern.png');
 @def phonePortrait                       url('static/images/phonePortraitModern.png');
 @def phoneLandscapeTablet                url('static/images/phoneLandscapeModern.png');
-@def phonePortraitTablet                 url('static/images/phonePortraitModern.png');
+@def phonePortraitTablet                 url('static/images/phonePortraitTabletModern.png');
 @def phoneLandscapeMonitor               url('static/images/phoneLandscapeModern.png');
 @def phonePortraitMonitor                url('static/images/phonePortraitModern.png');
 

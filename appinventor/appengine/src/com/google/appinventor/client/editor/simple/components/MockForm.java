@@ -308,7 +308,7 @@ public final class MockForm extends MockContainer {
   // the designer we use sizes of GWT widgets, and not the sizes of the actual Android widgets.
 
   private static final int PHONE_PORTRAIT_WIDTH = 320;
-  private static final int PHONE_PORTRAIT_HEIGHT = 470 + 35; // Adds 35 for the navigation bar
+  private static final int PHONE_PORTRAIT_HEIGHT = 502 + 35; // Adds 35 for the navigation bar
   private static final int PHONE_LANDSCAPE_WIDTH = PHONE_PORTRAIT_HEIGHT;
   private static final int PHONE_LANDSCAPE_HEIGHT = PHONE_PORTRAIT_WIDTH;
 

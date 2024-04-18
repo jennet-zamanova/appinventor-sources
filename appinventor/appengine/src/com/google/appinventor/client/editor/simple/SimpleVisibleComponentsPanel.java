@@ -46,7 +46,7 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
   @UiField protected VerticalPanel phoneScreen;
   @UiField(provided = true) protected ListBox listboxPhoneTablet; // A ListBox for Phone/Tablet/Monitor preview sizes
   @UiField(provided = true) protected ListBox listboxPhonePreview; // A ListBox for Holo/Material/iOS preview styles
-  private final int[][] drop_lst = { {320, 505}, {480, 675}, {768, 1024} };
+  private final int[][] drop_lst = { {320, 502}, {480, 675}, {768, 1024} };
   private final String[] drop_lst_phone_preview = { "Android Material", "Android Holo", "iOS" };
 
   // Corresponding panel for non-visible components (because we allow users to drop
@@ -112,7 +112,7 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
         boolean fixed = (sizing.equals("Fixed"));
         listboxPhoneTablet.setVisible(!fixed);
         if (fixed) {
-          changeFormPreviewSize(0, 320, 505);
+          changeFormPreviewSize(0, 320, 502);
         } else {
           getUserSettingChangeSize();
         }
@@ -147,7 +147,7 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
         SettingsConstants.YOUNG_ANDROID_SETTINGS_PHONE_TABLET);
     int idx = 0;
     int width = 320;
-    int height = 505;
+    int height = 502;
 
     if (val.equals("True")) {
       idx = 1;
@@ -203,7 +203,7 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
   public void enableTabletPreviewCheckBox(boolean enable){
     if (form != null){
       if (!enable){
-        changeFormPreviewSize(0, 320, 505);
+        changeFormPreviewSize(0, 320, 502);
         listboxPhoneTablet.setVisible(enable);
       } else {
         getUserSettingChangeSize();
