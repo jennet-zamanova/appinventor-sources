@@ -1196,6 +1196,7 @@ select.ode-PropertyEditor[disabled] {
 
 /* ==== start: skins for Android */
 .ode-SimpleMockFormPhoneLandscape {
+  background: url(../images/phoneLandscape.png);
   background-repeat: no-repeat;
   background-position: right top;
   padding: 11px 43px 7px 48px;
@@ -1203,27 +1204,31 @@ select.ode-PropertyEditor[disabled] {
 }
 
 .ode-SimpleMockFormPhonePortrait {
+  background: url(../images/phonePortrait.png) no-repeat right top;
   background-size: 100% 100%;
-  /* padding: 22px; */
   padding: 50px 11px 43px 7px;
 }
 
 .ode-SimpleMockFormPhoneLandscapeTablet {
+  background: url(../images/phoneLandscapeTablet.png);
   background-repeat: no-repeat;
   background-position: right top;
   background-size: 100% 100%;
   padding: 15px 56px 12px 64px;
 }
 .ode-SimpleMockFormPhonePortraitTablet {
+  background: url(../images/phonePortraitTablet.png) no-repeat right top;
   background-size: 100% 100%;
   padding: 64px 13px 55px 13px;
 }
 .ode-SimpleMockFormPhoneLandscapeMonitor {
+  background: url(../images/phoneLandscapeMonitor.png) no-repeat right top;
   background-size: 100% 100%;
   padding: 44px 43px 39px 48px;
 }
 
 .ode-SimpleMockFormPhonePortraitMonitor {
+  background: url(../images/phonePortraitMonitor.png) no-repeat right top;
   background-size: 100% 100%;
   padding: 99px 36px 75px 34px;
 }
@@ -1286,6 +1291,7 @@ select.ode-PropertyEditor[disabled] {
 .ode-SimpleMockFormNavigationBarPortrait {
   min-height: 44px;
   min-width: 100%;
+  background-image: url(../images/navigationbarPortrait.png);
   background-repeat: no-repeat;
   background-position: center top;
 }
@@ -1293,6 +1299,7 @@ select.ode-PropertyEditor[disabled] {
 .ode-SimpleMockFormNavigationBarLandscape {
   min-height: 100%;
   min-width: 44px;
+  background-image: url(../images/navigationbarLandscape.png);
   background-repeat: no-repeat;
   background-position: right center;
 }
