@@ -5,6 +5,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/* TODO @zamanova: need to change based on whether it is modern */
 .ode-SimpleMockFormDark {
   height: auto !important;
   background-color: #d2e0a6;
@@ -59,6 +60,6 @@
 .ode-SimpleMockFormDark-iOS .ode-SimpleMockButton {
   padding: 4px 8px;
   background-color: black;
-  color : rgba(10, 132, 255);
+  color: rgba(10, 132, 255);
   font-family: iOSFont;
 }

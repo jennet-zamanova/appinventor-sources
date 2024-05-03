@@ -60,7 +60,7 @@ public final class MockForm extends MockContainer {
    */
   private class TitleBar extends Composite {
     private static final int TITLEBAR_HEIGHT = 24;
-    private static final int ACTIONBAR_HEIGHT = 42; //set by me
+    private static final int ACTIONBAR_HEIGHT = 48; //set by me TODO @zamanova change based on ui
     private static final int NAVBAR_HEIGHT = 44;
 
     // UI elements
@@ -183,6 +183,7 @@ public final class MockForm extends MockContainer {
 
       initWidget(bar);
       setStylePrimaryName("ode-SimpleMockFormPhoneBarAndroidHolo");
+      // @zamanova TODO set different css based on the modern (add padding of 0 8px)
       setSize("100%", HEIGHT + "px");
     }
 
@@ -196,6 +197,7 @@ public final class MockForm extends MockContainer {
       initWidget(bar);
       MockComponentsUtil.setWidgetBackgroundColor(bar, color);
       setStylePrimaryName("ode-SimpleMockFormPhoneBarAndroidMaterial");
+      // @zamanova TODO set different css based on the modern (add padding of 0 8px)
       setSize("100%", HEIGHT + "px");
     }
 
@@ -308,7 +310,7 @@ public final class MockForm extends MockContainer {
   // the designer we use sizes of GWT widgets, and not the sizes of the actual Android widgets.
 
   private static final int PHONE_PORTRAIT_WIDTH = 320;
-  private static final int PHONE_PORTRAIT_HEIGHT = 502 + 35; // Adds 35 for the navigation bar
+  private static final int PHONE_PORTRAIT_HEIGHT = 505 + 35; // Adds 35 for the navigation bar
   private static final int PHONE_LANDSCAPE_WIDTH = PHONE_PORTRAIT_HEIGHT;
   private static final int PHONE_LANDSCAPE_HEIGHT = PHONE_PORTRAIT_WIDTH;
 
