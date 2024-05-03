@@ -17,12 +17,9 @@
         <g:VerticalPanel ui:field="phoneScreen" stylePrimaryName="ode-SimpleFormDesigner">
             <ed:HiddenComponentsCheckbox text="{messages.showHiddenComponentsCheckbox}" />
             <g:ListBox ui:field="listboxPhoneTablet">
-<!--                <g:item value="0"><ui:text from="{messages.previewPhoneSize}" /> (320 x 505)</g:item>-->
-<!--                <g:item value="1"><ui:text from="{messages.previewTabletSize}" /> (480 x 675)</g:item>-->
-<!--                <g:item value="2"><ui:text from="{messages.previewMonitorSize}" /> (768 x 1024)</g:item> -->
-                <g:item value="0">Phone size (320 x 505)</g:item>
-                <g:item value="1">Tablet size (480 x 675)</g:item>
-                <g:item value="2">Monitor size (768 x 1024)</g:item>
+                <g:item value="320, 505"><ui:text from="{messages.previewPhoneSize}" /> (320 x 505)</g:item>
+                <g:item value="480, 675"><ui:text from="{messages.previewTabletSize}" /> (480 x 675)</g:item>
+                <g:item value="768, 1024"><ui:text from="{messages.previewMonitorSize}" /> (768 x 1024)</g:item>
             </g:ListBox>
             <g:ListBox ui:field="listboxPhonePreview">
                 <g:item value="0">Android 5+ Devices (Material)</g:item>

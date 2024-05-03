@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.ListBox;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -77,9 +78,11 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
     listboxPhoneTablet.addChangeHandler(new ChangeHandler() {
       @Override
       public void onChange(ChangeEvent event) {
-        int idx = Integer.parseInt(listboxPhoneTablet.getSelectedValue());
-        int width = drop_lst[idx][0];
-        int height = drop_lst[idx][1];
+        String[] selectedValue = listboxPhoneTablet.getSelectedValue().split(",");
+        int idx = listboxPhoneTablet.getSelectedIndex();
+
+        int width = Integer.parseInt(selectedValue[0].trim());
+        int height = Integer.parseInt(selectedValue[1].trim());
         String val = Integer.toString(idx) + "," + Integer.toString(width) + "," + Integer.toString(height);
         // here, we can change settings by putting val into it
         projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
@@ -151,16 +154,19 @@ public class SimpleVisibleComponentsPanel extends Composite implements DropTarge
 
     if (val.equals("True")) {
       idx = 1;
-      width = drop_lst[idx][0];
-      height = drop_lst[idx][1];
+    } else {
+      String[] parts = val.split(",");
+      if (parts.length == 3) {
+        idx = Integer.parseInt(parts[0]);
+      }
     }
 
-    String[] parts = val.split(",");
-    if (parts.length == 3) {
-      idx = Integer.parseInt(parts[0]);
-      width = Integer.parseInt(parts[1]);
-      height = Integer.parseInt(parts[2]);
+    if (listboxPhoneTablet.getItemCount() >= idx) {
+      String[] selectedValue = listboxPhoneTablet.getValue(idx).split(",");
+      width = Integer.parseInt(selectedValue[0].trim());
+      height = Integer.parseInt(selectedValue[1].trim());
     }
+
     listboxPhoneTablet.setItemSelected(idx, true);
     changeFormPreviewSize(idx, width, height);
   }

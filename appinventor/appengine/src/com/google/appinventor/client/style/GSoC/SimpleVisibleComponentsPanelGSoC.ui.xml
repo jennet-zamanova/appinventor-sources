@@ -16,9 +16,9 @@
             <g:FlowPanel  stylePrimaryName="ode-SimpleFormDesignerToolbar">
                 <ai:Icon icon="aspect_ratio" />
                 <g:ListBox ui:field="listboxPhoneTablet">
-                    <g:item value="0"><ui:text from="{messages.previewPhone}" /> (320 x 505)</g:item>
-                    <g:item value="1"><ui:text from="{messages.previewTablet}" /> (480 x 675)</g:item>
-                    <g:item value="2"><ui:text from="{messages.previewMonitor}" /> (768 x 1024)</g:item>
+                    <g:item value="320, 700"><ui:text from="{messages.previewPhone}" /> (320 x 505)</g:item>
+                    <g:item value="480, 675"><ui:text from="{messages.previewTablet}" /> (480 x 675)</g:item>
+                    <g:item value="768, 1024"><ui:text from="{messages.previewMonitor}" /> (768 x 1024)</g:item>
                 </g:ListBox>
                 <ai:Icon icon="smartphone"  />
                 <g:ListBox ui:field="listboxPhonePreview">
