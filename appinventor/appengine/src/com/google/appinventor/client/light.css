@@ -202,7 +202,33 @@ grey -> 808080
 rgb(100, 100, 100) -> 616161
 BABABA -> bdbdbd
 888 -> 808080
+
+/* TODO */
+/*
+
+where is ode-BlocksDesignerButton used?
+
+rgba(0, 0, 0, 0.87)
+
+
+rgba(0, 0, 0, 0.2)
+
+red: 980000
+
+*/
+
+/* 
+for hover and disabled just add overlays
+e.g rgba(143, 194, 2, 0.616)
+rgba(131, 125, 125, 0.1)
+rgba(128, 255, 128, 0.3)
+rgba(200, 200, 200, 0.1)
+*/
+
+/*
 remove -webkit-filter: drop-shadow(0px 0px 3px #222);
+
+
 222 -> 212121
 probably can remove the whole transition shaang
 E6E6E6 -> eeeeee
@@ -214,11 +240,11 @@ d2e0a6 -> cbe397
 333333 -> 424242
 333 -> 424242
 e6e6e6 -> eeeeee
-cccccc -> bdbdbd
-ccc -> bdbdbd
-bfbfbf -> bdbdbd
+cccccc -> bdbdbd -
+ccc -> bdbdbd -
+bfbfbf -> bdbdbd -
 d9d9d9 -> e0e0e0
-bbbbbb -> bdbdbd
+bbbbbb -> bdbdbd -
 
 where is ode-BlocksDesignerButton used?
 
@@ -227,7 +253,7 @@ aaaaaa -> a9a9a9
 AAAAAA -> a9a9a9
 a5cf47 -> a4cf47
 d6d7d7 -> e0e0e0
-b9b9b9  -> bdbdbd
+b9b9b9  -> bdbdbd - 
 
 rgba(0, 0, 0, 0.87)
 
@@ -262,9 +288,7 @@ red: 980000
 */
 
 /* 
-for hover and disabled just add overlays
-e.g rgba(143, 194, 2, 0.616)
-rgba(131, 125, 125, 0.1)
-rgba(128, 255, 128, 0.3)
-rgba(200, 200, 200, 0.1)
+cbe397 -> #CBDCA9
+83b70f -> 8fc202
+#f7f9f2 -> actually matters (cur f5f5f5)
 */
