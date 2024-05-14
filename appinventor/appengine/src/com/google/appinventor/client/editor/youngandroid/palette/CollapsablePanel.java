@@ -1,33 +1,38 @@
 package com.google.appinventor.client.editor.youngandroid.palette;
 
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
-import com.google.appinventor.client.explorer.project.ComponentDatabaseChangeListener;
 import com.google.appinventor.client.widgets.properties.PropertiesPanel;
 import com.google.appinventor.components.common.ComponentCategory;
 
+import com.google.gwt.user.client.ui.InsertPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import org.omg.CORBA.VM_TRUNCATABLE;
 
 import java.util.Set;
 import java.util.TreeSet;
 
-public class CollapsablePanel extends Composite implements ComponentDatabaseChangeListener{
+public class CollapsablePanel extends Composite{
     private static final Logger LOG = Logger.getLogger(PropertiesPanel.class.getName());
 
     // UI elements
     private final VerticalPanel panel;
-    private final Map<Integer, DisclosurePanel> categoryPanels;
+    // private final Map<Integer, DisclosurePanel> categoryPanels;
+    private final ArrayList<DisclosurePanel> categoryPanels;
     private final Map<ComponentCategory, Integer> categoryLocations;
 
     /**
@@ -38,11 +43,17 @@ public class CollapsablePanel extends Composite implements ComponentDatabaseChan
         panel = new VerticalPanel();
         panel.setWidth("100%");
 
-        categoryPanels = new HashMap<Integer, DisclosurePanel>();
+        // categoryPanels = new HashMap<Integer, DisclosurePanel>();
+        categoryPanels = new ArrayList<>();
         categoryLocations = new HashMap<ComponentCategory, Integer>();
 
         initWidget(panel);
     }
+
+    // public void initWidget(Widget widget) {
+    //     // Initialize the widget inside your custom panel
+    //     super.initWidget(widget);
+    // }
 
     /**
      * Add the given category of components to the panel with title `title`
@@ -57,7 +68,8 @@ public class CollapsablePanel extends Composite implements ComponentDatabaseChan
         // find new idx TODO should think abot this
         Integer newIdx = categoryPanels.size();
         categoryLocations.put(category, newIdx);
-        categoryPanels.put(newIdx, innerPanel);
+        categoryPanels.add(innerPanel);
+        // categoryPanels.put(newIdx, innerPanel);
 
         // add the DP to the panel
         panel.add(innerPanel);
@@ -74,13 +86,13 @@ public class CollapsablePanel extends Composite implements ComponentDatabaseChan
         DisclosurePanel innerPanel = new DisclosurePanel(title);
         innerPanel.add(componentPanel);
         innerPanel.setWidth("100%");
-        if (! categoryPanels.containsKey(insertIdx)) {
-
-            categoryLocations.put(category, insertIdx);
-            categoryPanels.put(insertIdx, innerPanel);
-            // add the DP to the panel
-            panel.add(innerPanel);
+        if (categoryPanels.size() > insertIdx) {
+            this.shift(insertIdx);
         }
+        categoryPanels.add(insertIdx, innerPanel);
+        categoryLocations.put(category, insertIdx);
+        // add the DP to the panel
+        panel.insert(innerPanel, insertIdx);
     }
     /**
      * remove the component category from the panel
@@ -91,7 +103,9 @@ public class CollapsablePanel extends Composite implements ComponentDatabaseChan
      */
     public void remove(VerticalPanel componentPanel, ComponentCategory category){
         Integer categoryIdx = categoryLocations.get(category);
+        // DisclosurePanel categoryPanel = categoryPanels.get(categoryIdx);
         DisclosurePanel categoryPanel = categoryPanels.get(categoryIdx);
+
         categoryPanel.remove(componentPanel);
         panel.remove(categoryPanel);
         // remove from the data
@@ -107,23 +121,54 @@ public class CollapsablePanel extends Composite implements ComponentDatabaseChan
         DisclosurePanel categoryPanel = categoryPanels.get(idx);
         categoryPanel.setOpen(true);
     }
+
+    /**
+     * terrible idea, but shift all values at idx
+     */
+    private void shift(Integer idx){
+        categoryLocations.forEach((key, value) -> {
+            if (value >= idx) {
+                categoryLocations.put(key, value + 1);
+            }
+        });
+    }
+
+    // @Override 
+    // public void add(IsWidget w) {
+
+    // }
+
+    // @Override
+    // public void insert(IsWidget w, int beforeIndex) {
+
+    // }
+
+    // @Override
+    // public void insert(Widget w, int beforeIndex) {
+
+    // }
+    // @Override
+    // public Widget asWidget() {
+    //     return panel;
+    // }
+
     
-    @Override
-    public void onComponentTypeAdded(List<String> componentTypes) {
+    // @Override
+    // public void onComponentTypeAdded(List<String> componentTypes) {
 
-    }
+    // }
 
-    @Override
-    public boolean beforeComponentTypeRemoved(List<String> componentTypes) {
-        return true;
-    }
+    // @Override
+    // public boolean beforeComponentTypeRemoved(List<String> componentTypes) {
+    //     return true;
+    // }
 
-    @Override
-    public void onComponentTypeRemoved(Map<String, String> componentTypes) {
+    // @Override
+    // public void onComponentTypeRemoved(Map<String, String> componentTypes) {
 
-    }
-    @Override
-    public void onResetDatabase() {
+    // }
+    // @Override
+    // public void onResetDatabase() {
   
-    }
+    // }
 }
