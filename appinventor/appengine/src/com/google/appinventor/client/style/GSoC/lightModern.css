@@ -1,15 +1,15 @@
 @def background-image                   url('static/images/squairy_light.png');
 @def closed-backpack                    url('../bloclyeditor/media/backpack-closed-copy.png');
-@def text-button-background            #f5f5f5;
+/* @def text-button-background            #f5f5f5; */
 /* Greens */
-@def box-background                     rgba(102, 153, 0, 0.3);
+/* @def box-background                     rgba(102, 153, 0, 0.3);
 @def selected-color                     #8fc202;
 @def bar-color                          #d2e0a6;
 @def tab-bar-background-color           #eef2e0;
-@def box-background-color               #f7f9f2;
+@def box-background-color               #f7f9f2; */
 
 /* Greys */
-@def background-color                   #fff;
+/* @def background-color                   #fff;
 @def top-panel-background-color         #f2f2f2;
 @def top-panel-background-image         #f3f3f3;
 @def border-color                       #ddd;
@@ -17,25 +17,23 @@
 @def top-panel-color                    #808080;
 @def panel-shadow                       #404040;
 @def tab-bar-color                      #000000;
-@def top-panel-end-color                rgba(255, 242, 242, 0.95);
+@def top-panel-end-color                rgba(255, 242, 242, 0.95); */
 @def container-shadow                   rgba(0,0,0,0.1);
-@def shadow-color                       rgba(0, 0, 0, 0.07);
+/* @def shadow-color                       rgba(0, 0, 0, 0.07); */
 @def button-shadow-color                rgba(0, 0, 0, 0.15);
-@def context-menu-color                 #555;
+/* @def context-menu-color                 #555;
 @def button-text                        #444;
-@def gwt-button-background              #A5CF47;
+@def gwt-button-background              #A5CF47; */
 
 /* Colors */
 /* orange */
 @def blocks-designer-color              #f89406;
-@def project-background-color           #fff6c3;
+/* @def project-background-color           #fff6c3; */
 /* blue */
 @def explorer-border                    #D6E9F8;
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
 /* red */
-@def destructive-action-hover           #FF6666;
-@def item-color-red                     #ff0000;
 @def item-color-red                     #ff0000;
 /* Mockforms */
 
@@ -55,3 +53,89 @@
 
 @def navigationbarPortrait               url('static/images/navigationbarPortraitModern.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscapeModern.png');
+
+/* NEW */
+@def clr-primary #a4cf47;
+
+@def error #ff6666;
+
+@def gray-300 #e0e0e0;
+@def gray-700 #616161;
+@def gray-800 #424242;
+
+@def v-white #ffffff;
+@def v-black #000000;
+@def v-red   #ff0000;
+
+/*
+e5e5e5  --> e0e0e0
+99cc00  --> 93c619
+999     --> 9e9e9e
+999999  --> 9e9e9e
+f7f9f2  --> clr-primary-75
+7d9d36  --> 6ca300
+ff7d7d  --> error
+404040 --> 424242
+669900 --> 6ca300
+dedede --> e0e0e0
+eee    --> gray-200
+e9e9e9 --> eeeeee
+bababa --> bdbdbd
+888    --> 808080
+222    --> 212121
+2d2d2d --> 212121
+cccccc --> bdbdbd
+c2c2c2 --> bdbdbd
+darkgray  --> a9a9a9
+dimgray   --> should be 696969 but similar to 616161
+lightgray  --> should be d3d3d3 but similar to e0e0e0
+lightgrey
+gray  --> 808080
+grey  --> 808080
+bbbbbb --> bdbdbd
+b9b9b9 --> bdbdbd
+8fc202 --> 93c619
+eef2e0 --> f3f8e6
+d2e0a6 --> cbe397
+333333 --> 424242
+333    --> 424242
+d2d2d2 --> e0e0e0
+d3d3d3 --> e0e0e0
+d6d6d6 --> e0e0e0
+d6d7d7 --> e0e0e0
+575757 --> 616161
+5b5b5b --> 616161
+e6e6e6 --> eeeeee
+aaaaaa --> a9a9a9
+ff4444 --> ff6666
+808080 --> gray-550
+848280  --> 808080
+fcfcfc --> fafafa
+888  --> 808080
+777 --> 757575
+666 --> 616161
+b3c833 --> a4cf47
+eee  --> gray-200
+bebebe --> bdbdbd
+b2b4bf --> bdbdbd
+
+rgba(167, 36, 122, 1) -> a7247a --> ae4792
+rgba(167, 36, 122, 0.21) -> hover-secondary-overlay
+
+rgb(100, 100, 100) -> 646464 --> 616161
+
+darkgreen
+
+980000
+faa
+c25f5f
+
+colors:
+bbccff
+fbb450
+ad6704
+0078a8
+fff1a8
+faf9f7
+333399
+*/

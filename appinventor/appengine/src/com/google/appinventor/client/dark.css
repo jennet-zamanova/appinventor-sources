@@ -1,5 +1,6 @@
-:root {
+/* :root {
   --clr-primary-50: #f3f8e6;
+  --clr-primary-75: #f7f9f2;
   --clr-primary-100: #e0eec0;
   --clr-primary-200: #cbe397;
   --clr-primary-300: #b6d86c;
@@ -20,43 +21,71 @@
   --clr-secondary: var(--clr-secondary-600);
   --clr-secondary-700: #821f75;
   --clr-secondary-800: #731a6d;
-  --clr-secondary-900: #58135d;
+  --clr-secondary-900: #58135d; 
+} */
 
-  /* backgrounds */
-  --surface: #121212;
+@def clr-primary-50 #4f6925;
+@def clr-primary-75 #2c372c;
+@def clr-primary-200 #456f03;
+@def clr-primary #cbe397;
+@def clr-primary-500 #59721c;
+@def clr-primary-700 #6ca300;
+
+@def error #ff6666;
+
+@def gray-50 #212121;
+@def gray-75 #313131;
+@def gray-100 #424242;
+@def gray-200 #616161;
+@def gray-300 #696969;
+@def gray-400 #757575;
+@def gray-450 #808080;
+@def gray-500 #9e9e9e;
+@def gray-550 #a9a9a9;
+@def gray-600 #bdbdbd;
+@def gray-650 #e0e0e0;
+@def gray-700 #eeeeee;
+@def gray-800 #f2f2f2;
+/* @def gray-800 #f3f3f3; */
+@def gray-900 #fafafa;
+
+@def v-white #121212;
+
+/* backgrounds */
+/* --surface: #121212;
   --background: #0c0f07;
   --outline: rgba(255, 255, 255, 0.12);
-  --surface-overlay: rgba(255, 255, 255, 0.12);
+  --surface-overlay: rgba(255, 255, 255, 0.12); */
 
-  /* FONT COLORS */
-  /* on surface and background */
-  --srfc-high-emphasis: rgba(255, 255, 255, 0.87);
+/* FONT COLORS */
+/* on surface and background */
+/* --srfc-high-emphasis: rgba(255, 255, 255, 0.87);
   --srfc-mefium-emphasis: rgba(255, 255, 255, 0.6);
-  --srfc-disabled: rgba(255, 255, 255, 0.38);
+  --srfc-disabled: rgba(255, 255, 255, 0.38); */
 
-  /* on primary error and secondary*/
-  --prm-high-emphasis: black;
+/* on primary error and secondary*/
+/* --prm-high-emphasis: black;
   --prm-medium-emphsasis: rgba(0, 0, 0, 0.74);
-  --prm-medium-emphsasis: rgba(0, 0, 0, 0.38);
+  --prm-medium-emphsasis: rgba(0, 0, 0, 0.38); */
 
-  /* TODO: add elevation overlays */
+/* TODO: add elevation overlays */
 
-  /* states white overlay */
-  --hover-white-overlay: rgba(255, 255, 255, 0.04);
+/* states white overlay */
+/* --hover-white-overlay: rgba(255, 255, 255, 0.04);
   --focus-white-overlay: rgba(255, 255, 255, 0.12);
   --pressed-white-overlay: rgba(255, 255, 255, 0.1);
   --dragged-white-overlay: rgba(255, 255, 255, 0.12);
-  --selected-white-overlay: rgba(255, 255, 255, 0.08);
+  --selected-white-overlay: rgba(255, 255, 255, 0.08); */
 
-  /* states primary overlay */
-  --hover-primary-overlay: rgba(203, 220, 169, 0.04);
+/* states primary overlay */
+/* --hover-primary-overlay: rgba(203, 220, 169, 0.04);
   --focus-primary-overlay: rgba(203, 220, 169, 0.12);
   --pressed-primary-overlay: rgba(203, 220, 169, 0.1);
   --dragged-primary-overlay: rgba(203, 220, 169, 0.12);
-  --selected-primary-overlay: rgba(203, 220, 169, 0.08);
+  --selected-primary-overlay: rgba(203, 220, 169, 0.08); */
 
-  /* states secondary overlay */
-  --hover-secondary-overlay: rgba(209, 145, 190, 0.04);
+/* states secondary overlay */
+/* --hover-secondary-overlay: rgba(209, 145, 190, 0.04);
   --focus-secondary-overlay: rgba(209, 145, 190, 0.12);
   --pressed-secondary-overlay: rgba(209, 145, 190, 0.1);
 
@@ -74,11 +103,10 @@
   --gray-600: #757575;
   --gray-650: #696969;
   --gray-700: #616161;
-  /* --gray-750: #555555; */
   --gray-800: #424242;
   --gray-900: #212121;
   --gray-A900: #111111;
-}
+} */
 
 @def background-image                   url('static/images/squairy_dark.jpg');
 @def text-button-background            #222;

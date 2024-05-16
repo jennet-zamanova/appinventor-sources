@@ -2586,6 +2586,10 @@ public class Ode implements EntryPoint {
       "com/google/appinventor/client/light.css",
       "com/google/appinventor/client/variableColors.css"
     })
+    // @Source({
+    //   "../war/static/css/light.css",
+    //   "com/google/appinventor/client/variableColors.css"
+    // })
     Style styleclassicLight();
 
     @Source({
