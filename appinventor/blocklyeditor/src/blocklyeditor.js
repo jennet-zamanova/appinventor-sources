@@ -49,6 +49,8 @@ goog.require('AI.Blocks.math');
 goog.require('AI.Blocks.procedures');
 goog.require('AI.Blocks.text');
 
+goog.require('AI.Blockly.Themes.darkTheme');
+
 // Make dragging a block from flyout work in any direction (default: 70)
 Blockly.Flyout.prototype.dragAngleRange_ = 360;
 
@@ -849,7 +851,8 @@ AI.Blockly.ContextMenuItems.registerGridOptions = function() {
         Blockly.common.getMainWorkspace().svgBackground_.setAttribute('style', 'fill: url(#' + gridPattern.id + ');');
       } else {
         // remove grid
-        Blockly.common.getMainWorkspace().svgBackground_.setAttribute('style', 'fill: white;');
+        const color = Blockly.common.getMainWorkspace().getTheme().componentStyles.workspaceBackgroundColour ?? "white";
+        Blockly.common.getMainWorkspace().svgBackground_.setAttribute('style', `fill: ${color};`);
       }
       if (top.BlocklyPanel_setGridEnabled) {
         top.BlocklyPanel_setGridEnabled(gridOptions['enabled']);
@@ -968,6 +971,7 @@ AI.Blockly.ContextMenuItems.registerAll();
  * @returns {Blockly.WorkspaceSvg} A newly created workspace
  */
 Blockly.BlocklyEditor['create'] = function(container, formName, readOnly, rtl) {
+  // console.log(`Here is the theme ${Blockly.common.getMainWorkspace().getTheme() ?? "white"}`);
   var options = {
     'toolbox': {
       'kind': 'flyoutToolbox',
@@ -1105,7 +1109,11 @@ Blockly.BlocklyEditor['create'] = function(container, formName, readOnly, rtl) {
  * @param {!Element|string} container
  * @param {!Blockly.WorkspaceSvg} workspace
  */
-Blockly.ai_inject = function(container, workspace) {
+Blockly.ai_inject = function(container, workspace, isDarkMode=false) {
+  console.log(`the mode is ${isDarkMode}`);
+  if (isDarkMode) {
+    Blockly.common.getMainWorkspace().setTheme(Blockly.Themes.darkTheme);
+  }
   Blockly.common.setMainWorkspace(workspace);  // make workspace the 'active' workspace
   workspace.fireChangeListener(new AI.Events.ScreenSwitch(workspace.projectId, workspace.formName));
   var gridEnabled = top.BlocklyPanel_getGridEnabled && top.BlocklyPanel_getGridEnabled();

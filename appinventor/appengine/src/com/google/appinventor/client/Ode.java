@@ -1360,10 +1360,11 @@ public class Ode implements EntryPoint {
   public static boolean getUserDarkThemeEnabled() {
     String value = userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS)
             .getPropertyValue(SettingsConstants.DARK_THEME_ENABLED);
-    if (value == null) {
-      return false;
-    }
-    return Boolean.parseBoolean(value);
+    // if (value == null) {
+    //   return false;
+    // }
+    // return Boolean.parseBoolean(value);
+    return true;
   }
 
   /**
