@@ -1360,11 +1360,10 @@ public class Ode implements EntryPoint {
   public static boolean getUserDarkThemeEnabled() {
     String value = userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS)
             .getPropertyValue(SettingsConstants.DARK_THEME_ENABLED);
-    // if (value == null) {
-    //   return false;
-    // }
-    // return Boolean.parseBoolean(value);
-    return true;
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
   }
 
   /**
@@ -1376,17 +1375,6 @@ public class Ode implements EntryPoint {
     userSettings.getSettings(SettingsConstants.USER_GENERAL_SETTINGS)
             .changePropertyValue(SettingsConstants.DARK_THEME_ENABLED,
                     "" + enabled);
-    // userSettings.saveSettings(new Command() {
-    //     @Override
-    //     public void execute() {
-    //       // Reload for the UI preferences to take effect. We
-    //       // do this here because we need to make sure that
-    //       // the user settings were saved before we terminate
-    //       // this browsing session. This is particularly important
-    //       // for Firefox
-    //       Window.Location.reload();
-    //     }
-    //   });
   }
 
   /**
@@ -2583,12 +2571,14 @@ public class Ode implements EntryPoint {
     public static final Resources INSTANCE =  GWT.create(Resources.class);
     
     @Source({
-      "com/google/appinventor/client/light.css"
+      "com/google/appinventor/client/style/classic/light.css",
+      "com/google/appinventor/client/style/classic/variableColors.css"
     })
     Style styleclassicLight();
 
     @Source({
-      "com/google/appinventor/client/dark.css"
+      "com/google/appinventor/client/style/classic/dark.css",
+      "com/google/appinventor/client/style/classic/variableColors.css"
     })
     Style styleclassicDark();
 

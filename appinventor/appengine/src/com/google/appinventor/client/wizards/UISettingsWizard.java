@@ -27,9 +27,8 @@ public class UISettingsWizard {
   @UiField protected Dialog UIDialog;
   @UiField protected Button applyButton;
   @UiField protected Button cancelButton;
-//  @UiField protected Button darkModeButton;
-//  @UiField protected RadioButton lightModeRadioButton;
-//  @UiField protected RadioButton darkModeRadioButton;
+  @UiField protected RadioButton lightModeRadioButton;
+  @UiField protected RadioButton darkModeRadioButton;
   @UiField protected RadioButton classicRadioButton;
   @UiField protected RadioButton modernRadioButton;
   Boolean userThemePreference;
@@ -47,11 +46,11 @@ public class UISettingsWizard {
     } else {
       classicRadioButton.setValue(true);
     }   
-//    if (userThemePreference){
-//      darkModeRadioButton.setValue(true);
-//    }else{
-//      lightModeRadioButton.setValue(true);
-//    }
+   if (userThemePreference){
+     darkModeRadioButton.setValue(true);
+   }else{
+     lightModeRadioButton.setValue(true);
+   }
     show();
   }
 
@@ -64,20 +63,6 @@ public class UISettingsWizard {
     UIDialog.center();
   }
 
-  // @UiHandler("darkModeButton")
-  // protected void switchTheme(ClickEvent e) {
-  //   // Boolean userThemePreference;
-  //   if (Ode.getUserDarkThemeEnabled()) {
-  //       darkModeButton.setTitle("light");
-  //       Ode.setUserDarkThemeEnabled(false);
-  //     } else {
-  //       darkModeButton.setTitle("dark");
-  //       Ode.setUserDarkThemeEnabled(true);
-  //     }
-  //   // Ode.setUserDarkThemeEnabled(userThemePreference);
-  //   // UIDialog.hide();
-  // }
-
   @UiHandler("cancelButton")
   protected void cancelAdd(ClickEvent e) {
     Ode.setUserNewLayout(userLayoutPreference);
@@ -87,22 +72,15 @@ public class UISettingsWizard {
 
   @UiHandler("applyButton")
   protected void applySettings(ClickEvent e) {
-    // Boolean userThemePreference;
-    // if (Ode.getUserDarkThemeEnabled()) {
-    //     userThemePreference = false;
-    //   } else {
-    //     userThemePreference = true;
-    //   }
-    // Ode.setUserDarkThemeEnabled(userThemePreference);
-//    if (lightModeRadioButton.getValue()){
-//      if (Ode.getUserDarkThemeEnabled()){
-//          Ode.setUserDarkThemeEnabled(false);
-//      }
-//    }else{
-//      if (!Ode.getUserDarkThemeEnabled()){
-//          Ode.setUserDarkThemeEnabled(true);
-//      }
-//    }
+    if (lightModeRadioButton.getValue()){
+      if (Ode.getUserDarkThemeEnabled()){
+         Ode.setUserDarkThemeEnabled(false);
+      }
+    }else{
+      if (!Ode.getUserDarkThemeEnabled()){
+         Ode.setUserDarkThemeEnabled(true);
+      }
+    }
     if (classicRadioButton.getValue()) {
       if (Ode.getUserNewLayout()) {
         Ode.setUserNewLayout(false);
