@@ -55,74 +55,35 @@
 @def navigationbarLandscape              url('static/images/navigationbarLandscapeModern.png');
 
 /* NEW */
+@def clr-primary-50 #f3f8e6;
+@def clr-primary-75 #f7f9f2;
+@def clr-primary-200 #cbe397;
 @def clr-primary #a4cf47;
+@def clr-primary-500 #93c619;
+@def clr-primary-700 #6ca300;
 
 @def error #ff6666;
 
+@def clr-secondary-400 #ae4792;
+@def hover-secondary-overlay rgba(209, 145, 190, 0.04);
+
+@def gray-50 #fafafa;
+@def gray-200 #eeeeee;
 @def gray-300 #e0e0e0;
+@def gray-400 #bdbdbd;
+@def gray-450 #a9a9a9;
+@def gray-500 #9e9e9e;
+@def gray-550 #808080;
+@def gray-600 #757575;
 @def gray-700 #616161;
 @def gray-800 #424242;
+@def gray-900 #212121;
 
 @def v-white #ffffff;
 @def v-black #000000;
 @def v-red   #ff0000;
 
 /*
-e5e5e5  --> e0e0e0
-99cc00  --> 93c619
-999     --> 9e9e9e
-999999  --> 9e9e9e
-f7f9f2  --> clr-primary-75
-7d9d36  --> 6ca300
-ff7d7d  --> error
-404040 --> 424242
-669900 --> 6ca300
-dedede --> e0e0e0
-eee    --> gray-200
-e9e9e9 --> eeeeee
-bababa --> bdbdbd
-888    --> 808080
-222    --> 212121
-2d2d2d --> 212121
-cccccc --> bdbdbd
-c2c2c2 --> bdbdbd
-darkgray  --> a9a9a9
-dimgray   --> should be 696969 but similar to 616161
-lightgray  --> should be d3d3d3 but similar to e0e0e0
-lightgrey
-gray  --> 808080
-grey  --> 808080
-bbbbbb --> bdbdbd
-b9b9b9 --> bdbdbd
-8fc202 --> 93c619
-eef2e0 --> f3f8e6
-d2e0a6 --> cbe397
-333333 --> 424242
-333    --> 424242
-d2d2d2 --> e0e0e0
-d3d3d3 --> e0e0e0
-d6d6d6 --> e0e0e0
-d6d7d7 --> e0e0e0
-575757 --> 616161
-5b5b5b --> 616161
-e6e6e6 --> eeeeee
-aaaaaa --> a9a9a9
-ff4444 --> ff6666
-808080 --> gray-550
-848280  --> 808080
-fcfcfc --> fafafa
-888  --> 808080
-777 --> 757575
-666 --> 616161
-b3c833 --> a4cf47
-eee  --> gray-200
-bebebe --> bdbdbd
-b2b4bf --> bdbdbd
-
-rgba(167, 36, 122, 1) -> a7247a --> ae4792
-rgba(167, 36, 122, 0.21) -> hover-secondary-overlay
-
-rgb(100, 100, 100) -> 646464 --> 616161
 
 darkgreen
 

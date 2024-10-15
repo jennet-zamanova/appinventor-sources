@@ -124,43 +124,43 @@
   <!-- English language, independent of country -->
   <extend-property name="locale" values="en"/>
   <!-- Simplified Chinese -->
-  <extend-property name="locale" values="zh_CN"/>
+  <!-- <extend-property name="locale" values="zh_CN"/> -->
   <!-- Traditional Chinese -->
-  <extend-property name="locale" values="zh_TW"/>
+  <!-- <extend-property name="locale" values="zh_TW"/> -->
   <!-- Spanish from Spain -->
-  <extend-property name="locale" values="es_ES"/>
+  <!-- <extend-property name="locale" values="es_ES"/> -->
   <!-- French -->
-  <extend-property name="locale" values="fr_FR"/>
+  <!-- <extend-property name="locale" values="fr_FR"/> -->
   <!-- Italian -->
-  <extend-property name="locale" values="it_IT"/>
+  <!-- <extend-property name="locale" values="it_IT"/> -->
   <!-- Russian -->
-  <extend-property name="locale" values="ru"/>
+  <!-- <extend-property name="locale" values="ru"/> -->
   <!-- Korean -->
-  <extend-property name="locale" values="ko_KR"/>
+  <!-- <extend-property name="locale" values="ko_KR"/> -->
   <!-- Swedish -->
-  <extend-property name="locale" values="sv"/>
+  <!-- <extend-property name="locale" values="sv"/> -->
   <!-- Portuguese (Brazilian) -->
-  <extend-property name="locale" values="pt_BR"/>
+  <!-- <extend-property name="locale" values="pt_BR"/> -->
   <!-- Portuguese (Portugal) -->
-  <extend-property name="locale" values="pt"/>
+  <!-- <extend-property name="locale" values="pt"/> -->
   <!-- Hungarian -->
-  <extend-property name="locale" values="hu"/>
+  <!-- <extend-property name="locale" values="hu"/> -->
   <!-- Dutch -->
-  <extend-property name="locale" values="nl"/>
+  <!-- <extend-property name="locale" values="nl"/> -->
   <!-- German -->
-  <extend-property name="locale" values="de"/>
+  <!-- <extend-property name="locale" values="de"/> -->
   <!-- Polish -->
-  <extend-property name="locale" values="pl"/>
+  <!-- <extend-property name="locale" values="pl"/> -->
   <!-- Lithuanian -->
-  <extend-property name="locale" values="lt"/>
+  <!-- <extend-property name="locale" values="lt"/> -->
   <!-- Turkish -->
-  <extend-property name="locale" values="tr"/>
+  <!-- <extend-property name="locale" values="tr"/> -->
   <!-- Armenian -->
-  <extend-property name="locale" values="hy"/>
+  <!-- <extend-property name="locale" values="hy"/> -->
   <!-- Catalan -->
-  <extend-property name="locale" values="ca"/>
+  <!-- <extend-property name="locale" values="ca"/> -->
   <!-- Ukrainian -->
-  <extend-property name="locale" values="uk"/>
+  <!-- <extend-property name="locale" values="uk"/> -->
 
   <set-property-fallback name="locale" value="en"/>
 </module>
