@@ -1,9 +1,3 @@
-/* -*- mode: java; c-basic-offset: 2; -
-* Copyright 2023-2024 MIT, All rights reserved
-* Released under the Apache License, Version 2.0
-* http://www.apache.org/licenses/LICENSE-2.0
-*/
-
 @def background-image                   url('static/images/squairy_dark.jpg');
 @def text-button-background            #222;
 /* Greens */
@@ -31,14 +25,26 @@
 @def gwt-button-background              #6c8c24;
 
 /* Colors */
-@def highlight-color                    rgba(167, 36, 122, 0.21);
-    /* orange */
+/* orange */
 @def blocks-designer-color              #f89406;
 @def project-background-color           #7a914a;
-    /* blue */
+/* blue */
 @def explorer-border                    #D6E9F8;
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
-    /* red */
+/* red */
 @def destructive-action-hover           #FF6666;
 @def item-color-red                     #ff0000;
+@def item-color-red                     #ff0000;
+/* Mockforms */
+/* change color only */
+@def phoneLandscape                      url('static/images/phoneLandscape.png');
+/* change to modern too */
+@def phonePortrait                       url('static/images/phonePortraitModern.png');
+@def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
+@def phonePortraitTablet                 url('static/images/phonePortraitTabletModern.png');
+@def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
+@def phonePortraitMonitor                url('static/images/phonePortraitModern.png');
+
+@def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
+@def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
