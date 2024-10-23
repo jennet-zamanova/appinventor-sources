@@ -1,16 +1,23 @@
 @def background-image                   url('static/images/squairy_dark.jpg');
 
 /* a4cf47 */
+/* @def clr-primary-50 #4f6925; */
 @def clr-primary-50 #4f6925;
 /* 83b70f */
-@def clr-primary-75 #2c372c;
+/* @def clr-primary-75 #2c372c; */
+@def clr-primary-75 #1a1a1a;
 /* possible rgba(0, 51, 0, 0.3) */
-@def clr-primary-200 #456f03;
+/* @def clr-primary-200 #456f03; */
+@def clr-primary-200 #648C1E;
+/* 556b2f */
 @def clr-primary #cbe397;
 /* possibly change to 700 */
-@def clr-primary-500 #59721c;
+@def clr-primary-500 #556b2f;
 /* bar-color */
-@def clr-primary-700 #6ca300;
+/* @def clr-primary-700 #6ca300; */
+
+@def clr-primary-700 #3a4b1e;
+/* 3a4b1e */
 
 @def error #ff6666;
 @def v-red #ff0000;
@@ -22,8 +29,8 @@
 @def gray-100 #424242;
 @def gray-200 #616161;
 /* 555 */
-@def gray-300 #696969;
-@def gray-400 #757575;
+@def gray-300 #101010;
+@def gray-400 #1a1a1a;
 @def gray-450 #808080;
 /* ddd */
 @def gray-500 #9e9e9e;
@@ -41,7 +48,7 @@
 @def v-black #aaa;
 @def srfc-high-emphasis rgba(17, 17, 17, 0.95);
 @def elevation-6 rgba(0,0,0,0.1);
-@def elevation-2 rgba(255, 255, 255, 0.1);
+@def elevation-2 rgba(255, 255, 255, 0.2);
 @def elevation-16 rgba(255, 255, 255, 0.15);
 /* Colors */
 /* orange */
@@ -50,7 +57,7 @@
 /* blue */
 @def explorer-border                    #D6E9F8;
 @def simple-panel-border                #67A7E3;
-@def project-color                      #112abb;
+@def project-color                      #F9FAF5;
 
 
 /* Mockforms */
@@ -64,3 +71,5 @@
 
 @def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
+
+@def project-background                  #3a4b1e;

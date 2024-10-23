@@ -5,12 +5,15 @@
 /* box-background-color */
 @def clr-primary-75 #f7f9f2;
 /* box-background, bar-color */
-@def clr-primary-200 #cbe397;
+@def clr-primary-200 #ccddb3;
 @def clr-primary #a4cf47;
 /* selected-color */
-@def clr-primary-600 #83b70f;
-@def clr-primary-500 #93c619;
-@def clr-primary-700 #6ca300;
+/* @def clr-primary-600 #83b70f; */
+@def clr-primary-600 #8fc202;
+/* @def clr-primary-500 #93c619; */
+@def clr-primary-500 #eef2e0;
+
+@def clr-primary-700 #ceda91;
 
 /* destructive-action-hover  */
 @def error #ff6666;
@@ -34,7 +37,7 @@
 /* top-panel-color */
 @def gray-600 #757575;
 @def gray-650 #696969;
-@def gray-700 #616161;
+@def gray-700 #555555;
 /* panel-shadow  */
 @def gray-800 #424242;
 @def gray-900 #212121;
@@ -73,3 +76,5 @@
 
 @def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
+
+@def project-background   url('static/images/toolbarBG.png');
