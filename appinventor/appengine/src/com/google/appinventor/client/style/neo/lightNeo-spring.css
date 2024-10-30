@@ -56,12 +56,15 @@
 
 /* NEW */
 @def clr-primary-50 #f3f8e6;
+/* box-background-color */
 @def clr-primary-75 #f7f9f2;
 @def clr-primary-200 #cbe397;
-@def clr-primary #a4cf47;
+/* gwt-button-background */
+@def clr-primary #a5cf47;
 @def clr-primary-500 #93c619;
 @def clr-primary-700 #6ca300;
 
+/* destructive-action-hover */
 @def error #ff6666;
 
 @def clr-secondary-400 #ae4792;
@@ -79,8 +82,10 @@
 @def gray-800 #424242;
 @def gray-900 #212121;
 
+/* background-color */
 @def v-white #ffffff;
 @def v-black #000000;
+/* item-color-red  */
 @def v-red   #ff0000;
 
 /*
