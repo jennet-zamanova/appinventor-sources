@@ -6,8 +6,8 @@
 @def selected-color                     #8fc202;
 @def bar-color                          #d2e0a6;
 @def tab-bar-background-color           #eef2e0;
-@def box-background-color               #f7f9f2;
-@def gwt-button-background              #A5CF47;
+/* @def box-background-color               #f7f9f2; */
+/* @def gwt-button-background              #A5CF47; */
 
 /* Greys */
 @def background-color                   #fff;
@@ -39,7 +39,7 @@
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
 /* red */
-@def destructive-action-hover           #FF6666;
+/* @def destructive-action-hover           #FF6666; */
 @def item-color-red                     #ff0000;
 /* Mockforms */
 
@@ -64,46 +64,9 @@
 /* unselected */
 /* 
 b3c833
-
-222 - 333333
-2d2d2d - 333333
-333333 - 333333
-404040 - 333333
-
-575757 - 555
-5b5b5b - 555
-
-777 - 999
-
-808080 - 888
-848280 - 888
-888
-
 99cc00 - set change
-999
-
 bbccff
-b9b9b9 - bbb
-bababa - bbb
-bbbbbb - bbb
-
-c2c2c2
-cccccc
-
-d2d2d2 - ddd
-d3d3d3 - ddd
-d6d6d6 - ddd
-d6d7d7 - ddd
-dedede - ddd
-
-e5e5e5 - eee
-e6e6e6 - eee
-e9e9e9 - eee
-eee - f2f2f2
-
 fcfcfc
-
-
 7d9d36 - change
 669900 #
 darkgray
@@ -112,5 +75,86 @@ faa
 reds probably should stay same
 ff7d7d
 c25f5f
-
 */
+
+/* NEW */
+@def clr-primary-50 #f3f8e6;
+/* box-background-color */
+@def clr-primary-75 #f7f9f2;
+@def clr-primary-200 #cbe397;
+/* gwt-button-background */
+@def clr-primary #a5cf47;
+@def clr-primary-500 #93c619;
+@def clr-primary-700 #6ca300;
+
+/* destructive-action-hover */
+@def error #ff6666;
+
+@def clr-secondary-400 #ae4792;
+@def hover-secondary-overlay rgba(209, 145, 190, 0.04);
+
+@def gray-50 #fafafa;
+/* top-panel-background-color */
+@def gray-200 #eeeeee;
+/* border-color */
+@def gray-300 #ddd;
+/* border-grey */
+@def gray-400 #bbb;
+/* label-color */
+@def gray-450 #aaa;
+/* gallery-grey */
+@def gray-500 #999;
+/* another-grey */
+@def gray-550 #888;
+@def gray-600 #757575;
+/* context-menu-color */
+@def gray-700 #555;
+/* button-text */
+@def gray-800 #444;
+/* dark */
+@def gray-900 #333;
+
+/* background-color */
+@def v-white #ffffff;
+/* tab-bar-color */
+@def v-black #000000;
+/* item-color-red  */
+@def v-red   #ff0000;
+
+
+/* changes: */
+/* box-background-color */
+@def clr-primary-75 #f7f9f2;
+/* gwt-button-background */
+@def clr-primary #a5cf47;
+
+/* destructive-action-hover */
+@def error #ff6666;
+
+/* top-panel-background-color */
+@def gray-200 #eeeeee;
+/* border-color */
+@def gray-300 #ddd;
+/* border-grey */
+@def gray-400 #bbb;
+/* label-color */
+@def gray-450 #aaa;
+/* gallery-grey */
+@def gray-500 #999;
+/* another-grey */
+@def gray-550 #888;
+/* context-menu-color */
+@def gray-700 #555;
+/* button-text */
+@def gray-800 #444;
+/* dark */
+@def gray-900 #333;
+
+@def  blockly-indicator #000;
+
+/* background-color */
+@def v-white #ffffff;
+/* tab-bar-color */
+@def v-black #000000;
+/* item-color-red  */
+@def v-red   #ff0000;
