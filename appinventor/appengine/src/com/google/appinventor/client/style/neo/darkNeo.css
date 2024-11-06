@@ -27,14 +27,23 @@
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
 /* Mockforms */
-/* change color only */
-@def phoneLandscape                      url('static/images/phoneLandscape.png');
-/* change to modern too */
+/* change once get modern mockform */
+/* @def phoneLandscape                      url('static/images/phoneLandscape.png');
 @def phonePortrait                       url('static/images/phonePortraitModern.png');
 @def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
 @def phonePortraitTablet                 url('static/images/phonePortraitTabletModern.png');
 @def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
 @def phonePortraitMonitor                url('static/images/phonePortraitModern.png');
+
+@def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
+@def navigationbarLandscape              url('static/images/navigationbarLandscape.png'); */
+
+@def phoneLandscape                      url('static/images/dark_mode_mockups/dark-mode-phonephoneLandscape.png');
+@def phonePortrait                       url('static/images/dark_mode_mockups/dark-mode-phonephonePortrait.png');
+@def phoneLandscapeTablet                url('static/images/dark_mode_mockups/dark-mode-phonephoneLandscapeTablet.png');
+@def phonePortraitTablet                 url('static/images/dark_mode_mockups/dark-mode-phonephonePortraitTablet.png');
+@def phoneLandscapeMonitor               url('static/images/dark_mode_mockups/dark-mode-phonephoneLandscapeMonitor.png');
+@def phonePortraitMonitor                url('static/images/dark_mode_mockups/dark-mode-phonephonePortraitMonitor.png');
 
 @def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscape.png');

@@ -28,15 +28,26 @@
 @def simple-panel-border                #67A7E3;
 @def project-color                      #112abb;
 
-@def phoneLandscape                      url('static/images/phoneLandscapeModern.png');
-@def phonePortrait                       url('static/images/modernMockups/phonePortraitModern.svg');
-@def phoneLandscapeTablet                url('static/images/phoneLandscapeModern.png');
-@def phonePortraitTablet                 url('static/images/phonePortraitTabletModern.png');
-@def phoneLandscapeMonitor               url('static/images/phoneLandscapeModern.png');
-@def phonePortraitMonitor                url('static/images/phonePortraitModern.png');
+/* change once get modern mockform */
+/* @def phoneLandscape                      url('static/images/modern_mockups/phoneLandscapeModern.png');
+@def phonePortrait                       url('static/images/modern_mockups/phonePortraitModern.svg');
+@def phoneLandscapeTablet                url('static/images/modern_mockups/phoneLandscapeModern.png');
+@def phonePortraitTablet                 url('static/images/modern_mockups/phonePortraitTabletModern.png');
+@def phoneLandscapeMonitor               url('static/images/modern_mockups/phoneLandscapeModern.png');
+@def phonePortraitMonitor                url('static/images/modern_mockups/phonePortraitModern.png');
 
 @def navigationbarPortrait               url('static/images/navigationbarPortraitModern.png');
-@def navigationbarLandscape              url('static/images/navigationbarLandscapeModern.png');
+@def navigationbarLandscape              url('static/images/navigationbarLandscapeModern.png'); */
+
+@def phoneLandscape                      url('static/images/phoneLandscape.png');
+@def phonePortrait                       url('static/images/phonePortrait.png');
+@def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
+@def phonePortraitTablet                 url('static/images/phonePortraitTablet.png');
+@def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
+@def phonePortraitMonitor                url('static/images/phonePortraitMonitor.png');
+
+@def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
+@def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
 
 
 @def clr-primary-75 #f7f9f2;

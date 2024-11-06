@@ -62,12 +62,12 @@
 
 /* Mockforms */
 
-@def phoneLandscape                      url('static/images/phoneLandscape.png');
-@def phonePortrait                       url('static/images/phonePortrait.png');
-@def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
-@def phonePortraitTablet                 url('static/images/phonePortraitTablet.png');
-@def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
-@def phonePortraitMonitor                url('static/images/phonePortraitMonitor.png');
+@def phoneLandscape                      url('static/images/dark_mode_mockups/dark-mode-phoneLandscape.png');
+@def phonePortrait                       url('static/images/dark_mode_mockups/dark-mode-phonePortrait.png');
+@def phoneLandscapeTablet                url('static/images/dark_mode_mockups/dark-mode-phoneLandscapeTablet.png');
+@def phonePortraitTablet                 url('static/images/dark_mode_mockups/dark-mode-phonePortraitTablet.png');
+@def phoneLandscapeMonitor               url('static/images/dark_mode_mockups/dark-mode-phoneLandscapeMonitor.png');
+@def phonePortraitMonitor                url('static/images/dark_mode_mockups/dark-mode-phonePortraitMonitor.png');
 
 @def navigationbarPortrait               url('static/images/navigationbarPortrait.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
