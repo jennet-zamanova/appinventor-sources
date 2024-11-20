@@ -917,7 +917,11 @@ public class Ode implements EntryPoint {
 
           @Override
           public void onSuccess() {
-            IMAGES = GWT.create(Images.class);
+            if (useDarkMode) {
+              IMAGES = GWT.create(DarkModeImages.class);
+            } else {
+              IMAGES = GWT.create(Images.class);
+            }
             RootPanel.get().addStyleName("classic");
             uiFactory = new UiStyleFactory();
             res.apply(null);

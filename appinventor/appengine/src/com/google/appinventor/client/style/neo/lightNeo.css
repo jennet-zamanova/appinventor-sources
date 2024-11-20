@@ -39,8 +39,11 @@
 @def navigationbarPortrait               url('static/images/navigationbarPortraitModern.png');
 @def navigationbarLandscape              url('static/images/navigationbarLandscapeModern.png'); */
 
+
+
 @def phoneLandscape                      url('static/images/phoneLandscape.png');
-@def phonePortrait                       url('static/images/phonePortrait.png');
+/* @def phonePortrait                       url('static/images/phonePortrait.png'); */
+@def phonePortrait                       url('static/images/phonePortraitModern (1).png');
 @def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
 @def phonePortraitTablet                 url('static/images/phonePortraitTablet.png');
 @def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
