@@ -916,6 +916,54 @@ select.ode-PropertyEditor[disabled] {
 
 .ode-SimpleMockFormPhoneLandscape {
   background: phoneLandscape;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 11px 43px 7px 48px;
+}
+
+.ode-SimpleMockFormPhonePortrait {
+  /* background-image: url('static/images/phonePortraitModern (1).png'); */
+  background-image: phonePortrait;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 64px 15px 60px 15px;
+
+}
+
+.ode-SimpleMockFormPhoneLandscapeTablet {
+  background: phoneLandscapeTablet;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 15px 56px 12px 64px;;
+}
+.ode-SimpleMockFormPhonePortraitTablet {
+  background: phonePortraitTablet;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 64px 13px 55px 13px;
+}
+.ode-SimpleMockFormPhoneLandscapeMonitor {
+  background: phoneLandscapeMonitor;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 44px 43px 39px 48px;
+}
+
+.ode-SimpleMockFormPhonePortraitMonitor {
+  background: phonePortraitMonitor;
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% 100%;
+  padding: 99px 36px 75px 34px;
+}
+
+/* .ode-SimpleMockFormPhoneLandscape {
+  background: phoneLandscape;
   background-size: 100% 100%;
   padding: 16px 12px 14px 20px;
 }
@@ -946,7 +994,7 @@ select.ode-PropertyEditor[disabled] {
   background: phonePortraitMonitor no-repeat right top;
   background-size: 100% 100%;
   padding: 42px 51px 53px; /* hard-coded magic numbers */
-}
+/*} */
 .ode-SimpleMockFormPhonePortraitTablet .ode-SimpleMockForm,
 .ode-SimpleMockFormPhonePortraitMonitor .ode-SimpleMockForm {
   flex-direction: column;
