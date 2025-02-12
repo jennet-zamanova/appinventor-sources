@@ -1205,3 +1205,7 @@ svg.blocklySvg,
 rect.gridBackground {
   fill: v-white;
 }
+
+.blocklyCount {
+  fill: v-black;
+}

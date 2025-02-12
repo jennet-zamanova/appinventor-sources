@@ -47,6 +47,12 @@ public interface DarkModeImages extends Images {
   @Source("com/google/appinventor/darkmode-images/dark-modelinestring.png")
   ImageResource linestring();
 
+  /**
+   * Designer palette item: progressbar linear component
+   */
+  @Source("com/google/appinventor/darkmode-images/dark-modelinearProgress.png")
+  ImageResource linearProgress();
+
     /**
    * Designer palette item: ListView component
    */

@@ -8,11 +8,14 @@
 @def clr-primary-75 #1a1a1a;
 /* possible rgba(0, 51, 0, 0.3) */
 /* @def clr-primary-200 #456f03; */
+
 @def clr-primary-200 #648C1E;
+/* TODO: @def clr-primary-200 #62704a; */
 /* 556b2f */
 @def clr-primary #cbe397;
 /* possibly change to 700 */
 @def clr-primary-500 #556b2f;
+/* TODO: @def clr-primary-600 #62704a; */
 /* bar-color */
 /* @def clr-primary-700 #6ca300; */
 

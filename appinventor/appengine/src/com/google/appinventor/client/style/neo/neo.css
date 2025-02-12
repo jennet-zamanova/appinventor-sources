@@ -928,7 +928,7 @@ select.ode-PropertyEditor[disabled] {
   background-repeat: no-repeat;
   background-position: right top;
   background-size: 100% 100%;
-  padding: 64px 15px 60px 15px;
+  padding: 12px 15px 12px 15px;
 
 }
 
@@ -1030,7 +1030,7 @@ select.ode-PropertyEditor[disabled] {
 
 .ode-SimpleMockForm {
   background-color: bar-color;
-  border: 2px solid v-black;
+  border: 2px solid;
 }
 
 .ode-SimpleMockForm-selected {

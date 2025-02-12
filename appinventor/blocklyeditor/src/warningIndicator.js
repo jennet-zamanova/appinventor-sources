@@ -82,7 +82,7 @@ Blockly.WarningIndicator.prototype.createDom = function() {
   this.svgGroup_ = Blockly.utils.dom.createSvgElement('g',
       {'id': "indicatorWarning"}, null);
   this.warningCount_ = Blockly.utils.dom.createSvgElement('text',
-      {'fill': "black", 'transform':"translate(20,-1)"},
+      {'class': 'blocklyCount', 'fill': "black", 'transform':"translate(20,-1)"},
       this.svgGroup_);
   this.warningCount_.textContent = "0";
 
@@ -102,7 +102,7 @@ Blockly.WarningIndicator.prototype.createDom = function() {
 
 
   this.errorCount_ = Blockly.utils.dom.createSvgElement('text',
-      {'fill': "black", 'transform':"translate(85,-1)"},
+      {'class': 'blocklyCount', 'fill': "black", 'transform':"translate(85,-1)"},
       this.svgGroup_);
   this.errorCount_.textContent = "0";
 

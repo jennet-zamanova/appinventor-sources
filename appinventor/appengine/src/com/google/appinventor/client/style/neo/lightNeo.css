@@ -43,7 +43,7 @@
 
 @def phoneLandscape                      url('static/images/phoneLandscape.png');
 /* @def phonePortrait                       url('static/images/phonePortrait.png'); */
-@def phonePortrait                       url('static/images/phonePortraitModern (1).png');
+@def phonePortrait                       url('static/images/phonePortraitModern.png');
 @def phoneLandscapeTablet                url('static/images/phoneLandscapeTablet.png');
 @def phonePortraitTablet                 url('static/images/phonePortraitTablet.png');
 @def phoneLandscapeMonitor               url('static/images/phoneLandscapeMonitor.png');
