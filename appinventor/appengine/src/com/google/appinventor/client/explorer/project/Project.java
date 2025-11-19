@@ -18,6 +18,7 @@ import com.google.appinventor.client.explorer.folder.ProjectFolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * This class represents a project.
@@ -39,6 +40,9 @@ public final class Project {
   private ProjectSettings settings; // lazily and asynchronously initialized
 
   private ProjectFolder homeFolder = null;
+
+  private static final Logger LOG = Logger.getLogger(Project.class.getName());
+
 
   /**
    * Creates a new project.
@@ -78,6 +82,7 @@ public final class Project {
 
             @Override
             public void onFailure(Throwable caught) {
+              LOG.info("Failed to load project nodes for project id: " + getProjectId());
               loadingInProgress = false;
               super.onFailure(caught);
             }
@@ -186,6 +191,24 @@ public final class Project {
    */
   public ProjectRootNode getRootNode() {
     return projectRoot;
+  }
+
+  /**
+   * Returns if the project is shared with others
+   *
+   * @return shared
+   */
+  public boolean isShared() {
+    return projectInfo.isShared();
+  }
+
+  /**
+   * Set if the project is shared.
+   *
+   * @param shared
+   */
+  public void setShared(boolean shared) {
+    projectInfo.setShared(shared);
   }
 
   /**

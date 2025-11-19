@@ -153,6 +153,8 @@ public class DesignToolbar extends Toolbar {
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
   @UiField protected ToolbarItem sendToGalleryItem;
+  @UiField protected ToolbarItem shareProjectButton;
+  @UiField protected Label permissionLabel;
 
   /**
    * Initializes and assembles all commands into buttons in the toolbar.
@@ -160,7 +162,7 @@ public class DesignToolbar extends Toolbar {
   public DesignToolbar() {
     super();
     bindUI();
-
+    permissionLabel.setText(Ode.getInstance().getPermission() + " Access");
     if (Ode.getInstance().isReadOnly() || !AppInventorFeatures.allowMultiScreenApplications()) {
       setVisibleItem(addFormItem, false);
       setVisibleItem(removeFormItem, false);
