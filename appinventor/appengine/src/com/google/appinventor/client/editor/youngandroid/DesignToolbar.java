@@ -14,6 +14,7 @@ import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.youngandroid.actions.SwitchScreenAction;
 import com.google.appinventor.client.editor.youngandroid.actions.SwitchToBlocksEditorAction;
 import com.google.appinventor.client.editor.youngandroid.actions.SwitchToFormEditorAction;
+import com.google.appinventor.client.editor.youngandroid.actions.ShowDiffAction;
 import com.google.appinventor.client.widgets.DropDownButton;
 import com.google.appinventor.client.widgets.DropDownItem;
 import com.google.appinventor.client.widgets.Toolbar;

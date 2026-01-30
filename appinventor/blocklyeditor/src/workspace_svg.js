@@ -19,6 +19,7 @@ goog.require('AI.Blockly.Versioning');
 goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
 goog.require('AI.Blockly.Workspace');
+goog.require('AI.Blockly.Diff');
 
 /**
  * AI2 Blocks Drawer
@@ -1031,3 +1032,10 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
     this.backpack_.resize();
   }
 };
+
+Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
+  const blocksContent = await fetch("static/media/v2.xml").then(r => r.text());
+  const diff = await AI.Blockly.Diff.diff(v1, blocksContent);
+  const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
+  console.log(changeSteps);
+}

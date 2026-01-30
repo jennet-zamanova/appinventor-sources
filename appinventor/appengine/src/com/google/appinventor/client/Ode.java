@@ -2604,6 +2604,14 @@ public class Ode implements EntryPoint {
     }
   }
 
+  public void showDiff() {
+    if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS
+        // currentFileEditor may be null when switching projects
+        && currentFileEditor != null) {
+      currentFileEditor.diff();
+    }
+  }
+
   /**
    * setRendezvousServer
    *

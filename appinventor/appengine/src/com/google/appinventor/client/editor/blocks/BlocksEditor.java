@@ -21,7 +21,6 @@ import com.google.appinventor.client.editor.designer.DesignerChangeListener;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.designer.DesignerRootComponent;
 import com.google.appinventor.client.editor.simple.components.MockComponent;
-import com.google.appinventor.client.editor.simple.palette.DropTargetProvider;
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
 import com.google.appinventor.client.editor.youngandroid.events.EventHelper;
 import com.google.appinventor.client.explorer.SourceStructureExplorer;
@@ -477,6 +476,50 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     }
   }
 
+  // TODO: implement diffing functionality in BlocksEditor.java
+  @Override
+  public void diff(){
+    // final long projectId = getProjectId();
+    // final String fileId = getFileId();
+    // OdeAsyncCallback<ChecksumedLoadFile> callback = new OdeAsyncCallback<ChecksumedLoadFile>(MESSAGES.loadError()) {
+    //   @Override
+    //   public void onSuccess(ChecksumedLoadFile result) {
+    //     String blkFileContent;
+    //     try {
+    //       blkFileContent = result.getContent();
+    //     } catch (ChecksumedFileException e) {
+    //       this.onFailure(e);
+    //       return;
+    //     }
+    //     String designerJson = designer.getJson();
+    //     try {
+    //       blocksArea.loadBlocksContent(designerJson, blkFileContent, upgrade);
+    //       blocksArea.addChangeListener(BlocksEditor.this);
+    //     } catch(LoadBlocksException e) {
+    //       setDamaged(true);
+    //       ErrorReporter.reportError(MESSAGES.blocksNotSaved(entityName));
+    //     }
+    //     loadComplete = true;
+    //     selectedDrawer = null;
+    //     if (afterFileLoaded != null) {
+    //       afterFileLoaded.execute();
+    //     }
+    //   }
+
+    //   @Override
+    //   public void onFailure(Throwable caught) {
+    //     if (caught instanceof ChecksumedFileException) {
+    //       Ode.getInstance().recordCorruptProject(projectId, fileId, caught.getMessage());
+    //     }
+    //     super.onFailure(caught);
+    //   }
+    // };
+    // Ode.getInstance().getProjectService().load2(projectId, fileId, callback);
+    String v1 = blocksArea.getBlocksContent();
+    String v2 = "v2.xml";
+    blocksArea.showDiff(v1, v2);
+  }
+
   private static native void set(JavaScriptObject jso, String key, String value)/*-{
     jso[key] = value;
   }-*/;
@@ -671,3 +714,4 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     sourceStructureExplorer.updateTree(items, itemToSelect);
   }
 }
+

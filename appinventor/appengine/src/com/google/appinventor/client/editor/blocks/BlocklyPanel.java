@@ -1085,6 +1085,16 @@ public class BlocklyPanel extends HTMLPanel {
   }-*/;
 
   /**
+   * Show the diff between two versions of blocks.
+   *
+   * @param name
+   */
+  public native void showDiff(String blocksContent1, String blocksContent2)/*-{
+    this.@com.google.appinventor.client.editor.blocks.BlocklyPanel::workspace
+      .showDiff(blocksContent1, blocksContent2);
+  }-*/;
+
+  /**
    * Store the backpack's contents to the App Inventor service.
    *
    * @param backpack JSON-serialized backpack contents.
