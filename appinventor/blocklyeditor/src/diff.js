@@ -350,17 +350,23 @@ AI.Blockly.Diff = class {
 
     static generateChangeSteps(mapping) {
         const changes = [];
+
+        const currentParent = null;
         
         mapping.forEach(op => {
             const t1 = op.t1;
             const t2 = op.t2;
             const type = op.type;
 
-            if (type === "match") return; // No change
+            if (type === "match") {
+                currentParent = t2;
+            } // No change
             else if (type === "insert") {
+                // mapping[].find(op => op.type === 'match' && op.t1) ;
                 changes.push({
                     action: AI.Blockly.Diff.INSERT,
-                    blockId: t2.$.id,
+                    insertXml: t2,  
+                    insertAt: currentParent,
                 });
             } else if (type === "remove") {
                 changes.push({
@@ -368,6 +374,7 @@ AI.Blockly.Diff = class {
                     blockId: t1.$.id,
                 });
             } else if (type === "update") {
+                currentParent = t2;
                 const changeDetail = {
                     action: AI.Blockly.Diff.UPDATE,
                     blockId: t1.$.id,

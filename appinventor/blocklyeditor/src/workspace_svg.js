@@ -1038,4 +1038,48 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   const diff = await AI.Blockly.Diff.diff(v1, blocksContent);
   const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   console.log(changeSteps);
+  // create empty workspace to hold second tree
+  const headlessWorkspace = new Blockly.Workspace();
+  for (const step of changeSteps) {
+    console.log("loading v2 into headless workspace", step.action, step.action === AI.Blockly.Diff.REMOVE);
+    if (step.action === AI.Blockly.Diff.INSERT) {
+      console.log("should add block: ", step.blockId);
+      const newBlock = headlessWorkspace.getBlockById(step.blockId)
+      const block = Blockly.Xml.domToBlock(Blockly.Xml.blockToDom(newBlock), this);
+      block.setMovable(false);
+      block.setDeletable(false);
+      block.setEditable(false);
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.initSvg();
+      this.requestRender(block);
+      // somehow tell where to connect the block
+    } else if (step.action === AI.Blockly.Diff.REMOVE) {
+      console.log("should change color of block: ", step.blockId);
+      const block = this.getBlockById(step.blockId);
+      if (block) {
+        block.setMovable(false);
+        block.setDeletable(false);
+        block.setEditable(false);
+        block.addSelect();
+        block.setColour(Blockly.BLOCK_REMOVED_HUE);
+        block.initSvg();
+        this.requestRender(block);
+      }
+    } else {
+      console.log("update block: ", step.blockId);
+      if ((step.field && step.field.length > 0) || (step.mutation && step.mutation.length > 0) || step.comment) {
+        const block = this.getBlockById(step.blockId);
+        if (block) {
+          block.setMovable(false);
+          block.setDeletable(false);
+          block.setEditable(false);
+          block.addSelect();
+          block.setColour(Blockly.BLOCK_CHANGED_HUE);
+          block.initSvg();
+          this.requestRender(block);
+        }
+      }
+    }
+  }
 }
