@@ -367,11 +367,15 @@ AI.Blockly.Diff = class {
                     action: AI.Blockly.Diff.INSERT,
                     insertXml: t2,  
                     insertAt: currentParent,
+                    parentBlockId: currentParent.$.id || null, // TODO: find previous block id inside currentParent
+                    inputName: null, // TODO: find input name inside currentParent
                 });
             } else if (type === "remove") {
+                // TODO: add ids inside removed blocks
                 changes.push({
                     action: AI.Blockly.Diff.REMOVE,
                     blockId: t1.$.id,
+                    childBlocks: AI.Blockly.Util.xml.getAllBlockIds(t1),
                 });
             } else if (type === "update") {
                 currentParent = t2;

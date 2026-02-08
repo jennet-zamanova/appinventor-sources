@@ -1083,3 +1083,118 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
     }
   }
 }
+
+Blockly.WorkspaceSvg.prototype.getChildIds = function(blockID) {
+  const childIDs = [];
+  const block = this.getBlockById(blockID);
+  if (block) {
+    const children = block.getChildren();
+    for (const child of children) {
+      childIDs.push(child.id);
+      const grandChildIDs = this.getChildIds(child.id);
+      childIDs.push(...grandChildIDs);
+    }
+  }
+  return childIDs;
+}
+
+Blockly.WorkspaceSvg.prototype.showDiffSteps = async function(changeSteps) {
+  // create empty workspace to hold second tree
+  for (const step of changeSteps) {
+    console.log("loading v2 into headless workspace", step.action, step.action === AI.Blockly.Diff.REMOVE);
+    if (step.action === AI.Blockly.Diff.INSERT) {
+      // TODO: are there other connection types we need to handle here?
+      const newBlock = Blockly.Xml.domToBlock(Blockly.utils.xml.textToDom(step.insertXml), this);
+      console.log("should add block: ", step.blockId);
+      // change input and output connections
+      if (step.parentBlockId && step.inputName) {
+        const parentBlock = this.getBlockById(step.parentBlockId);
+        if (parentBlock) {
+          const input = parentBlock.getInput(step.inputName);
+          if (input && input.connection && newBlock.outputConnection) {
+            input.connection.connect(newBlock.outputConnection);
+          } else {
+            console.warn("Could not connect input/output for inserted block", step.blockId);
+          }
+        } else {
+          console.warn("Could not find parent block for inserted block", step.blockId);
+        }
+      }
+      // change previous and next connections
+      else if (step.parentBlockId) {
+        const previousBlock = this.getBlockById(step.parentBlockId);
+        if (previousBlock && previousBlock.nextConnection && newBlock.previousConnection) {
+          previousBlock.nextConnection.connect(newBlock.previousConnection);
+        } else {
+          console.warn("Could not connect previous/next for inserted block", step.blockId);
+        }
+      } 
+      else {
+        console.log("Completely new block", step.blockId);
+      }
+      newBlock.setMovable(true);
+      newBlock.setDeletable(true);
+      newBlock.setEditable(true);
+      newBlock.addSelect();
+      newBlock.setColour(Blockly.BLOCK_ADDED_HUE);
+      newBlock.initSvg();
+      this.requestRender(newBlock);
+      // somehow tell where to connect the block
+    } else if (step.action === AI.Blockly.Diff.REMOVE) {
+      console.log("should change color of block: ", step.blockId);
+      const ids = this.getChildIds(step.blockId);
+      ids.push(step.blockId);
+      for (const id of ids) {
+        const block = this.getBlockById(id);
+        if (block) {
+          // block.setMovable(false);
+          // block.setDeletable(false);
+          // block.setEditable(false);
+          block.addSelect();
+          block.setColour(Blockly.BLOCK_REMOVED_HUE);
+          block.initSvg();
+          this.requestRender(block);
+        }
+      }
+    } else {
+      console.log("update block: ", step.blockId);
+      if ((step.field && step.field.length > 0) || (step.mutation && step.mutation.length > 0) || step.comment) {
+        console.log("updating color of block and its children: ", step.blockId);
+        // do we need to update children as well?
+        // how to display comment changes?
+        // do we need to show what changed in the mutation?
+        const block = this.getBlockById(step.blockId);
+        console.log("updating color of block: ", step.blockId, block);
+        if (block) {
+          block.addSelect();
+          block.setColour(Blockly.BLOCK_CHANGED_HUE);
+          block.initSvg();
+          this.requestRender(block);
+        }
+        // const ids = this.getChildIds(step.blockId);
+        // ids.push(step.blockId);
+        // for (const id of ids) {
+        //   const block = this.getBlockById(id);
+        //   console.log("updating color of block: ", id, block);
+        //   if (block) {
+        //     // block.setMovable(false);
+        //     // block.setDeletable(false);
+        //     // block.setEditable(false);
+        //     block.addSelect();
+        //     block.setColour(Blockly.BLOCK_CHANGED_HUE);
+        //     block.initSvg();
+        //     this.requestRender(block);
+        //   }
+        // }
+      }
+    }
+  }
+}
+
+
+// Blockly.getMainWorkspace().getBlockById(
+// "^.+[~zv0S#=*DXXwJ78J").getInput("ARG0").connection.connect(Blockly.getMainWorkspace().getBlockById(
+// "jrL^S4E|~Ri)etroK-Wf").outputConnection)
+
+// Blockly.getMainWorkspace().getBlockById(
+// "^.+[~zv0S#=*DXXwJ78J").nextConnection.connect(Blockly.getMainWorkspace().getBlockById("@y,S:q4dPE#8E^Y6yDCO").previousConnection)
