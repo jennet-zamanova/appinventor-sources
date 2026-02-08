@@ -1069,62 +1069,69 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   // console.log(changeSteps);
   // create empty workspace to hold second tree
-  for (const blockId of diff.removedIds) {
-    console.log("should change color of block: ", blockId);
-    const block = this.getBlockById(blockId);
-    if (block) {
-      block.setMovable(false);
-      block.setDeletable(false);
-      block.setEditable(false);
-      block.addSelect();
-      block.setColour(Blockly.BLOCK_REMOVED_HUE);
-      block.initSvg();
-      this.requestRender(block);
-    }
+  diff.removedIds.forEach(blockId => this.removeBlock(blockId));
+  diff.newIds.forEach(block => this.removeBlock(block));
+  // moves
+  for (const move of diff.movedIds) {
+    this.removeBlock(move.id);
+    this.addBlock(move);
   }
+}
+
+Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
+  console.log("should change color of block: ", blockID);
+  const block = this.getBlockById(blockID);
+  if (block) {
+    block.setMovable(true);
+    block.setDeletable(true);
+    block.setEditable(true);
+    block.addSelect();
+    block.setColour(Blockly.BLOCK_REMOVED_HUE);
+    block.initSvg();
+    this.requestRender(block);
+  }
+}
 
 
-  
-  // for (const step of changeSteps) {
-  //   console.log("loading v2 into headless workspace", step.action, step.action === AI.Blockly.Diff.REMOVE);
-  //   if (step.action === AI.Blockly.Diff.INSERT) {
-  //     console.log("should add block: ", step.blockId);
-  //     const newBlock = headlessWorkspace.getBlockById(step.blockId)
-  //     const block = Blockly.Xml.domToBlock(Blockly.Xml.blockToDom(newBlock), this);
-  //     block.setMovable(false);
-  //     block.setDeletable(false);
-  //     block.setEditable(false);
-  //     block.addSelect();
-  //     block.setColour(Blockly.BLOCK_ADDED_HUE);
-  //     block.initSvg();
-  //     this.requestRender(block);
-  //     // somehow tell where to connect the block
-  //   } else if (step.action === AI.Blockly.Diff.REMOVE) {
-  //     console.log("should change color of block: ", step.blockId);
-  //     const block = this.getBlockById(step.blockId);
-  //     if (block) {
-  //       block.setMovable(false);
-  //       block.setDeletable(false);
-  //       block.setEditable(false);
-  //       block.addSelect();
-  //       block.setColour(Blockly.BLOCK_REMOVED_HUE);
-  //       block.initSvg();
-  //       this.requestRender(block);
-  //     }
-  //   } else {
-  //     console.log("update block: ", step.blockId);
-  //     if ((step.field && step.field.length > 0) || (step.mutation && step.mutation.length > 0) || step.comment) {
-  //       const block = this.getBlockById(step.blockId);
-  //       if (block) {
-  //         block.setMovable(false);
-  //         block.setDeletable(false);
-  //         block.setEditable(false);
-  //         block.addSelect();
-  //         block.setColour(Blockly.BLOCK_CHANGED_HUE);
-  //         block.initSvg();
-  //         this.requestRender(block);
-  //       }
-  //     }
-  //   }
-  // }
+Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
+  const newDom = Blockly.Xml.blockToDom(block.block);
+  const newBlock = Blockly.Xml.domToBlock(newDom, this);
+  if (block.parentId && block.isNextBlock) {
+    const previousBlock = this.getBlockById(block.parentId);
+    if (previousBlock && previousBlock.nextConnection) {
+      // TODO: done automatically?
+      // if (previousBlock.nextConnection.targetConnection) {
+      //   const nextConnection = previousBlock.nextConnection.targetConnection;
+      //   newBlock.nextConnection.connect(nextConnection);
+      // }
+      previousBlock.nextConnection.connect(newBlock.previousConnection);
+    } // TODO: check the assumption 
+    else if (previousBlock && previousBlock.getInput('DO') && previousBlock.getInput('DO').connection) {
+      previousBlock.getInput('DO').connection.connect(newBlock.previousConnection);
+    } else {
+      console.warn("Could not connect previous/next for moved block", block.id, block.parentId, previousBlock);
+    }
+  } else if (block.parentId && block.inputName) {
+    console.log("as input");
+    const parentBlock = this.getBlockById(block.parentId);
+    if (parentBlock) {
+      const input = parentBlock.getInput(block.inputName);
+      if (input && input.connection && newBlock.outputConnection) {
+        input.connection.connect(newBlock.outputConnection);
+      } else {
+        console.warn("Could not connect input/output for inserted block", block.id);
+      }
+    } else {
+      console.warn("Could not find parent block for inserted block", block.id);
+    }
+  } else {
+    console.warn("could not connect to anything block ", block);
+  }
+  newBlock.setMovable(true);
+  newBlock.setDeletable(true);
+  newBlock.setEditable(true);
+  newBlock.addSelect();
+  newBlock.setColour(Blockly.BLOCK_ADDED_HUE);
+  newBlock.initSvg();
+  this.requestRender(newBlock);
 }
