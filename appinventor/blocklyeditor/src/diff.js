@@ -12,123 +12,99 @@ goog.require('zhangShasha');
 
 AI.Blockly.Diff = class {
 
-    // const v2 = await fetch('v2.xml').then(r => r.text());
-
-    /**
-     * Parses an XML string into a JS object, like xml2js
-     * @param {string} xmlString
-     * @return {<Object>}
-     */
-    static parseXmlString(xmlString) {
-        try {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-
-            const errorNode = xmlDoc.getElementsByTagName('parsererror')[0];
-            if (errorNode) {
-                console.log('Error node:', errorNode.textContent);
-                new Error('Invalid XML: ' + errorNode.textContent);
-                return;
-            }
-
-            // Elements that MUST always be arrays per Blockly schema
-            // TODO: double check this list
-            const ALWAYS_ARRAY = new Set([
-                'block',
-                'shadow',
-                'field',
-                'value',
-                'statement',
-                'next',
-                'comment',
-                'category',
-                'sep',
-                'label',
-                'button',
-                'variable',
-                'mutation',
-                'variables',
-            ]);
-
-            function nodeToObject(node) {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    const trimmed = node.textContent.trim();
-                    return trimmed ? trimmed : null;
-                }
-
-                const obj = {};
-
-                // attributes
-                if (node.attributes && node.attributes.length > 0) {
-                    obj['$'] = {};
-                    for (let attr of node.attributes) {
-                        obj['$'][attr.name] = attr.value;
-                    }
-                }
-
-                // children
-                for (let child of node.childNodes) {
-                    const childObj = nodeToObject(child);
-                    if (!childObj) continue;
-
-                    const childName = child.nodeName;
-
-                    // text-only simpleContent (field, comment, data, variable)
-                    if (typeof childObj === 'string') {
-                        obj._ = childObj;
-                        continue;
-                    }
-
-                    // force array if schema allows multiple
-                    if (ALWAYS_ARRAY.has(childName)) {
-                        if (!obj[childName]) obj[childName] = [];
-                        obj[childName].push(childObj);
-                    } else {
-                        obj[childName] = childObj;
-                    }
-                }
-
-                return Object.keys(obj).length === 0 ? null : obj;
-            }
-
-            return nodeToObject(xmlDoc.documentElement);
-
-        } catch (err) {
-            console.log('Error parsing XML string:', err);
-        }
-    }
-
     static async diff(blocksContent1, blocksContent2) {
-        const t1 = AI.Blockly.Diff.parseXmlString(blocksContent1);
-        const t2 = AI.Blockly.Diff.parseXmlString(blocksContent2);
-        console.log('T1:', t1);
-        console.log('-------------------');
-        console.log('T2:', t2);
-        const mapping = zhangShasha.treeEditDistance(t1, t2, AI.Blockly.Diff.children, AI.Blockly.Diff.insertCost, AI.Blockly.Diff.removeCost, AI.Blockly.Diff.updateCost);
-        console.log('Mapping:', mapping);
-        return mapping;
+        const ids1 = AI.Blockly.Diff.getFlatIds(blocksContent1);
+        console.log('IDs in T1:', ids1);
+        const ids2 = AI.Blockly.Diff.getFlatIds(blocksContent2);
+        console.log('IDs in T2:', ids2);
+        const newIds = [];
+        const removedIds = [];
+        const movedIds = [];
+
+        ids1.forEach(id => {
+            if (!ids2.includes(id)) {
+                removedIds.push(id);
+            }
+        });
+        
+        for (const [idx, id] of ids2.entries()) {
+            if (!ids1.includes(id)) {
+                newIds.push({
+                    id: id,
+                    block: blocksContent2[idx],
+                });
+            }
+        }
+
+        // find moved blocks: same id but different parent id
+        for (const block of blocksContent1) {
+            if (ids2.includes(block.id)) {
+                const parentId1 = block.getParent() ? block.getParent().id : null;
+                const b2 = blocksContent2[ids2.indexOf(block.id)];
+                const parentId2 = b2.getParent()?.id;
+                if (parentId1 && parentId2 && parentId1 !== parentId2) {
+                    movedIds.push({id: block.id, from: parentId1, to: parentId2});
+                }
+            }
+        }
+
+        return {
+            newIds: newIds,
+            removedIds: removedIds,
+            movedIds: movedIds,
+        }; // Placeholder for actual diff result
         // const changelog = AI.Blockly.Diff.generateChangelog(mapping);
         // console.log(changelog.join('\n'));
     }
 
-    static children(node) {
-        const children = [];
-        
-        // Define which keys just contain more blocks/data
-        const containerKeys = ['xml', 'category', 'sep', 'label', 'button', 'variables', 
-                                'variable', 'block', 'shadow', 'value', 'statement', 'next', 
-                                'comment', 'data'];
-
-        containerKeys.forEach(key => {
-            if (node && node[key] && Array.isArray(node[key])) {
-                children.push(...node[key]);
-            } else if (node && node[key]) {
-                children.push(node[key]);
+    static getFlatIds(nodes) {
+        const ids = [];
+        for (const node of nodes) {
+            if (node && node.id) {
+                ids.push(node.id);
             }
-        });
-
-        return children;
+        }
+        return ids;
     }
+
+    static getAllIdsForNodes(nodes) {
+        console.log("nodes: ", nodes.length, nodes);
+        const ids = [];
+        for (const node of nodes) {
+            console.log("another node");
+            ids.push(...AI.Blockly.Diff.getAllIdsForNode(node));
+        }
+        return ids;
+    }
+
+    static getAllIdsForNode(node, ids = new Array()) {
+        if (node && node.id) {
+            ids.push(node.id);
+        }
+        const children = node.getChildren();
+        console.log('Children of node', node.id, ':', children.map(c => c.id));
+        children.forEach(child => AI.Blockly.Diff.getAllIdsForNode(child, ids));
+        return ids;
+    }
+
+    // static children(node) {
+    //     const children = [];
+        
+    //     // Define which keys just contain more blocks/data
+    //     const containerKeys = ['xml', 'category', 'sep', 'label', 'button', 'variables', 
+    //                             'variable', 'block', 'shadow', 'value', 'statement', 'next', 
+    //                             'comment', 'data'];
+
+    //     containerKeys.forEach(key => {
+    //         if (node && node[key] && Array.isArray(node[key])) {
+    //             children.push(...node[key]);
+    //         } else if (node && node[key]) {
+    //             children.push(node[key]);
+    //         }
+    //     });
+
+    //     return children;
+    // }
 
     static insertCost () { return 1 }
     static removeCost () { return 1 }

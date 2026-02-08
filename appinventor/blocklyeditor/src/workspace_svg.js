@@ -1034,52 +1034,97 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
 };
 
 Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
-  const blocksContent = await fetch("static/media/v2.xml").then(r => r.text());
-  const diff = await AI.Blockly.Diff.diff(v1, blocksContent);
-  const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
-  console.log(changeSteps);
+  function createInvisibleAiWorkspaceFrom(mainWorkspace) {
+    const div = document.createElement('div');
+    div.style.display = 'none';
+    document.body.appendChild(div);
+
+    const ws = Blockly.inject(div, {
+      readOnly: true,
+      scrollbars: false,
+      sounds: false,
+      parentWorkspace: mainWorkspace, // ⭐ CRITICAL
+    });
+
+    // Copy AI-specific runtime state
+    ws.componentDb_ = mainWorkspace.componentDb_;
+    ws.getEventTypeObject = () => mainWorkspace.getEventTypeObject();
+    ws.getProcedureDatabase = () => mainWorkspace.getProcedureDatabase();
+
+    return ws;
+  }
+
+  const blocksText = await fetch("static/media/v2.xml").then(r => r.text());
+  // TODO: ask for a better way of doing this - we need a headless workspace to parse the blocks and generate the diff, 
+  // but we also need the component database and other runtime state to properly interpret the blocks and generate a meaningful diff. 
+  // Right now we're creating a hidden workspace attached to the main workspace just to reuse that state, but it feels hacky.
+  const hiddenWs = createInvisibleAiWorkspaceFrom(Blockly.getMainWorkspace());
+  const blocksContent = Blockly.utils.xml.textToDom(blocksText);
+  Blockly.Xml.domToWorkspace(blocksContent, hiddenWs);
+
+  const blocksContent1 = this.getAllBlocks(true);
+  const blocksContent2 = hiddenWs.getAllBlocks(true);
+  const diff = await AI.Blockly.Diff.diff(blocksContent1, blocksContent2);
+  console.log(diff);
+  // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
+  // console.log(changeSteps);
   // create empty workspace to hold second tree
-  const headlessWorkspace = new Blockly.Workspace();
-  for (const step of changeSteps) {
-    console.log("loading v2 into headless workspace", step.action, step.action === AI.Blockly.Diff.REMOVE);
-    if (step.action === AI.Blockly.Diff.INSERT) {
-      console.log("should add block: ", step.blockId);
-      const newBlock = headlessWorkspace.getBlockById(step.blockId)
-      const block = Blockly.Xml.domToBlock(Blockly.Xml.blockToDom(newBlock), this);
+  for (const blockId of diff.removedIds) {
+    console.log("should change color of block: ", blockId);
+    const block = this.getBlockById(blockId);
+    if (block) {
       block.setMovable(false);
       block.setDeletable(false);
       block.setEditable(false);
       block.addSelect();
-      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.setColour(Blockly.BLOCK_REMOVED_HUE);
       block.initSvg();
       this.requestRender(block);
-      // somehow tell where to connect the block
-    } else if (step.action === AI.Blockly.Diff.REMOVE) {
-      console.log("should change color of block: ", step.blockId);
-      const block = this.getBlockById(step.blockId);
-      if (block) {
-        block.setMovable(false);
-        block.setDeletable(false);
-        block.setEditable(false);
-        block.addSelect();
-        block.setColour(Blockly.BLOCK_REMOVED_HUE);
-        block.initSvg();
-        this.requestRender(block);
-      }
-    } else {
-      console.log("update block: ", step.blockId);
-      if ((step.field && step.field.length > 0) || (step.mutation && step.mutation.length > 0) || step.comment) {
-        const block = this.getBlockById(step.blockId);
-        if (block) {
-          block.setMovable(false);
-          block.setDeletable(false);
-          block.setEditable(false);
-          block.addSelect();
-          block.setColour(Blockly.BLOCK_CHANGED_HUE);
-          block.initSvg();
-          this.requestRender(block);
-        }
-      }
     }
   }
+
+
+  
+  // for (const step of changeSteps) {
+  //   console.log("loading v2 into headless workspace", step.action, step.action === AI.Blockly.Diff.REMOVE);
+  //   if (step.action === AI.Blockly.Diff.INSERT) {
+  //     console.log("should add block: ", step.blockId);
+  //     const newBlock = headlessWorkspace.getBlockById(step.blockId)
+  //     const block = Blockly.Xml.domToBlock(Blockly.Xml.blockToDom(newBlock), this);
+  //     block.setMovable(false);
+  //     block.setDeletable(false);
+  //     block.setEditable(false);
+  //     block.addSelect();
+  //     block.setColour(Blockly.BLOCK_ADDED_HUE);
+  //     block.initSvg();
+  //     this.requestRender(block);
+  //     // somehow tell where to connect the block
+  //   } else if (step.action === AI.Blockly.Diff.REMOVE) {
+  //     console.log("should change color of block: ", step.blockId);
+  //     const block = this.getBlockById(step.blockId);
+  //     if (block) {
+  //       block.setMovable(false);
+  //       block.setDeletable(false);
+  //       block.setEditable(false);
+  //       block.addSelect();
+  //       block.setColour(Blockly.BLOCK_REMOVED_HUE);
+  //       block.initSvg();
+  //       this.requestRender(block);
+  //     }
+  //   } else {
+  //     console.log("update block: ", step.blockId);
+  //     if ((step.field && step.field.length > 0) || (step.mutation && step.mutation.length > 0) || step.comment) {
+  //       const block = this.getBlockById(step.blockId);
+  //       if (block) {
+  //         block.setMovable(false);
+  //         block.setDeletable(false);
+  //         block.setEditable(false);
+  //         block.addSelect();
+  //         block.setColour(Blockly.BLOCK_CHANGED_HUE);
+  //         block.initSvg();
+  //         this.requestRender(block);
+  //       }
+  //     }
+  //   }
+  // }
 }
