@@ -1064,7 +1064,7 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
 
   const blocksContent1 = this.getTopBlocks();
   const blocksContent2 = hiddenWs.getTopBlocks();
-  const diff = await AI.Blockly.Diff.diff(blocksContent1, blocksContent2);
+  const diff = await AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(this.blockDB.keys()), new Set(hiddenWs.blockDB.keys()));
   console.log(diff);
   // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   // console.log(changeSteps);
