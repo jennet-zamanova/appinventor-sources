@@ -1062,15 +1062,15 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   const blocksContent = Blockly.utils.xml.textToDom(blocksText);
   Blockly.Xml.domToWorkspace(blocksContent, hiddenWs);
 
-  const blocksContent1 = this.getAllBlocks(true);
-  const blocksContent2 = hiddenWs.getAllBlocks(true);
+  const blocksContent1 = this.getTopBlocks();
+  const blocksContent2 = hiddenWs.getTopBlocks();
   const diff = await AI.Blockly.Diff.diff(blocksContent1, blocksContent2);
   console.log(diff);
   // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   // console.log(changeSteps);
   // create empty workspace to hold second tree
   diff.removedIds.forEach(blockId => this.removeBlock(blockId));
-  diff.newIds.forEach(block => this.removeBlock(block));
+  diff.newIds.forEach(block => this.addBlock(block));
   // moves
   for (const move of diff.movedIds) {
     this.removeBlock(move.id);
@@ -1078,26 +1078,75 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   }
 }
 
-Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
-  console.log("should change color of block: ", blockID);
+Blockly.WorkspaceSvg.prototype.getChildIdsFromID = function(blockID) {
+  const childIDs = [];
   const block = this.getBlockById(blockID);
   if (block) {
-    block.setMovable(true);
-    block.setDeletable(true);
-    block.setEditable(true);
-    block.addSelect();
-    block.setColour(Blockly.BLOCK_REMOVED_HUE);
-    block.initSvg();
-    this.requestRender(block);
+    const children = block.getChildren();
+    const next = block.getNextBlock();
+    for (const child of children) {
+      if (!next || next?.id !== child.id) {
+        childIDs.push(child.id);
+        const grandChildIDs = this.getChildIdsFromID(child.id);
+        childIDs.push(...grandChildIDs);
+      }
+    }
+  }
+  return childIDs;
+}
+
+Blockly.WorkspaceSvg.prototype.getChildIdsFromBlock = function(block) {
+  const childIDs = [];
+  if (block) {
+    const children = block.getChildren();
+    const next = block.getNextBlock();
+    for (const child of children) {
+      if (!next || next?.id !== child.id) {
+        childIDs.push(child.id);
+        const grandChildIDs = this.getChildIdsFromBlock(child);
+        childIDs.push(...grandChildIDs);
+      }
+    }
+  }
+  return childIDs;
+}
+
+Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
+  console.log("should change color of block: ", blockID);
+  // const block = this.getBlockById(blockID);
+  // if (block) {
+  //   block.setMovable(true);
+  //   block.setDeletable(true);
+  //   block.setEditable(true);
+  //   block.addSelect();
+  //   block.setColour(Blockly.BLOCK_REMOVED_HUE);
+  //   block.initSvg();
+  //   this.requestRender(block);
+  // }
+
+  const ids = this.getChildIdsFromID(blockID);
+  ids.push(blockID);
+  for (const id of ids) {
+    const block = this.getBlockById(id);
+    if (block) {
+      // block.setMovable(false);
+      // block.setDeletable(false);
+      // block.setEditable(false);
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_REMOVED_HUE);
+      block.initSvg();
+      this.requestRender(block);
+    }
   }
 }
 
 
 Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
+  console.log("should add block: ", block);
   const newDom = Blockly.Xml.blockToDom(block.block);
   const newBlock = Blockly.Xml.domToBlock(newDom, this);
-  if (block.parentId && block.isNextBlock) {
-    const previousBlock = this.getBlockById(block.parentId);
+  if (block.newParentId && block.isNextBlock) {
+    const previousBlock = this.getBlockById(block.newParentId);
     if (previousBlock && previousBlock.nextConnection) {
       // TODO: done automatically?
       // if (previousBlock.nextConnection.targetConnection) {
@@ -1105,18 +1154,18 @@ Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
       //   newBlock.nextConnection.connect(nextConnection);
       // }
       previousBlock.nextConnection.connect(newBlock.previousConnection);
-    } // TODO: check the assumption 
-    else if (previousBlock && previousBlock.getInput('DO') && previousBlock.getInput('DO').connection) {
-      previousBlock.getInput('DO').connection.connect(newBlock.previousConnection);
     } else {
-      console.warn("Could not connect previous/next for moved block", block.id, block.parentId, previousBlock);
+      console.warn("Could not connect previous/next for moved block", block.id, block.newParentId, previousBlock);
     }
-  } else if (block.parentId && block.inputName) {
+  } else if (block.newParentId && block.inputName) {
     console.log("as input");
-    const parentBlock = this.getBlockById(block.parentId);
+    const parentBlock = this.getBlockById(block.newParentId);
     if (parentBlock) {
       const input = parentBlock.getInput(block.inputName);
-      if (input && input.connection && newBlock.outputConnection) {
+      // TODO: check the assumption
+      if (block.inputName === "DO" && input && input.connection) {
+        input.connection.connect(newBlock.previousConnection);
+      } else if (input && input.connection && newBlock.outputConnection) {
         input.connection.connect(newBlock.outputConnection);
       } else {
         console.warn("Could not connect input/output for inserted block", block.id);
@@ -1124,14 +1173,32 @@ Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
     } else {
       console.warn("Could not find parent block for inserted block", block.id);
     }
+  } else if (block.newParentId === 'root') {
+    console.log("as root");
   } else {
     console.warn("could not connect to anything block ", block);
   }
-  newBlock.setMovable(true);
-  newBlock.setDeletable(true);
-  newBlock.setEditable(true);
-  newBlock.addSelect();
-  newBlock.setColour(Blockly.BLOCK_ADDED_HUE);
-  newBlock.initSvg();
-  this.requestRender(newBlock);
+
+
+  const ids = this.getChildIdsFromBlock(newBlock);
+  ids.push(newBlock.id);
+  for (const id of ids) {
+    const block = this.getBlockById(id);
+    if (block) {
+      block.setMovable(true);
+      block.setDeletable(true);
+      block.setEditable(true);
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.initSvg();
+      this.requestRender(block);
+    }
+  }
+  // newBlock.setMovable(true);
+  // newBlock.setDeletable(true);
+  // newBlock.setEditable(true);
+  // newBlock.addSelect();
+  // newBlock.setColour(Blockly.BLOCK_ADDED_HUE);
+  // newBlock.initSvg();
+  // this.requestRender(newBlock);
 }
