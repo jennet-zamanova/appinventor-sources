@@ -1,7 +1,5 @@
 'use strict';
 
-// const { assert } = require("chai");
-
 goog.provide('AI.Blockly.Tests.Diff');
 
 // App Inventor extensions to Blockly
@@ -9,12 +7,9 @@ goog.require('AI.Blockly.Util');
 goog.require('AI.Blockly.Util.xml');
 goog.require('AI.Blockly.Diff');
 
-// goog.require('goog.testing.asserts');
 
 async function logFile(file) {
   try {
-    // const filePath = resolve(file);
-    // const contents = await readFile(filePath, { encoding: 'utf8' });
     const contents = await fetch(file).then(r => r.text());
     return contents;
   } catch (err) {
@@ -238,9 +233,6 @@ AI.Blockly.Tests.Diff = class {
         assertNullOrFalse('is next block', diff.newIdsInfo[0].isNextBlock);
         assertEquals('input name', 'DO', diff.newIdsInfo[0].inputName);
 
-        // assertTrue('move block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
-        // assertTrue('move block id 2', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
-
         const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
                 <value name="IF0"> \
                     <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
@@ -291,9 +283,6 @@ AI.Blockly.Tests.Diff = class {
         assertEquals('new parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.newIdsInfo[0].newParentId);
         assertNullOrFalse('is next block', diff.newIdsInfo[0].isNextBlock);
         assertEquals('input name', 'DO', diff.newIdsInfo[0].inputName);
-
-        // assertTrue('move block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
-        // assertTrue('move block id 2', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
 
         const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
                 <statement name="DO0"> \
