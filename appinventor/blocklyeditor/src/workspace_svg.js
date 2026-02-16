@@ -20,6 +20,7 @@ goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
+goog.require('AI.Blockly.Tests.Diff');
 
 /**
  * AI2 Blocks Drawer
@@ -1034,6 +1035,7 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
 };
 
 Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
+  await AI.Blockly.Tests.Diff.runAllTests();
   function createInvisibleAiWorkspaceFrom(mainWorkspace) {
     const div = document.createElement('div');
     div.style.display = 'none';
@@ -1073,8 +1075,8 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   diff.newIds.forEach(block => this.addBlock(block));
   // moves
   for (const move of diff.movedIds) {
-    this.removeBlock(move.id);
-    this.addBlock(move);
+    this.removeBlock(move.id, Blockly.BLOCK_MOVED_REMOVED_HUE);
+    this.addBlock(move, Blockly.BLOCK_MOVED_ADDED_HUE);
   }
 }
 
@@ -1111,7 +1113,7 @@ Blockly.WorkspaceSvg.prototype.getChildIdsFromBlock = function(block) {
   return childIDs;
 }
 
-Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
+Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID, hue = Blockly.BLOCK_REMOVED_HUE) {
   console.log("should change color of block: ", blockID);
   // const block = this.getBlockById(blockID);
   // if (block) {
@@ -1133,7 +1135,7 @@ Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
       // block.setDeletable(false);
       // block.setEditable(false);
       block.addSelect();
-      block.setColour(Blockly.BLOCK_REMOVED_HUE);
+      block.setColour(hue);
       block.initSvg();
       this.requestRender(block);
     }
@@ -1141,7 +1143,7 @@ Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID) {
 }
 
 
-Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
+Blockly.WorkspaceSvg.prototype.addBlock = function(block, hue = Blockly.BLOCK_ADDED_HUE) {
   console.log("should add block: ", block);
   const newDom = Blockly.Xml.blockToDom(block.block);
   const newBlock = Blockly.Xml.domToBlock(newDom, this);
@@ -1189,7 +1191,7 @@ Blockly.WorkspaceSvg.prototype.addBlock = function(block) {
       block.setDeletable(true);
       block.setEditable(true);
       block.addSelect();
-      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.setColour(hue);
       block.initSvg();
       this.requestRender(block);
     }
