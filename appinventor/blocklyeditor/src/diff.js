@@ -190,11 +190,23 @@ AI.Blockly.Diff = class {
         const insertionInfo = [];
         const queue = [...blocks]; // Use an array as a queue (FIFO)
 
+        console.log("blocks to check for new/moved ids: ", blocks);
+
         for (const block of blocks) {
             if (ids.has(block.id)) {
+                let dom = Blockly.Xml.blockToDom(block);
+
+                // Find all <next> tags
+                let nextTags = dom.getElementsByTagName('next');
+
+                // Remove the first <next> tag found
+                if (nextTags.length > 0) {
+                    nextTags[0].parentNode.removeChild(nextTags[0]);
+                }
+
                 insertionInfo.push({
                     id: block.id,
-                    block: block,
+                    block: dom,
                     newParentId: null,
                     isNextBlock: false,
                     inputName: null,
@@ -221,18 +233,21 @@ AI.Blockly.Diff = class {
             for (const child of (node.getChildren() || [])) {
                 // if next remove node, ignore that parent is there already
                 // and remove from the child any next connection, so that it does not get added as well
-
+                console.log("checking child ", child.id, child, " with parent ", node.id);
                 if (ids.has(child.id)) {
                     // if the block is connected to the parent as a next block, remove the next connection for insertion
                     // child.getNextBlock()?.dispose();
                     let dom = Blockly.Xml.blockToDom(child);
+                    console.log("dom for child ", child.id, " is ", dom);
 
                     // Find all <next> tags
                     let nextTags = dom.getElementsByTagName('next');
 
                     // Remove the first <next> tag found (or loop through to remove all)
                     if (nextTags.length > 0) {
+                        console.log("before removing tag: ", dom);
                         nextTags[0].parentNode.removeChild(nextTags[0]);
+                        console.log("after removing tag: ", dom);
                     }
                     
                     const nextBlock = node?.getNextBlock();
@@ -242,7 +257,7 @@ AI.Blockly.Diff = class {
                         // if the block is connected to the parent as a next block, remove the next connection for insertion
                         insertionInfo.push({
                             id: child.id,
-                            block: child,
+                            block: dom,
                             newParentId: node.id,
                             isNextBlock: nextBlock, // if the block is connected to the parent as a next block
                             inputName: null,
@@ -253,9 +268,9 @@ AI.Blockly.Diff = class {
                         let inputName = node?.getInputWithBlock(child)?.name;
                         insertionInfo.push({
                             id: child.id,
-                            block: child,
+                            block: dom,
                             newParentId: node.id,
-                            isNextBlock: nextBlock, // if the block is connected to the parent as a next block
+                            isNextBlock: false, // if the block is connected to the parent as a next block would have been in previous if condition
                             inputName: inputName,
                         });
                     }

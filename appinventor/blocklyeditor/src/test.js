@@ -54,7 +54,7 @@ const assertEqualSets = (message, expected, actual) => {
 
 const assertEqualDoms = (actual, expected) => {
     const expectedElement = Blockly.utils.xml.textToDom(expected);
-    const actualElement = Blockly.Xml.blockToDom(actual);
+    const actualElement = actual;
     expectedElement.removeAttribute('x');
     expectedElement.removeAttribute('y');
     expectedElement.removeAttribute('xmlns');
@@ -79,12 +79,16 @@ const assertEqualDoms = (actual, expected) => {
 AI.Blockly.Tests.Diff = class {
     static async runAllTests() {
         const tests = [
-            { name: 'should return one new id', fn: AI.Blockly.Tests.Diff.testNewBlock1 },
+            { name: 'should return one new id, insert as root', fn: AI.Blockly.Tests.Diff.testNewBlock1 },
             { name: 'should return one new id 3', fn: AI.Blockly.Tests.Diff.testNewBlock2 },
             { name: 'insert but all children are moved (1 new)', fn: AI.Blockly.Tests.Diff.testNewBlock3 },
             { name: 'insert but all children are moved (not new)', fn: AI.Blockly.Tests.Diff.testNewBlock6 },
             { name: 'insert and all children are new', fn: AI.Blockly.Tests.Diff.testNewBlock4 },
             { name: 'insert and some children are new and some children are moved', fn: AI.Blockly.Tests.Diff.testNewBlock5 },
+            { name: 'insert as input child', fn: AI.Blockly.Tests.Diff.testNewBlock7 },
+            { name: 'insert at root', fn: AI.Blockly.Tests.Diff.testNewBlock8 },
+            { name: 'insert as next', fn: AI.Blockly.Tests.Diff.testNewBlock9 },
+            { name: 'insert between blocks', fn: AI.Blockly.Tests.Diff.testNewBlock10 },
         ];
 
         const results = await Promise.allSettled(
@@ -253,14 +257,6 @@ AI.Blockly.Tests.Diff = class {
                         </value> \
                     </block> \
                 </statement> \
-                <next> \
-                            <block type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
-                                <mutation xmlns="http://www.w3.org/1999/xhtml" \
-                                    component_type="TextBox" method_name="HideKeyboard" \
-                                    is_generic="false" instance_name="TextBox1"></mutation> \
-                                <field name="COMPONENT_SELECTOR">TextBox1</field> \
-                            </block> \
-                </next> \
             </block>';
         assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
     }
@@ -299,14 +295,6 @@ AI.Blockly.Tests.Diff = class {
                         </value> \
                     </block> \
                 </statement> \
-                <next> \
-                    <block type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
-                        <mutation xmlns="http://www.w3.org/1999/xhtml" \
-                            component_type="TextBox" method_name="HideKeyboard" \
-                            is_generic="false" instance_name="TextBox1"></mutation> \
-                        <field name="COMPONENT_SELECTOR">TextBox1</field> \
-                    </block> \
-                </next> \
             </block>';
         assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
     }
@@ -346,6 +334,7 @@ AI.Blockly.Tests.Diff = class {
         assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
     }
 
+    // TODO: why in the world is the next block missing inside the child of the node inserted???
     static async testNewBlock5(name) {
         console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml");
@@ -401,39 +390,117 @@ AI.Blockly.Tests.Diff = class {
         assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
     }
 
+    static async testNewBlock7(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_020_b1_click_if_none_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_019_b1_click_if_b1_text_skip_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('new ids length', 1, diff.newIds.size);  
+        assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'YRHgY.0tOrfK-xwr!~S2', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'Wb{Er@h_7Z`abf+S?e{_', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('new block id 1', diff.newIds.has('BUaFURbz8x;xH+$#SEBY'));
+        assertEquals('new block id', 'BUaFURbz8x;xH+$#SEBY', diff.newIdsInfo[0].id);
+        assertEquals('new parent id', 'YRHgY.0tOrfK-xwr!~S2', diff.newIdsInfo[0].newParentId);
+        assertNullOrFalse('is next not block', diff.newIdsInfo[0].isNextBlock);
+        assertEquals('input name', 'IF0', diff.newIdsInfo[0].inputName);
+
+        const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+                        <field name="BOOL">TRUE</field> \
+                    </block>';
+        assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testNewBlock8(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_014_b1_click_b1_text_b1_focus_skip_t1_hide.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('new ids length', 1, diff.newIds.size);  
+        assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('new block id 1', diff.newIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+        assertEquals('new block id', 'Wb{Er@h_7Z`abf+S?e{_', diff.newIdsInfo[0].id);
+        assertNullOrFalse('new parent id is root',  diff.newIdsInfo[0].newParentId);
+        assertNullOrFalse('is not next block', diff.newIdsInfo[0].isNextBlock);
+        assertNullOrFalse('no input name', diff.newIdsInfo[0].inputName);
+
+        const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+                                    method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+                                <field name="COMPONENT_SELECTOR">TextBox1</field> \
+                            </block>';
+        assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testNewBlock9(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('new ids length', 1, diff.newIds.size);  
+        assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('new block id 1', diff.newIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+        assertEquals('new block id', 'Wb{Er@h_7Z`abf+S?e{_', diff.newIdsInfo[0].id);
+        assertEquals('new parent id', 'x#ww8BrXT*5A{XM^8#Nq',  diff.newIdsInfo[0].newParentId);
+        assertTrue('is next block', diff.newIdsInfo[0].isNextBlock);
+        assertNullOrFalse('no input name', diff.newIdsInfo[0].inputName);
+
+        const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+                                    method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+                                <field name="COMPONENT_SELECTOR">TextBox1</field> \
+                            </block>';
+        assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testNewBlock10(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_021_b1_click_b1_text_if_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('new ids length', 2, diff.newIds.size);  
+        assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'Wb{Er@h_7Z`abf+S?e{_', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('new block id 1', diff.newIds.has('YRHgY.0tOrfK-xwr!~S2'));
+        assertTrue('new block id 2', diff.newIds.has('BUaFURbz8x;xH+$#SEBY'));
+        assertEquals('new block id', 'YRHgY.0tOrfK-xwr!~S2', diff.newIdsInfo[0].id);
+        assertEquals('new parent id', 'x#ww8BrXT*5A{XM^8#Nq',  diff.newIdsInfo[0].newParentId);
+        assertTrue('is next block', diff.newIdsInfo[0].isNextBlock);
+        assertNullOrFalse('no input name', diff.newIdsInfo[0].inputName);
+
+        const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+                                <value name="IF0"> \
+                                    <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+                                        <field name="BOOL">TRUE</field> \
+                                    </block> \
+                                </value> \
+                            </block>';
+        assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
+
+    }
 };
 
 
 
 // describe("Diff", function () {
 //     describe("new block", function () {
-//         it("should return one new id", async function () {
-            
-//         });
-
-//         it("insert but all children are moved (not new)", function () {
-//             // TODO
-//         });
-
-//         it("insert and all children are new", function () {
-//             // TODO
-//         });
-
-//         it("insert and some children are new and some children are moved", function () {
-//             // TODO
-//         });
-
-//         it("insert as input child", function () {
-//             // TODO
-//         });
-
-//         it("insert at root", function () {
-//             // TODO
-//         });
-
-//         it("insert as next", function () {
-//             // TODO
-//         });
 
 //         it("insert between blocks", function () {
 //             // TODO
