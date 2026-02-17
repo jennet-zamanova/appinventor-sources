@@ -80,7 +80,7 @@ AI.Blockly.Tests.Diff = class {
     static async runAllTests() {
         const tests = [
             { name: 'should return one new id, insert as root', fn: AI.Blockly.Tests.Diff.testNewBlock1 },
-            { name: 'should return one new id 3', fn: AI.Blockly.Tests.Diff.testNewBlock2 },
+            { name: 'should return three new ids', fn: AI.Blockly.Tests.Diff.testNewBlock2 },
             { name: 'insert but all children are moved (1 new)', fn: AI.Blockly.Tests.Diff.testNewBlock3 },
             { name: 'insert but all children are moved (not new)', fn: AI.Blockly.Tests.Diff.testNewBlock6 },
             { name: 'insert and all children are new', fn: AI.Blockly.Tests.Diff.testNewBlock4 },
@@ -89,6 +89,17 @@ AI.Blockly.Tests.Diff = class {
             { name: 'insert at root', fn: AI.Blockly.Tests.Diff.testNewBlock8 },
             { name: 'insert as next', fn: AI.Blockly.Tests.Diff.testNewBlock9 },
             { name: 'insert between blocks', fn: AI.Blockly.Tests.Diff.testNewBlock10 },
+
+            { name: 'should return one removed id, removed root', fn: AI.Blockly.Tests.Diff.testRemoveBlock1 },
+            { name: 'should return three removed ids', fn: AI.Blockly.Tests.Diff.testRemoveBlock2 },
+            { name: 'remove but all children are moved (1 removed)', fn: AI.Blockly.Tests.Diff.testRemoveBlock3 },
+            { name: 'remove but all children are moved (remain in workspace)', fn: AI.Blockly.Tests.Diff.testRemoveBlock6 },
+            { name: 'remove and all children are also removed', fn: AI.Blockly.Tests.Diff.testRemoveBlock4 },
+            { name: 'remove and some children are removed and some children are moved (remain in workspace)', fn: AI.Blockly.Tests.Diff.testRemoveBlock5 },
+            { name: 'remove as input child', fn: AI.Blockly.Tests.Diff.testRemoveBlock7 },
+            { name: 'remove at root', fn: AI.Blockly.Tests.Diff.testRemoveBlock8 },
+            { name: 'remove as next', fn: AI.Blockly.Tests.Diff.testRemoveBlock9 },
+            { name: 'remove between blocks', fn: AI.Blockly.Tests.Diff.testRemoveBlock10 },
         ];
 
         const results = await Promise.allSettled(
@@ -495,62 +506,374 @@ AI.Blockly.Tests.Diff = class {
         assertEqualDoms(diff.newIdsInfo[0].block, expectedDOM);
 
     }
+
+
+    static async testRemoveBlock1(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_011_b1_click_b1_text.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+
+        assertEquals('removed ids length', 1, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size); 
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy']), diff.unchangedIds); 
+        assertTrue('removed block id', diff.removedIds.has('HYW/b5Ae79{HFc.u^M_1'));
+
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'HYW/b5Ae79{HFc.u^M_1', diff.removedIdsInfo[0].id);
+        // assertNull('removed parent id', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertNull('input name', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = `<block xmlns="https://developers.google.com/blockly/xml" type="component_event" id="HYW/b5Ae79{HFc.u^M_1"> 
+        //                         <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" 
+        //                             instance_name="Button1" event_name="GotFocus"></mutation> 
+        //                         <field name="COMPONENT_SELECTOR">Button1</field> 
+        //                     </block>`;
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock2(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_011_b1_click_b1_text.xml", "static/media/test_01_blank.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+
+        assertEquals('new ids length', 3, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEquals('unchanged ids length', 0, diff.unchangedIds.size);
+
+        assertTrue('removed block id 1', diff.removedIds.has('S1DtWUK}krc|(xEc7{Ye'));
+        assertTrue('removed block id 2', diff.removedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
+        assertTrue('removed block id 3', diff.removedIds.has('A%L/*!(?[qhngbz7(ymy'));
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+    //     assertEquals('new block id', 'S1DtWUK}krc|(xEc7{Ye', diff.removedIdsInfo[0].id);
+    //     assertNull('removed parent id', diff.removedIdsInfo[0].newParentId);
+    //     assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+    //     assertNull('input name', diff.removedIdsInfo[0].inputName);
+
+    //     const expectedDOM = `<block xmlns="https://developers.google.com/blockly/xml" type="component_event" id="S1DtWUK}krc|(xEc7{Ye">
+    //     <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false"
+    //         instance_name="Button1" event_name="Click"></mutation>
+    //     <field name="COMPONENT_SELECTOR">Button1</field>
+    //     <statement name="DO">
+    //         <block type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq">
+    //             <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button"
+    //                 set_or_get="set" property_name="Text" is_generic="false" instance_name="Button1"></mutation>
+    //             <field name="COMPONENT_SELECTOR">Button1</field>
+    //             <field name="PROP">Text</field>
+    //             <value name="VALUE">
+    //                 <block type="text" id="A%L/*!(?[qhngbz7(ymy">
+    //                     <field name="TEXT"></field>
+    //                 </block>
+    //             </value>
+    //         </block>
+    //     </statement>
+    // </block>`;
+    //     assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock3(name) {
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_019_b1_click_if_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('new ids length', 2, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'Wb{Er@h_7Z`abf+S?e{_', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('YRHgY.0tOrfK-xwr!~S2'));
+        assertTrue('removed block id 2', diff.removedIds.has('BUaFURbz8x;xH+$#SEBY'));
+
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'YRHgY.0tOrfK-xwr!~S2', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertEquals('input name', 'DO', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+        //         <value name="IF0"> \
+        //             <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+        //                 <field name="BOOL">TRUE</field> \
+        //             </block> \
+        //         </value> \
+        //         <statement name="DO0"> \
+        //             <block type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq"> \
+        //                 <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" \
+        //                     set_or_get="set" property_name="Text" is_generic="false" \
+        //                     instance_name="Button1"></mutation> \
+        //                 <field name="COMPONENT_SELECTOR">Button1</field> \
+        //                 <field name="PROP">Text</field> \
+        //                 <value name="VALUE"> \
+        //                     <block type="text" id="A%L/*!(?[qhngbz7(ymy"> \
+        //                         <field name="TEXT"></field> \
+        //                     </block> \
+        //                 </value> \
+        //             </block> \
+        //         </statement> \
+        //     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock6(name) {
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_020_b1_click_if_none_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 1, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'Wb{Er@h_7Z`abf+S?e{_', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('YRHgY.0tOrfK-xwr!~S2'));
+
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'YRHgY.0tOrfK-xwr!~S2', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertEquals('input name', 'DO', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+        //         <statement name="DO0"> \
+        //             <block type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq"> \
+        //                 <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" \
+        //                     set_or_get="set" property_name="Text" is_generic="false" \
+        //                     instance_name="Button1"></mutation> \
+        //                 <field name="COMPONENT_SELECTOR">Button1</field> \
+        //                 <field name="PROP">Text</field> \
+        //                 <value name="VALUE"> \
+        //                     <block type="text" id="A%L/*!(?[qhngbz7(ymy"> \
+        //                         <field name="TEXT"></field> \
+        //                     </block> \
+        //                 </value> \
+        //             </block> \
+        //         </statement> \
+        //     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+
+    static async testRemoveBlock4(name) {
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_013_b1_click_b1_text_b1_focus_t1_hide.xml", "static/media/test_011_b1_click_b1_text.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 2, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size); 
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy']), diff.unchangedIds); 
+ 
+
+        assertTrue('removed block id 1', diff.removedIds.has('HYW/b5Ae79{HFc.u^M_1'));
+        assertTrue('removed block id 2', diff.removedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'HYW/b5Ae79{HFc.u^M_1', diff.removedIdsInfo[0].id);
+        // assertNull('removed parent id', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertNull('input name', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="component_event" id="HYW/b5Ae79{HFc.u^M_1"> \
+        //                         <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" is_generic="false" \
+        //                             instance_name="Button1" event_name="GotFocus"></mutation> \
+        //                         <field name="COMPONENT_SELECTOR">Button1</field> \
+        //                         <statement name="DO"> \
+        //                             <block type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+        //                                 <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+        //                                     method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+        //                                 <field name="COMPONENT_SELECTOR">TextBox1</field> \
+        //                             </block> \
+        //                         </statement> \
+        //                     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    // TODO: why in the world is the next block missing inside the child of the node inserted???
+    static async testRemoveBlock5(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 2, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'Wb{Er@h_7Z`abf+S?e{_', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+
+        assertTrue('removed block id 1', diff.removedIds.has('YRHgY.0tOrfK-xwr!~S2'));
+        assertTrue('removed block id 2', diff.removedIds.has('BUaFURbz8x;xH+$#SEBY'));
+        // assertTrue('moved block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
+        // assertTrue('moved block id 2', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'YRHgY.0tOrfK-xwr!~S2', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertEquals('input name', 'DO', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+        //         <value name="IF0"> \
+        //             <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+        //                 <field name="BOOL">TRUE</field> \
+        //             </block> \
+        //         </value> \
+        //         <statement name="DO0"> \
+        //             <block type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq"> \
+        //                 <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" \
+        //                     set_or_get="set" property_name="Text" is_generic="false" \
+        //                     instance_name="Button1"></mutation> \
+        //                 <field name="COMPONENT_SELECTOR">Button1</field> \
+        //                 <field name="PROP">Text</field> \
+        //                 <value name="VALUE"> \
+        //                     <block type="text" id="A%L/*!(?[qhngbz7(ymy"> \
+        //                         <field name="TEXT"></field> \
+        //                     </block> \
+        //                 </value> \
+        //                 <next> \
+        //                     <block type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+        //                         <mutation xmlns="http://www.w3.org/1999/xhtml" \
+        //                             component_type="TextBox" method_name="HideKeyboard" \
+        //                             is_generic="false" instance_name="TextBox1"></mutation> \
+        //                         <field name="COMPONENT_SELECTOR">TextBox1</field> \
+        //                     </block> \
+        //                 </next> \
+        //             </block> \
+        //         </statement> \
+        //     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock7(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_019_b1_click_if_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_020_b1_click_if_none_b1_text_skip_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 1, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'YRHgY.0tOrfK-xwr!~S2', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'Wb{Er@h_7Z`abf+S?e{_', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('BUaFURbz8x;xH+$#SEBY'));
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'BUaFURbz8x;xH+$#SEBY', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'YRHgY.0tOrfK-xwr!~S2', diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is next not block', diff.removedIdsInfo[0].isNextBlock);
+        // assertEquals('input name', 'IF0', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+        //                 <field name="BOOL">TRUE</field> \
+        //             </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock8(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_014_b1_click_b1_text_b1_focus_skip_t1_hide.xml", "static/media/test_012_b1_click_b1_text_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 1, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'Wb{Er@h_7Z`abf+S?e{_', diff.removedIdsInfo[0].id);
+        // assertNullOrFalse('removed parent id is root',  diff.removedIdsInfo[0].newParentId);
+        // assertNullOrFalse('is not next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertNullOrFalse('no input name', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+        //                         <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+        //                             method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+        //                         <field name="COMPONENT_SELECTOR">TextBox1</field> \
+        //                     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock9(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_012_b1_click_b1_text_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 1, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'Wb{Er@h_7Z`abf+S?e{_', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'x#ww8BrXT*5A{XM^8#Nq',  diff.removedIdsInfo[0].newParentId);
+        // assertTrue('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertNullOrFalse('no input name', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+        //                         <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+        //                             method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+        //                         <field name="COMPONENT_SELECTOR">TextBox1</field> \
+        //                     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testRemoveBlock10(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_021_b1_click_b1_text_if_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 2, diff.removedIds.size);  
+        // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 0, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye', 'Wb{Er@h_7Z`abf+S?e{_', 'x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy', 'HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('removed block id 1', diff.removedIds.has('YRHgY.0tOrfK-xwr!~S2'));
+        assertTrue('removed block id 2', diff.removedIds.has('BUaFURbz8x;xH+$#SEBY'));
+        // TODO: need to add removedIdsInfo back in and verify the info is correct for the removed block
+        // assertEquals('removed block id', 'YRHgY.0tOrfK-xwr!~S2', diff.removedIdsInfo[0].id);
+        // assertEquals('removed parent id', 'x#ww8BrXT*5A{XM^8#Nq',  diff.removedIdsInfo[0].newParentId);
+        // assertTrue('is next block', diff.removedIdsInfo[0].isNextBlock);
+        // assertNullOrFalse('no input name', diff.removedIdsInfo[0].inputName);
+
+        // const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+        //                         <value name="IF0"> \
+        //                             <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+        //                                 <field name="BOOL">TRUE</field> \
+        //                             </block> \
+        //                         </value> \
+        //                     </block>';
+        // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
+
+    }
 };
 
 
 
 // describe("Diff", function () {
-//     describe("new block", function () {
-
-//         it("insert between blocks", function () {
-//             // TODO
-//         });
-//     });
-
-//     describe("remove block", function () {
-//         it("should return one new id", function () {
-//             // TODO
-//         });
-
-//         it("should return two new ids?", function () {
-//             // TODO
-//         });
-
-//         it("remove but all children are moved (remain in workspace)", function () {
-//             // TODO
-//         });
-
-//         it("remove and all children are also removed", function () {
-//             // TODO
-//         });
-
-//         it("remove and some children are removed and some children are moved (remain in workspace)", function () {
-//             // TODO
-//         });
-
-//         it("remove input child", function () {
-//             // TODO
-//         });
-
-//         it("remove at root", function () {
-//             // TODO
-//         });
-
-//         it("remove as next", function () {
-//             // TODO
-//         });
-
-//         it("remove from between blocks", function () {
-//             // TODO
-//         });
-//     });
 
 //     describe("move block", function () {
-//         it("should return one new id", function () {
+//         it("should return one move id", function () {
 //             // TODO
 //         });
 
-//         it("should return two new ids?", function () {
+//         it("should return two move ids?", function () {
 //             // TODO
 //         });
 
