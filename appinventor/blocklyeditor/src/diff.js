@@ -239,18 +239,13 @@ AI.Blockly.Diff = class {
                     // child.getNextBlock()?.dispose();
                     let dom = Blockly.Xml.blockToDom(child);
                     console.log("dom for child ", child.id, " is ", dom);
-
-                    // Find all <next> tags
-                    let nextTags = dom.getElementsByTagName('next');
-
-                    // Remove the first <next> tag found (or loop through to remove all)
-                    if (nextTags.length > 0) {
-                        console.log("before removing tag: ", dom);
-                        nextTags[0].parentNode.removeChild(nextTags[0]);
-                        console.log("after removing tag: ", dom);
-                    }
                     
                     const nextBlock = node?.getNextBlock();
+                    
+                    if (child.getNextBlock()) {    
+                        // Find all <next> tags
+                        Blockly.Xml.deleteNext(dom);
+                    }
                     console.log("checking child ", child.id, " with parent ", node.id, " next block: ", nextBlock?.id);
                     if (nextBlock && nextBlock.id === child.id) {
                         console.log("child ", child.id, " is connected to parent ", node.id, " as a next block, removing next connection for insertion");

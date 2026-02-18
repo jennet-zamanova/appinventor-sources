@@ -100,6 +100,21 @@ AI.Blockly.Tests.Diff = class {
             { name: 'remove at root', fn: AI.Blockly.Tests.Diff.testRemoveBlock8 },
             { name: 'remove as next', fn: AI.Blockly.Tests.Diff.testRemoveBlock9 },
             { name: 'remove between blocks', fn: AI.Blockly.Tests.Diff.testRemoveBlock10 },
+
+            { name: 'should return one move id', fn: AI.Blockly.Tests.Diff.testMoveBlock1 },
+            { name: 'should return two move ids', fn: AI.Blockly.Tests.Diff.testMoveBlock2 },
+            { name: 'move but all children are moved from somewhere else', fn: AI.Blockly.Tests.Diff.testMoveBlock3 },
+            { name: 'move and all children are moved with it', fn: AI.Blockly.Tests.Diff.testMoveBlock4 },
+            { name: 'move and some children are moved with it and some children are moved from somewhere else', fn: AI.Blockly.Tests.Diff.testMoveBlock5 },
+            { name: 'move input child', fn: AI.Blockly.Tests.Diff.testMoveBlock6 },
+            { name: 'move at root', fn: AI.Blockly.Tests.Diff.testMoveBlock7 },
+            { name: 'move as next', fn: AI.Blockly.Tests.Diff.testMoveBlock8 },
+            { name: 'move from between blocks', fn: AI.Blockly.Tests.Diff.testMoveBlock9 },
+            { name: 'move from beginning of blocks', fn: AI.Blockly.Tests.Diff.testMoveBlock10 },
+            { name: 'move from end of blocks', fn: AI.Blockly.Tests.Diff.testMoveBlock11 },
+            { name: 'swap blocks', fn: AI.Blockly.Tests.Diff.testMoveBlock12 },
+            { name: 'move block in a stack (but not full stack)', fn: AI.Blockly.Tests.Diff.testMoveBlock13 },
+            { name: 'move to between blocks', fn: AI.Blockly.Tests.Diff.testMoveBlock14 },
         ];
 
         const results = await Promise.allSettled(
@@ -861,6 +876,248 @@ AI.Blockly.Tests.Diff = class {
         //                     </block>';
         // assertEqualDoms(diff.removedIdsInfo[0].block, expectedDOM);
 
+    }
+
+    static async testMoveBlock1(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_022_b1_click_b1_focus_b1_text.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids info length', 1, diff.movedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 1, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye','HYW/b5Ae79{HFc.u^M_1', 'A%L/*!(?[qhngbz7(ymy']), diff.unchangedIds); 
+
+        assertTrue('moved block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
+        assertEquals('moved block id 1', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[0].id);
+        assertEquals('moved parent id', 'HYW/b5Ae79{HFc.u^M_1', diff.movedIdsInfo[0].newParentId);
+        assertNullOrFalse('is next block', diff.movedIdsInfo[0].isNextBlock);
+        assertEquals('input name', 'DO', diff.movedIdsInfo[0].inputName);
+
+        const expectedDOM = `<block xmlns="https://developers.google.com/blockly/xml" type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button"
+                                    set_or_get="set" property_name="Text" is_generic="false" instance_name="Button1"></mutation>
+                                <field name="COMPONENT_SELECTOR">Button1</field>
+                                <field name="PROP">Text</field>
+                                <value name="VALUE">
+                                    <block type="text" id="A%L/*!(?[qhngbz7(ymy">
+                                        <field name="TEXT"></field>
+                                    </block>
+                                </value>
+                            </block>`;
+        assertEqualDoms(diff.movedIdsInfo[0].block, expectedDOM);
+    }
+
+    static async testMoveBlock2(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_016_b1_click_b1_focus_b1_text_t1_hide.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids info length', 2, diff.movedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 2, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye','HYW/b5Ae79{HFc.u^M_1', 'A%L/*!(?[qhngbz7(ymy']), diff.unchangedIds); 
+
+        assertTrue('moved block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
+        assertTrue('moved block id 2', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+
+        assertEquals('moved block id 1', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[0].id);
+        assertEquals('moved parent id', 'HYW/b5Ae79{HFc.u^M_1', diff.movedIdsInfo[0].newParentId);
+        assertNullOrFalse('is next block', diff.movedIdsInfo[0].isNextBlock);
+        assertEquals('input name', 'DO', diff.movedIdsInfo[0].inputName);
+
+        const expectedDOM = `<block xmlns="https://developers.google.com/blockly/xml" type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button"
+                                    set_or_get="set" property_name="Text" is_generic="false" instance_name="Button1"></mutation>
+                                <field name="COMPONENT_SELECTOR">Button1</field>
+                                <field name="PROP">Text</field>
+                                <value name="VALUE">
+                                    <block type="text" id="A%L/*!(?[qhngbz7(ymy">
+                                        <field name="TEXT"></field>
+                                    </block>
+                                </value>
+                            </block>`;
+        assertEqualDoms(diff.movedIdsInfo[0].block, expectedDOM);
+
+        assertEquals('moved block id 2', 'Wb{Er@h_7Z`abf+S?e{_', diff.movedIdsInfo[1].id);
+        assertEquals('moved parent id', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[1].newParentId);
+        assertTrue('is next block', diff.movedIdsInfo[1].isNextBlock);
+        assertNullOrFalse('input name', diff.movedIdsInfo[1].inputName);
+
+        const expectedDOM2 = '<block xmlns="https://developers.google.com/blockly/xml" type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="TextBox" \
+                                    method_name="HideKeyboard" is_generic="false" instance_name="TextBox1"></mutation> \
+                                <field name="COMPONENT_SELECTOR">TextBox1</field> \
+                            </block>';
+        assertEqualDoms(diff.movedIdsInfo[1].block, expectedDOM2);
+    }
+
+    // TODO: order at root should not matter, need to verify that as well. 
+    static async testMoveBlock3(name) {
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_023_b1_click_b1_text_t1_hide_t_b1_focus_if_none.xml", "static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+
+        assertEquals('removed ids length', 0, diff.removedIds.size);  
+        assertEquals('moved ids info length', 2, diff.movedIdsInfo.length);  
+        assertEquals('new ids length', 0, diff.newIds.size);  
+        assertEquals('moved ids length', 5, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye','HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+
+        assertTrue('moved block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
+        assertTrue('moved block id 2', diff.movedIds.has('YRHgY.0tOrfK-xwr!~S2'));
+        assertTrue('moved block id 3', diff.movedIds.has('BUaFURbz8x;xH+$#SEBY'));
+        assertTrue('moved block id 4', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
+        assertTrue('moved block id 5', diff.movedIds.has('A%L/*!(?[qhngbz7(ymy'));
+
+        assertEquals('moved block id 1', 'YRHgY.0tOrfK-xwr!~S2', diff.movedIdsInfo[0].id);
+        assertEquals('moved parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.movedIdsInfo[0].newParentId);
+        assertNullOrFalse('is next block', diff.movedIdsInfo[0].isNextBlock);
+        assertEquals('input name', 'DO', diff.movedIdsInfo[0].inputName);
+
+        const expectedDOM = '<block xmlns="https://developers.google.com/blockly/xml" type="controls_if" id="YRHgY.0tOrfK-xwr!~S2"> \
+                                <value name="IF0"> \
+                                    <block type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY"> \
+                                        <field name="BOOL">TRUE</field> \
+                                    </block> \
+                                </value> \
+                                <statement name="DO0"> \
+                                    <block type="component_set_get" id="x#ww8BrXT*5A{XM^8#Nq"> \
+                                        <mutation xmlns="http://www.w3.org/1999/xhtml" component_type="Button" \
+                                            set_or_get="set" property_name="Text" is_generic="false" \
+                                            instance_name="Button1"></mutation> \
+                                        <field name="COMPONENT_SELECTOR">Button1</field> \
+                                        <field name="PROP">Text</field> \
+                                        <value name="VALUE"> \
+                                            <block type="text" id="A%L/*!(?[qhngbz7(ymy"> \
+                                                <field name="TEXT"></field> \
+                                            </block> \
+                                        </value> \
+                                        <next> \
+                                            <block type="component_method" id="Wb{Er@h_7Z`abf+S?e{_"> \
+                                                <mutation xmlns="http://www.w3.org/1999/xhtml" \
+                                                    component_type="TextBox" method_name="HideKeyboard" \
+                                                    is_generic="false" instance_name="TextBox1"></mutation> \
+                                                <field name="COMPONENT_SELECTOR">TextBox1</field> \
+                                            </block> \
+                                        </next> \
+                                    </block> \
+                                </statement> \
+                            </block>';
+        assertEqualDoms(diff.movedIdsInfo[0].block, expectedDOM);
+
+        assertEquals('moved block id 2', 'Wb{Er@h_7Z`abf+S?e{_', diff.movedIdsInfo[1].id);
+        assertEquals('moved parent id', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[1].newParentId);
+        assertNullOrFalse('is not next block', diff.movedIdsInfo[1].isNextBlock);
+        assertTrue('input name', 'IF0', diff.movedIdsInfo[1].inputName);
+
+        const expectedDOM2 = `<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY">
+                                <field name="BOOL">TRUE</field>
+                            </block>`;
+        assertEqualDoms(diff.movedIdsInfo[1].block, expectedDOM2);
+
+        assertEquals('moved block id 3', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[2].id);
+        assertEquals('moved parent id', 'YRHgY.0tOrfK-xwr!~S2', diff.movedIdsInfo[2].newParentId);
+        assertNullOrFalse('is not next block', diff.movedIdsInfo[2].isNextBlock);
+        assertTrue('input name', 'DO0', diff.movedIdsInfo[2].inputName);
+
+        const expectedDOM3 = `<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY">
+                                <field name="BOOL">TRUE</field>
+                            </block>`;
+        assertEqualDoms(diff.movedIdsInfo[2].block, expectedDOM3);
+    }
+
+    static async testMoveBlock4(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock5(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock6(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock7(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock8(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock9(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock10(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock11(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock12(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_017_b1_click_t1_hide_b1_text_b1_focus.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock13(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
+    }
+
+    static async testMoveBlock14(name) {
+        return;
+        console.log(name);
+        const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
+        const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
     }
 };
 
