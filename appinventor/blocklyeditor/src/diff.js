@@ -28,11 +28,11 @@ AI.Blockly.Diff = class {
 
         const insertInfo = AI.Blockly.Diff.getInsertionOrMoveInfo(newIds, blocksContent2);
 
-        const tree1 = AI.Blockly.Diff.levelOrder(blocksContent1, removedIds);
+        const tree1 = {id: "root", children: AI.Blockly.Diff.makeArray(blocksContent1, removedIds)};
         console.log("tree1: ", tree1);
-        const tree2 = AI.Blockly.Diff.levelOrder(blocksContent2, newIds);
+        const tree2 = {id: "root", children: AI.Blockly.Diff.makeArray(blocksContent2, newIds)};
         console.log("tree2: ", tree2);
-        const movedIds = AI.Blockly.Diff.getMoveIds(tree1, tree2);
+        const movedIds = AI.Blockly.Diff.movedIds(tree1, tree2);
 
         const unchangedIds = new Set();
         for (const id of ids1) {
@@ -53,10 +53,12 @@ AI.Blockly.Diff = class {
         }; 
     }
 
-    static levelOrder(roots, idsToIgnore = new Set()) {
-        let ans = [];
+    static makeArray(roots, idsToIgnore = new Set()) {
         if (!roots)
             console.log("N-Ary tree does not any nodes");
+
+        const nodeMap = new Map();  // id -> { id, children }
+        const childParent = new Map(); // childId -> parentId
 
         // Create a queue namely main_queue
         let main_queue=[];
@@ -66,10 +68,6 @@ AI.Blockly.Diff = class {
             main_queue.push([root, "root"]);
         }
 
-        // Create a temp vector to store the all the node values
-        // present at a particular level
-        let temp=[];
-
         // Run a while loop until the main_queue is empty
         while (main_queue.length) {
 
@@ -78,18 +76,23 @@ AI.Blockly.Diff = class {
 
             // Iterate through the current level
             while (n) {
-                let [cur, parentid] = main_queue.shift();
+                let [cur, parentId] = main_queue.shift();
                 if (!idsToIgnore.has(cur.id)) {
-                    temp.push([cur.id, parentid]);
+                    if (!nodeMap.has(cur.id)) {
+                        nodeMap.set(cur.id, { id: cur.id, children: [] });
+                    }
+                    if (parentId !== "root") {
+                        childParent.set(cur.id, parentId);
+                    }
                 }
                 const next = cur.getNextBlock();
                 if (next && next.id) {
-                    main_queue.unshift([next, parentid]);
+                    main_queue.unshift([next, parentId]);
                     n += 1;
                 }
                 for (let u of cur.getChildren()) {
                     if ((!next || next?.id !== u.id) && idsToIgnore.has(cur.id)) {
-                        main_queue.unshift([u, parentid]);
+                        main_queue.unshift([u, parentId]);
                         n += 1;
                     } else if ((!next || next?.id !== u.id)) {
                         main_queue.push([u, cur.id]);
@@ -98,10 +101,124 @@ AI.Blockly.Diff = class {
                     
                 n -= 1;
             }
-            ans.push(temp);
-            temp=[];
         }
-        return ans;
+        // Wire up children in insertion order (BFS order = correct child order)
+        for (const [childId, parentId] of childParent) {
+            const parentNode = nodeMap.get(parentId);
+            const childNode  = nodeMap.get(childId);
+            if (parentNode && childNode) {
+                parentNode.children.push(childNode);
+            }
+        }
+
+        // Return forest roots (nodes with no parent)
+        const treeRoots = [...nodeMap.values()].filter(n => !childParent.has(n.id));
+        return treeRoots.length === 1 ? treeRoots[0] : treeRoots;
+    }
+
+// ---- Tree helpers ----
+
+    static buildMap(node, parent = null, map = new Map()) {
+        map.set(node.id, { node, parentId: parent });
+        for (const child of node?.children || []) {
+            AI.Blockly.Diff.buildMap(child, node.id, map);
+        }
+        return map;
+    }
+
+// get ids that are in increasing order of weights and form maximum sum of weights
+// seq: indices in T1
+// weights: weights of those in T2
+// TODO: probably makes more sense to process left to right
+
+    static mwisStableIndices(seq, weights) {
+        // dp[i] = max weight of increasing subsequence ending at i
+        const n = seq.length;
+        const dp = [...weights]; // base: just the node itself
+        const predecessor = new Array(n).fill(null);
+
+        for (let i = 1; i < n; i++) {
+            // for each id
+            for (let j = 0; j < i; j++) {
+            // go through the ids that are smaller
+            // if t1 index is smaller and sum of weights till j + weight of i in T2 is bigger than sum of weights till i
+            if (seq[j] < seq[i] && dp[j] + weights[i] > dp[i]) {
+                // set sum of weights till i
+                dp[i] = dp[j] + weights[i];
+                // the id to the left of i is j
+                predecessor[i] = j;
+            }
+            }
+        }
+
+        // Find end of best subsequence
+        let bestEnd = 0;
+        for (let i = 1; i < n; i++) {
+            if (dp[i] > dp[bestEnd]) bestEnd = i;
+        }
+
+        // Reconstruct
+        const stable = new Set();
+        let idx = bestEnd;
+        while (idx != null) {
+            stable.add(idx);
+            idx = predecessor[idx];
+        }
+        return stable;
+    }
+
+    // find ids that moved between r1 and r2 such that it is minimal
+    static movedIds(root1, root2) {
+        const moved = new Set();
+        // node.id, { node, parentId }
+        const map1 = AI.Blockly.Diff.buildMap(root1);
+
+        // Post-order: process children before parents
+        function process(node2) {
+            for (const child of node2.children || []) process(child);
+
+            if (!node2.children?.length) return;
+
+            const entry1 = map1.get(node2.id); // node and parentId in T1
+            const currentIds = entry1.node.children.map(c => c.id); // 1 layer of children ids in T1
+            const currentPos = new Map(currentIds.map((id, i) => [id, i])); // 1 layer of children ids in T1 -> order in T1
+
+            const alreadyHere = [];
+            // 1 layer of children in T2
+            for (const child2 of node2.children || []) {
+                // if child also in T1 as child of node2.id
+                if (currentPos.has(child2.id)) {
+                    alreadyHere.push({
+                        t1Index: currentPos.get(child2.id), // order in T1
+                        id: child2.id,
+                        weight: effectiveSize(child2),  // weight in T2 with children already resolved
+                    });
+                } else {
+                    moved.add(child2.id); // if child not in T1 as child of node1.id different parent
+                }
+            }
+
+            // at root order does not matter
+            if (node2.id !== 'root') {
+                const seq     = alreadyHere.map(x => x.t1Index); // order in T1
+                const weights = alreadyHere.map(x => x.weight); // effective weight in T2
+                const stablePositions = AI.Blockly.Diff.mwisStableIndices(seq, weights); // get max weight sum increasing order
+                alreadyHere.forEach((x, i) => {
+                    if (!stablePositions.has(i)) moved.add(x.id);
+                });
+            }
+        }
+
+        // Subtree size excluding already-moved descendants
+        function effectiveSize(node2) {
+            if (moved.has(node2.id)) return 0;
+            let size = 1;
+            for (const child of node2.children || []) size += effectiveSize(child);
+            return size;
+        }
+
+        process(root2);
+        return moved;
     }
 
     static updateMapAfterDeletionsOrInsertion(roots, deletedIds) {
@@ -134,56 +251,6 @@ AI.Blockly.Diff = class {
             }
         }
         return ans;
-    }
-
-    static getMoveIds(t1, t2) {
-        const movedIds = new Set();
-        for (let i = 0; i < t1.length; i++) {
-            const nodes1 = t1[i];
-            if (i >= t2.length) {
-                console.log("moving ids from t1 all layers");
-                // rest of the nodes in t1 have been moved
-                for (let k = 0; k < nodes1.length; k++) {
-                    movedIds.add(nodes1[k][0]);
-                }
-            } else {
-                const nodes2 = t2[i];
-                // console.log("comparing layer ", i, " nodes1: ", nodes1, " nodes2: ", nodes2);
-                for (let j = 0; j < nodes1.length; j++) {
-                    if (j >= nodes2.length) {
-                        // rest of the nodes in that layer have been moved
-                        console.log("moving ids from t1 ");
-                        for (let k = j; k < nodes1.length; k++) {
-                            movedIds.add(nodes1[k][0]);
-                        }
-                    } else {
-                        const itemOne = nodes1[j];
-                        const itemTwo = nodes2[j];
-                        // console.log("comparing node ", itemOne[0], " with ", itemTwo[0]);
-                        if (itemOne[1] !== itemTwo[1] || itemOne[0] !== itemTwo[0]) {
-                            console.log("moving ids distinct present in t1 and t2", itemOne, itemTwo);
-                            // console.log("moved node: ", itemOne[0], " from parent: ", itemOne[1], " to parent: ", itemTwo[1]);
-                            movedIds.add(itemOne[0]);
-                        }
-                    }
-                }
-                for (let j = nodes1.length; j < nodes2.length; j++) {
-                    console.log("moving ids from t2");
-                    movedIds.add(nodes2[j][0]);
-                }
-            }
-        } 
-        if (t1.length < t2.length) {
-            // rest of the nodes in t2 have been moved
-            for (let i = t1.length; i < t2.length; i++) {
-                const nodes2 = t2[i];
-                console.log("moving ids from t2 all layers");
-                for (let j = 0; j < nodes2.length; j++) {
-                    movedIds.add(nodes2[j][0]);
-                }
-            }
-        }
-        return movedIds;
     }
 
     static getInsertionOrMoveInfo(ids, blocks) {
