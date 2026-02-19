@@ -7,7 +7,8 @@ goog.require('AI.Blockly.Util');
 goog.require('AI.Blockly.Util.xml');
 goog.require('zhangShasha');
 
-
+// TODO when getting children need right order
+// if moved to an empty spot wont recognize (in mutations)
 AI.Blockly.Diff = class {
 
     static async diff(blocksContent1, blocksContent2, ids1, ids2) {
@@ -28,10 +29,8 @@ AI.Blockly.Diff = class {
 
         const insertInfo = AI.Blockly.Diff.getInsertionOrMoveInfo(newIds, blocksContent2);
 
-        const tree1 = {id: "root", children: AI.Blockly.Diff.makeArray(blocksContent1, removedIds)};
-        console.log("tree1: ", tree1);
-        const tree2 = {id: "root", children: AI.Blockly.Diff.makeArray(blocksContent2, newIds)};
-        console.log("tree2: ", tree2);
+        const tree1 = AI.Blockly.Diff.makeArray(blocksContent1, removedIds);
+        const tree2 = AI.Blockly.Diff.makeArray(blocksContent2, newIds);
         const movedIds = AI.Blockly.Diff.movedIds(tree1, tree2);
 
         const unchangedIds = new Set();
@@ -113,7 +112,7 @@ AI.Blockly.Diff = class {
 
         // Return forest roots (nodes with no parent)
         const treeRoots = [...nodeMap.values()].filter(n => !childParent.has(n.id));
-        return treeRoots.length === 1 ? treeRoots[0] : treeRoots;
+        return {id: "root", children: treeRoots};
     }
 
 // ---- Tree helpers ----
@@ -218,7 +217,25 @@ AI.Blockly.Diff = class {
         }
 
         process(root2);
-        return moved;
+        const map2 = AI.Blockly.Diff.buildMap(root2);
+        return new Set([...moved].filter(id => {
+            let t1ParentId = map1.get(id).parentId;
+            const t2ParentId = map2.get(id).parentId;
+            if (t1ParentId === t2ParentId) return true; // parents are same but in moved
+            if (moved.has(t1ParentId)) {
+                // original parent moved somewhere and child moved to a different parent need to check whether its due to parent moving
+                while (t1ParentId) {
+                    // found closest original parent that did not move and its same as new parent
+                    if (!moved.has(t1ParentId) && t1ParentId === t2ParentId) return false;
+                    // found closest original parent that did not move and its different from new parent
+                    else if (!moved.has(t1ParentId)) return true;
+                    t1ParentId = map1.get(t1ParentId)?.parentId;
+                }
+                // all parents moved
+                return true;
+            } 
+            return true; // parent is different but original parent did not move 
+        }));
     }
 
     static updateMapAfterDeletionsOrInsertion(roots, deletedIds) {
@@ -256,8 +273,6 @@ AI.Blockly.Diff = class {
     static getInsertionOrMoveInfo(ids, blocks) {
         const insertionInfo = [];
         const queue = [...blocks]; // Use an array as a queue (FIFO)
-
-        console.log("blocks to check for new/moved ids: ", blocks);
 
         for (const block of blocks) {
             if (ids.has(block.id)) {
@@ -300,12 +315,10 @@ AI.Blockly.Diff = class {
             for (const child of (node.getChildren() || [])) {
                 // if next remove node, ignore that parent is there already
                 // and remove from the child any next connection, so that it does not get added as well
-                console.log("checking child ", child.id, child, " with parent ", node.id);
                 if (ids.has(child.id)) {
                     // if the block is connected to the parent as a next block, remove the next connection for insertion
                     // child.getNextBlock()?.dispose();
                     let dom = Blockly.Xml.blockToDom(child);
-                    console.log("dom for child ", child.id, " is ", dom);
                     
                     const nextBlock = node?.getNextBlock();
                     
@@ -313,9 +326,7 @@ AI.Blockly.Diff = class {
                         // Find all <next> tags
                         Blockly.Xml.deleteNext(dom);
                     }
-                    console.log("checking child ", child.id, " with parent ", node.id, " next block: ", nextBlock?.id);
                     if (nextBlock && nextBlock.id === child.id) {
-                        console.log("child ", child.id, " is connected to parent ", node.id, " as a next block, removing next connection for insertion");
                         // if the block is connected to the parent as a next block, remove the next connection for insertion
                         insertionInfo.push({
                             id: child.id,

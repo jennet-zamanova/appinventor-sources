@@ -135,7 +135,7 @@ AI.Blockly.Tests.Diff = class {
             }
         });
 
-        console.log(`\nResults: ${passed} passed, ${failed} failed`);
+        console.warn(`\nResults: ${passed} passed, ${failed} failed`);
         
         return { passed, failed, results };
     }
@@ -180,9 +180,9 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock1(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_011_b1_click_b1_text.xml", "static/media/test_012_b1_click_b1_text_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
 
         assertEquals('new ids length', 1, diff.newIds.size);  
         assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
@@ -204,9 +204,10 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock2(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_01_blank.xml", "static/media/test_011_b1_click_b1_text.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+
+        console.log(`${name} diff complete:`, diff);
 
         assertEquals('new ids length', 3, diff.newIds.size);  
         assertEquals('new ids info length', 1, diff.newIdsInfo.length);  
@@ -362,7 +363,6 @@ AI.Blockly.Tests.Diff = class {
 
     // TODO: why in the world is the next block missing inside the child of the node inserted???
     static async testNewBlock5(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -417,7 +417,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock7(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_020_b1_click_if_none_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_019_b1_click_if_b1_text_skip_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -441,7 +440,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock8(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_014_b1_click_b1_text_b1_focus_skip_t1_hide.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -467,7 +465,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock9(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -493,7 +490,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testNewBlock10(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_021_b1_click_b1_text_if_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -524,9 +520,9 @@ AI.Blockly.Tests.Diff = class {
 
 
     static async testRemoveBlock1(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_011_b1_click_b1_text.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
 
         assertEquals('removed ids length', 1, diff.removedIds.size);  
         // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
@@ -550,9 +546,9 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testRemoveBlock2(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_011_b1_click_b1_text.xml", "static/media/test_01_blank.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
+        console.log(`${name} diff complete:`, diff);
 
         assertEquals('new ids length', 3, diff.removedIds.size);  
         // assertEquals('removed ids info length', 1, diff.removedIdsInfo.length);  
@@ -713,7 +709,6 @@ AI.Blockly.Tests.Diff = class {
 
     // TODO: why in the world is the next block missing inside the child of the node inserted???
     static async testRemoveBlock5(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -769,7 +764,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testRemoveBlock7(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_019_b1_click_if_b1_text_skip_t1_hide_b1_focus.xml", "static/media/test_020_b1_click_if_none_b1_text_skip_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -794,7 +788,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testRemoveBlock8(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_014_b1_click_b1_text_b1_focus_skip_t1_hide.xml", "static/media/test_012_b1_click_b1_text_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -821,7 +814,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testRemoveBlock9(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_012_b1_click_b1_text_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -848,7 +840,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testRemoveBlock10(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_021_b1_click_b1_text_if_t1_hide_b1_focus.xml", "static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -879,7 +870,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testMoveBlock1(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_012_b1_click_b1_text_b1_focus.xml", "static/media/test_022_b1_click_b1_focus_b1_text.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -911,7 +901,6 @@ AI.Blockly.Tests.Diff = class {
     }
 
     static async testMoveBlock2(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_016_b1_click_b1_focus_b1_text_t1_hide.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -958,7 +947,6 @@ AI.Blockly.Tests.Diff = class {
 
     // TODO: order at root should not matter, need to verify that as well. 
     static async testMoveBlock3(name) {
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_023_b1_click_b1_text_t1_hide_t_b1_focus_if_none.xml", "static/media/test_018_b1_click_if_b1_text_t1_hide_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -966,14 +954,13 @@ AI.Blockly.Tests.Diff = class {
         assertEquals('removed ids length', 0, diff.removedIds.size);  
         assertEquals('moved ids info length', 2, diff.movedIdsInfo.length);  
         assertEquals('new ids length', 0, diff.newIds.size);  
-        assertEquals('moved ids length', 5, diff.movedIds.size);  
-        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye','HYW/b5Ae79{HFc.u^M_1']), diff.unchangedIds); 
+        assertEquals('moved ids length', 4, diff.movedIds.size);  
+        assertEqualSets('unchanged ids', new Set(['S1DtWUK}krc|(xEc7{Ye','HYW/b5Ae79{HFc.u^M_1', 'A%L/*!(?[qhngbz7(ymy']), diff.unchangedIds); 
 
         assertTrue('moved block id 1', diff.movedIds.has('x#ww8BrXT*5A{XM^8#Nq'));
         assertTrue('moved block id 2', diff.movedIds.has('YRHgY.0tOrfK-xwr!~S2'));
         assertTrue('moved block id 3', diff.movedIds.has('BUaFURbz8x;xH+$#SEBY'));
         assertTrue('moved block id 4', diff.movedIds.has('Wb{Er@h_7Z`abf+S?e{_'));
-        assertTrue('moved block id 5', diff.movedIds.has('A%L/*!(?[qhngbz7(ymy'));
 
         assertEquals('moved block id 1', 'YRHgY.0tOrfK-xwr!~S2', diff.movedIdsInfo[0].id);
         assertEquals('moved parent id', 'S1DtWUK}krc|(xEc7{Ye', diff.movedIdsInfo[0].newParentId);
@@ -1013,28 +1000,17 @@ AI.Blockly.Tests.Diff = class {
 
         assertEquals('moved block id 2', 'Wb{Er@h_7Z`abf+S?e{_', diff.movedIdsInfo[1].id);
         assertEquals('moved parent id', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[1].newParentId);
-        assertNullOrFalse('is not next block', diff.movedIdsInfo[1].isNextBlock);
-        assertTrue('input name', 'IF0', diff.movedIdsInfo[1].inputName);
+        assertTrue('is not next block', diff.movedIdsInfo[1].isNextBlock);
+        assertNullOrFalse('input name', diff.movedIdsInfo[1].inputName);
 
         const expectedDOM2 = `<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY">
                                 <field name="BOOL">TRUE</field>
                             </block>`;
         assertEqualDoms(diff.movedIdsInfo[1].block, expectedDOM2);
-
-        assertEquals('moved block id 3', 'x#ww8BrXT*5A{XM^8#Nq', diff.movedIdsInfo[2].id);
-        assertEquals('moved parent id', 'YRHgY.0tOrfK-xwr!~S2', diff.movedIdsInfo[2].newParentId);
-        assertNullOrFalse('is not next block', diff.movedIdsInfo[2].isNextBlock);
-        assertTrue('input name', 'DO0', diff.movedIdsInfo[2].inputName);
-
-        const expectedDOM3 = `<block xmlns="https://developers.google.com/blockly/xml" type="logic_boolean" id="BUaFURbz8x;xH+$#SEBY">
-                                <field name="BOOL">TRUE</field>
-                            </block>`;
-        assertEqualDoms(diff.movedIdsInfo[2].block, expectedDOM3);
     }
 
     static async testMoveBlock4(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1042,7 +1018,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock5(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1050,7 +1025,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock6(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1058,7 +1032,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock7(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1066,7 +1039,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock8(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1074,7 +1046,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock9(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1082,7 +1053,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock10(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1090,7 +1060,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock11(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1098,7 +1067,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock12(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/test_015_b1_click_b1_text_t1_hide_b1_focus.xml", "static/media/test_017_b1_click_t1_hide_b1_text_b1_focus.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1106,7 +1074,6 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock13(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
@@ -1114,68 +1081,8 @@ AI.Blockly.Tests.Diff = class {
 
     static async testMoveBlock14(name) {
         return;
-        console.log(name);
         const [b1, b2, i1, i2] = await AI.Blockly.Tests.Diff.setup("static/media/.xml", "static/media/.xml");
         const diff = await AI.Blockly.Diff.diff(b1, b2, i1, i2);
         console.log(`${name} diff complete:`, diff);
     }
 };
-
-
-
-// describe("Diff", function () {
-
-//     describe("move block", function () {
-//         it("should return one move id", function () {
-//             // TODO
-//         });
-
-//         it("should return two move ids?", function () {
-//             // TODO
-//         });
-
-//         it("move but all children are moved from somewhere else", function () {
-//             // TODO
-//         });
-
-//         it("move and all children are moved with it", function () {
-//             // TODO
-//         });
-
-//         it("move and some children are moved with it and some children are moved from somewhere else", function () {
-//             // TODO
-//         });
-
-//         it("move input child", function () {
-//             // TODO
-//         });
-
-//         it("move at root", function () {
-//             // TODO
-//         });
-
-//         it("move as next", function () {
-//             // TODO
-//         });
-
-//         it("move from between blocks", function () {
-//             // TODO
-//         });
-
-//         it("move from beginning of blocks", function () {
-//             // TODO
-//         });
-
-//         it("move from end of blocks", function () {
-//             // TODO
-//         });
-
-//         it("swap blocks", function () {
-//             // TODO
-//         });
-
-//         it("move block in a stack", function () {
-//             // TODO
-//         });
-//     });
-// });

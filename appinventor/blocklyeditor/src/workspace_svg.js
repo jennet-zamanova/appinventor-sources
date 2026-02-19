@@ -21,6 +21,7 @@ goog.require('AI.Blockly.WarningIndicator');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
 goog.require('AI.Blockly.Tests.Diff');
+goog.require('AI.Blockly.Tests.MoveDetection');
 
 /**
  * AI2 Blocks Drawer
@@ -1036,6 +1037,7 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
 
 Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   await AI.Blockly.Tests.Diff.runAllTests();
+  await AI.Blockly.Tests.MoveDetection.runAllTests();
   function createInvisibleAiWorkspaceFrom(mainWorkspace) {
     const div = document.createElement('div');
     div.style.display = 'none';
@@ -1045,7 +1047,7 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
       readOnly: true,
       scrollbars: false,
       sounds: false,
-      parentWorkspace: mainWorkspace, // ⭐ CRITICAL
+      parentWorkspace: mainWorkspace,
     });
 
     // Copy AI-specific runtime state
@@ -1071,13 +1073,13 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   // console.log(changeSteps);
   // create empty workspace to hold second tree
-  diff.removedIds.forEach(blockId => this.removeBlock(blockId));
-  diff.newIds.forEach(block => this.addBlock(block));
-  // moves
-  for (const move of diff.movedIds) {
-    this.removeBlock(move.id, Blockly.BLOCK_MOVED_REMOVED_HUE);
-    this.addBlock(move, Blockly.BLOCK_MOVED_ADDED_HUE);
-  }
+  // diff.removedIds.forEach(blockId => this.removeBlock(blockId));
+  // diff.newIds.forEach(block => this.addBlock(block));
+  // // moves
+  // for (const move of diff.movedIds) {
+  //   this.removeBlock(move.id, Blockly.BLOCK_MOVED_REMOVED_HUE);
+  //   this.addBlock(move, Blockly.BLOCK_MOVED_ADDED_HUE);
+  // }
 }
 
 Blockly.WorkspaceSvg.prototype.getChildIdsFromID = function(blockID) {
@@ -1115,25 +1117,12 @@ Blockly.WorkspaceSvg.prototype.getChildIdsFromBlock = function(block) {
 
 Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID, hue = Blockly.BLOCK_REMOVED_HUE) {
   console.log("should change color of block: ", blockID);
-  // const block = this.getBlockById(blockID);
-  // if (block) {
-  //   block.setMovable(true);
-  //   block.setDeletable(true);
-  //   block.setEditable(true);
-  //   block.addSelect();
-  //   block.setColour(Blockly.BLOCK_REMOVED_HUE);
-  //   block.initSvg();
-  //   this.requestRender(block);
-  // }
 
   const ids = this.getChildIdsFromID(blockID);
   ids.push(blockID);
   for (const id of ids) {
     const block = this.getBlockById(id);
     if (block) {
-      // block.setMovable(false);
-      // block.setDeletable(false);
-      // block.setEditable(false);
       block.addSelect();
       block.setColour(hue);
       block.initSvg();
@@ -1164,8 +1153,8 @@ Blockly.WorkspaceSvg.prototype.addBlock = function(block, hue = Blockly.BLOCK_AD
     const parentBlock = this.getBlockById(block.newParentId);
     if (parentBlock) {
       const input = parentBlock.getInput(block.inputName);
-      // TODO: check the assumption
-      if (block.inputName === "DO" && input && input.connection) {
+      // TODO: check the assumption DO, DO0, ...
+      if (block.inputName.startsWith("DO") && input && input.connection) {
         input.connection.connect(newBlock.previousConnection);
       } else if (input && input.connection && newBlock.outputConnection) {
         input.connection.connect(newBlock.outputConnection);
@@ -1196,11 +1185,4 @@ Blockly.WorkspaceSvg.prototype.addBlock = function(block, hue = Blockly.BLOCK_AD
       this.requestRender(block);
     }
   }
-  // newBlock.setMovable(true);
-  // newBlock.setDeletable(true);
-  // newBlock.setEditable(true);
-  // newBlock.addSelect();
-  // newBlock.setColour(Blockly.BLOCK_ADDED_HUE);
-  // newBlock.initSvg();
-  // this.requestRender(newBlock);
 }
