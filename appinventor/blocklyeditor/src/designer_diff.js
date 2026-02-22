@@ -1,6 +1,6 @@
 'use strict';
 
-goog.provide('AI.Blockly.Diff');
+goog.provide('AI.Blockly.DesignerDiff');
 
 // App Inventor extensions to Blockly
 goog.require('AI.Blockly.Util');
@@ -9,9 +9,12 @@ goog.require('zhangShasha');
 
 // TODO when getting children need right order
 // if moved to an empty spot wont recognize (in mutations)
-AI.Blockly.Diff = class {
+AI.Blockly.DesignerDiff = class {
 
-    static async diff(blocksContent1, blocksContent2, ids1, ids2) {
+    static async diff(designer1, designer2) {
+
+        const ids1 = AI.Blockly.DesignerDiff.getAllIdsForComponent(designer1);
+        const ids2 = AI.Blockly.DesignerDiff.getAllIdsForComponent(designer2);
         
         const removedIds = new Set();
         for (const id of ids1) {
@@ -27,11 +30,11 @@ AI.Blockly.Diff = class {
             }
         }
 
-        const insertInfo = AI.Blockly.Diff.getInsertionOrMoveInfo(newIds, blocksContent2);
+        const insertInfo = AI.Blockly.DesignerDiff.getInsertionOrMoveInfo(newIds, designer2);
 
-        const tree1 = AI.Blockly.Diff.makeArray(blocksContent1, removedIds);
-        const tree2 = AI.Blockly.Diff.makeArray(blocksContent2, newIds);
-        const movedIds = AI.Blockly.Diff.movedIds(tree1, tree2);
+        const tree1 = AI.Blockly.DesignerDiff.makeArray(designer1, removedIds);
+        const tree2 = AI.Blockly.DesignerDiff.makeArray(designer2, newIds);
+        const movedIds = AI.Blockly.DesignerDiff.movedIds(tree1, tree2);
 
         const unchangedIds = new Set();
         for (const id of ids1) {
@@ -40,7 +43,11 @@ AI.Blockly.Diff = class {
             }
         }
 
-        const moveInfo = AI.Blockly.Diff.getInsertionOrMoveInfo(movedIds, blocksContent2);
+        const moveInfo = AI.Blockly.DesignerDiff.getInsertionOrMoveInfo(movedIds, designer2);
+
+        const props1 = AI.Blockly.DesignerDiff.getPropsMapping(designer1, removedIds);
+        const props2 = AI.Blockly.DesignerDiff.getPropsMapping(designer2, newIds);
+        const [updateIds, updateInfo] = AI.DesignerDiff.getUpdateInfo(props1, props2);
 
         return {
             unchangedIds: unchangedIds,
@@ -52,8 +59,19 @@ AI.Blockly.Diff = class {
         }; 
     }
 
-    static makeArray(roots, idsToIgnore = new Set()) {
-        if (!roots)
+    static getAllIdsForComponent(node, ids = new Set()) {
+        if (node && node["Uuid"]) {
+            ids.add(node["Uuid"]);
+        }
+        const children = node["$Components"];
+        console.log('Children of node', node.id, ':', children.map(c => c["Uuid"]));
+        children.forEach(child => AI.Blockly.Diff.getAllIdsForComponent(child, ids));
+        return ids;
+    }
+
+    // TODO: update to be simpler
+    static makeArray(root, idsToIgnore = new Set()) {
+        if (!root)
             console.log("N-Ary tree does not any nodes");
 
         const nodeMap = new Map();  // id -> { id, children }
@@ -63,9 +81,7 @@ AI.Blockly.Diff = class {
         let main_queue=[];
 
         // Push the root value in the main_queue
-        for (const root of roots) {
-            main_queue.push([root, "root"]);
-        }
+        main_queue.push([root, "root"]);
 
         // Run a while loop until the main_queue is empty
         while (main_queue.length) {
@@ -76,25 +92,22 @@ AI.Blockly.Diff = class {
             // Iterate through the current level
             while (n) {
                 let [cur, parentId] = main_queue.shift();
-                if (!idsToIgnore.has(cur.id)) {
-                    if (!nodeMap.has(cur.id)) {
-                        nodeMap.set(cur.id, { id: cur.id, children: [] });
+                if (!idsToIgnore.has(cur.Uuid)) {
+                    if (!nodeMap.has(cur.Uuid)) {
+                        nodeMap.set(cur.Uuid, { id: cur.Uuid, children: [] });
                     }
                     if (parentId !== "root") {
-                        childParent.set(cur.id, parentId);
+                        childParent.set(cur.Uuid, parentId);
                     }
                 }
-                const next = cur.getNextBlock();
-                if (next && next.id) {
-                    main_queue.unshift([next, parentId]);
-                    n += 1;
-                }
-                for (let u of cur.getChildren()) {
-                    if ((!next || next?.id !== u.id) && idsToIgnore.has(cur.id)) {
+                if (idsToIgnore.has(cur.Uuid)) {
+                    for (let u of cur["$Components"]?.toReversed() || []) {
                         main_queue.unshift([u, parentId]);
                         n += 1;
-                    } else if ((!next || next?.id !== u.id)) {
-                        main_queue.push([u, cur.id]);
+                    }
+                } else {
+                    for (let u of cur["$Components"] || []) {
+                        main_queue.push([u, cur.Uuid]);
                     }
                 }
                     
@@ -238,72 +251,51 @@ AI.Blockly.Diff = class {
         }));
     }
 
-    // static updateMapAfterDeletionsOrInsertion(roots, deletedIds) {
-    //     let ans = new Map();
-    //     if (!roots)
-    //         console.log("N-Ary tree does not any nodes");
+    static updateMapAfterDeletionsOrInsertion(roots, deletedIds) {
+        let ans = new Map();
+        if (!roots)
+            console.log("N-Ary tree does not any nodes");
 
-    //     // Create a queue namely main_queue
-    //     let main_queue=[];
+        // Create a queue namely main_queue
+        let main_queue=[];
 
-    //     // Push the root value in the main_queue
-    //     for (const root of roots) {
-    //         main_queue.push([root, "root"]);
-    //         ans.set(root.id, "root");
-    //     }
-
-    //     // Run a while loop until the main_queue is empty
-    //     while (main_queue.length) {
-
-    //         let [cur, parentid] = main_queue.shift();
-    //         const next = cur.getNextBlock();
-    //         for (let u of cur.getChildren()) {
-    //             if (next && next.id === u.id || deletedIds.has(cur.id)) {
-    //                 main_queue.unshift([u, parentid]);
-    //                 ans.set(u.id, parentid);
-    //             } else {
-    //                 main_queue.push([u, cur.id]);
-    //                 ans.set(u.id, cur.id);
-    //             }
-    //         }
-    //     }
-    //     return ans;
-    // }
-
-    static getInsertionOrMoveInfo(ids, blocks) {
-        const insertionInfo = [];
-        const queue = [...blocks]; // Use an array as a queue (FIFO)
-
-        for (const block of blocks) {
-            if (ids.has(block.id)) {
-                let dom = Blockly.Xml.blockToDom(block);
-
-                // Find all <next> tags
-                let nextTags = dom.getElementsByTagName('next');
-
-                // Remove the first <next> tag found
-                if (nextTags.length > 0) {
-                    nextTags[0].parentNode.removeChild(nextTags[0]);
-                }
-
-                insertionInfo.push({
-                    id: block.id,
-                    block: dom,
-                    newParentId: null,
-                    isNextBlock: false,
-                    inputName: null,
-                });
-            }
+        // Push the root value in the main_queue
+        for (const root of roots) {
+            main_queue.push([root, "root"]);
+            ans.set(root.id, "root");
         }
 
-        // how to get xml that does not have the next connection as child?
-        // specifically, if there was a move
-        // top moved, next stayed
-        // here we will be add xml of the whole thing
+        // Run a while loop until the main_queue is empty
+        while (main_queue.length) {
 
-        // but also need to recognize when it does move with the block
-        // if moved with the block, the parent is different so will get as new id
-        // so for moves need to separate the xml
+            let [cur, parentid] = main_queue.shift();
+            const next = cur.getNextBlock();
+            for (let u of cur.getChildren()) {
+                if (next && next.id === u.id || deletedIds.has(cur.id)) {
+                    main_queue.unshift([u, parentid]);
+                    ans.set(u.id, parentid);
+                } else {
+                    main_queue.push([u, cur.id]);
+                    ans.set(u.id, cur.id);
+                }
+            }
+        }
+        return ans;
+    }
+
+    static getInsertionOrMoveInfo(ids, rootComponent) {
+        const insertionInfo = [];
+        const queue = [rootComponent]; // Use an array as a queue (FIFO)
+
+        if (ids.has(rootComponent.Uuid)) {
+
+            insertionInfo.push({
+                id: block.Uuid,
+                component: rootComponent,
+                newParentId: null,
+            });
+        }
+
         // for inserts do not need to separate the xml, just insert the whole thing
         // because even if did not happen, stuff moved inside, so must be the case that
         // that stuff inside should be green anyway, so no need to separate the xml for moves, just insert the whole thing as well
@@ -312,39 +304,16 @@ AI.Blockly.Diff = class {
         while (queue.length > 0) {
             const node = queue.shift(); // Dequeue the first node (FIFO)
             // Enqueue the children of the current node
-            for (const child of (node.getChildren() || [])) {
+            for (const child of (node["$Components"] || [])) {
                 // if next remove node, ignore that parent is there already
                 // and remove from the child any next connection, so that it does not get added as well
-                if (ids.has(child.id)) {
-                    // if the block is connected to the parent as a next block, remove the next connection for insertion
-                    // child.getNextBlock()?.dispose();
-                    let dom = Blockly.Xml.blockToDom(child);
-                    
-                    const nextBlock = node?.getNextBlock();
-                    
-                    if (child.getNextBlock()) {    
-                        // Find all <next> tags
-                        Blockly.Xml.deleteNext(dom);
-                    }
-                    if (nextBlock && nextBlock.id === child.id) {
-                        // if the block is connected to the parent as a next block, remove the next connection for insertion
+                if (ids.has(child.Uuid)) {
+                                        
+                    if (!ids.has(node.Uuid)) {
                         insertionInfo.push({
                             id: child.id,
-                            block: dom,
-                            newParentId: node.id,
-                            isNextBlock: nextBlock, // if the block is connected to the parent as a next block
-                            inputName: null,
-                        });
-                    } else if (!ids.has(node.id)) {
-                        // do we need this check at all?
-                        // if child moved with parent it wont be in this list
-                        let inputName = node?.getInputWithBlock(child)?.name;
-                        insertionInfo.push({
-                            id: child.id,
-                            block: dom,
-                            newParentId: node.id,
-                            isNextBlock: false, // if the block is connected to the parent as a next block would have been in previous if condition
-                            inputName: inputName,
+                            block: child,
+                            newParentId: node.Uuid,
                         });
                     }
                }
@@ -353,6 +322,79 @@ AI.Blockly.Diff = class {
             }
         }
         return insertionInfo;
+    }
+
+    static getPropsMapping(root, idsToIgnore = new Set()) {
+        // Create a queue namely main_queue
+        let main_queue=[];
+        let map = new Map();
+
+        // Push the root value in the main_queue
+        main_queue.push(root);
+
+        // Run a while loop until the main_queue is empty
+        while (main_queue.length) {
+
+            let cur = main_queue.shift();
+            if (!idsToIgnore.has(cur.Uuid)) {
+                const { ["$Components"]: deletedKey, ...newProps } = cur;
+                map.set(cur.Uuid, newProps);
+            }
+            for (let u of cur["$Components"] || []) {
+                main_queue.push(u);
+            }
+        }
+        return map;
+    }
+
+    static getUpdateInfo(props1, props2) {
+        let updateIds = new Set();
+        let updateInfo = new Map();
+        
+        for (const [id, info1] of props1) {
+            const info2 = props2.get(id);
+            // attributes in props1
+            const attrs1 = Object.entries(info1);
+            for (const [key, value] of attrs1) {
+                if (value !== info2[key]) {
+                    if (updateInfo.has(id)) {
+                        updateInfo.get(id).push({
+                            attribute: key,
+                            from: value,
+                            to: info2[key]
+                        })
+                    } else {
+                        updateIds.add(id);
+                        updateInfo.set(id, [{
+                            attribute: key,
+                            from: value,
+                            to: info2[key]
+                        }]);
+                    }
+                }
+            }
+            // attributes in props2 that are not in props1
+            const attrs2 = Object.entries(info2);
+            for (const [key, value] of attrs2) {
+                if (!info1[key]) {
+                    if (updateInfo.has(id)) {
+                        updateInfo.get(id).push({
+                            attribute: key,
+                            from: null,
+                            to: value
+                        })
+                    } else {
+                        updateIds.add(id);
+                        updateInfo.set(id, [{
+                            attribute: key,
+                            from: null,
+                            to: value
+                        }]);
+                    }
+                }
+            }
+        }
+        return [updateIds, updateInfo];
     }
 
 };
