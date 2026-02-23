@@ -217,25 +217,28 @@ AI.Blockly.Diff = class {
         }
 
         process(root2);
-        const map2 = AI.Blockly.Diff.buildMap(root2);
-        return new Set([...moved].filter(id => {
-            let t1ParentId = map1.get(id).parentId;
-            const t2ParentId = map2.get(id).parentId;
-            if (t1ParentId === t2ParentId) return true; // parents are same but in moved
-            if (moved.has(t1ParentId)) {
-                // original parent moved somewhere and child moved to a different parent need to check whether its due to parent moving
-                while (t1ParentId) {
-                    // found closest original parent that did not move and its same as new parent
-                    if (!moved.has(t1ParentId) && t1ParentId === t2ParentId) return false;
-                    // found closest original parent that did not move and its different from new parent
-                    else if (!moved.has(t1ParentId)) return true;
-                    t1ParentId = map1.get(t1ParentId)?.parentId;
-                }
-                // all parents moved
-                return true;
-            } 
-            return true; // parent is different but original parent did not move 
-        }));
+        // try to ignore moved parent like described with global variable before
+        // but then cannot catch changes in order for that node
+        // const map2 = AI.Blockly.Diff.buildMap(root2);
+        // return new Set([...moved].filter(id => {
+        //     let t1ParentId = map1.get(id).parentId;
+        //     const t2ParentId = map2.get(id).parentId;
+        //     if (t1ParentId === t2ParentId) return true; // parents are same but in moved
+        //     if (moved.has(t1ParentId)) {
+        //         // original parent moved somewhere and child moved to a different parent need to check whether its due to parent moving
+        //         while (t1ParentId) {
+        //             // found closest original parent that did not move and its same as new parent
+        //             if (!moved.has(t1ParentId) && t1ParentId === t2ParentId) return false;
+        //             // found closest original parent that did not move and its different from new parent
+        //             else if (!moved.has(t1ParentId)) return true;
+        //             t1ParentId = map1.get(t1ParentId)?.parentId;
+        //         }
+        //         // all parents moved
+        //         return true;
+        //     } 
+        //     return true; // parent is different but original parent did not move 
+        // }));
+        return moved
     }
 
     // static updateMapAfterDeletionsOrInsertion(roots, deletedIds) {

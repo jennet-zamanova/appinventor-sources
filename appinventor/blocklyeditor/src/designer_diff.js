@@ -36,18 +36,18 @@ AI.Blockly.DesignerDiff = class {
         const tree2 = AI.Blockly.DesignerDiff.makeArray(designer2, newIds);
         const movedIds = AI.Blockly.DesignerDiff.movedIds(tree1, tree2);
 
-        const unchangedIds = new Set();
-        for (const id of ids1) {
-            if (!movedIds.has(id) && !removedIds.has(id)) {
-                unchangedIds.add(id);
-            }
-        }
-
         const moveInfo = AI.Blockly.DesignerDiff.getInsertionOrMoveInfo(movedIds, designer2);
 
         const props1 = AI.Blockly.DesignerDiff.getPropsMapping(designer1, removedIds);
         const props2 = AI.Blockly.DesignerDiff.getPropsMapping(designer2, newIds);
-        const [updateIds, updateInfo] = AI.DesignerDiff.getUpdateInfo(props1, props2);
+        const [updateIds, updateInfo] = AI.Blockly.DesignerDiff.getUpdateInfo(props1, props2);
+
+        const unchangedIds = new Set();
+        for (const id of ids1) {
+            if (!movedIds.has(id) && !removedIds.has(id) && !updateIds.has(id)) {
+                unchangedIds.add(id);
+            }
+        }
 
         return {
             unchangedIds: unchangedIds,
@@ -56,6 +56,8 @@ AI.Blockly.DesignerDiff = class {
             newIdsInfo: insertInfo,
             removedIds: removedIds,
             movedIdsInfo: moveInfo,
+            updateIds: updateIds,
+            updateInfo: updateInfo
         }; 
     }
 
@@ -63,9 +65,9 @@ AI.Blockly.DesignerDiff = class {
         if (node && node["Uuid"]) {
             ids.add(node["Uuid"]);
         }
-        const children = node["$Components"];
-        console.log('Children of node', node.id, ':', children.map(c => c["Uuid"]));
-        children.forEach(child => AI.Blockly.Diff.getAllIdsForComponent(child, ids));
+        const children = node["$Components"] || [];
+        // console.log('Children of node', node.id, ':', children.map(c => c["Uuid"]));
+        children.forEach(child => AI.Blockly.DesignerDiff.getAllIdsForComponent(child, ids));
         return ids;
     }
 
@@ -133,7 +135,7 @@ AI.Blockly.DesignerDiff = class {
     static buildMap(node, parent = null, map = new Map()) {
         map.set(node.id, { node, parentId: parent });
         for (const child of node?.children || []) {
-            AI.Blockly.Diff.buildMap(child, node.id, map);
+            AI.Blockly.DesignerDiff.buildMap(child, node.id, map);
         }
         return map;
     }
@@ -183,7 +185,7 @@ AI.Blockly.DesignerDiff = class {
     static movedIds(root1, root2) {
         const moved = new Set();
         // node.id, { node, parentId }
-        const map1 = AI.Blockly.Diff.buildMap(root1);
+        const map1 = AI.Blockly.DesignerDiff.buildMap(root1);
 
         // Post-order: process children before parents
         function process(node2) {
@@ -214,7 +216,7 @@ AI.Blockly.DesignerDiff = class {
             if (node2.id !== 'root') {
                 const seq     = alreadyHere.map(x => x.t1Index); // order in T1
                 const weights = alreadyHere.map(x => x.weight); // effective weight in T2
-                const stablePositions = AI.Blockly.Diff.mwisStableIndices(seq, weights); // get max weight sum increasing order
+                const stablePositions = AI.Blockly.DesignerDiff.mwisStableIndices(seq, weights); // get max weight sum increasing order
                 alreadyHere.forEach((x, i) => {
                     if (!stablePositions.has(i)) moved.add(x.id);
                 });
@@ -230,7 +232,7 @@ AI.Blockly.DesignerDiff = class {
         }
 
         process(root2);
-        const map2 = AI.Blockly.Diff.buildMap(root2);
+        const map2 = AI.Blockly.DesignerDiff.buildMap(root2);
         return new Set([...moved].filter(id => {
             let t1ParentId = map1.get(id).parentId;
             const t2ParentId = map2.get(id).parentId;
@@ -311,7 +313,7 @@ AI.Blockly.DesignerDiff = class {
                                         
                     if (!ids.has(node.Uuid)) {
                         insertionInfo.push({
-                            id: child.id,
+                            id: child.Uuid,
                             block: child,
                             newParentId: node.Uuid,
                         });

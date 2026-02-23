@@ -582,7 +582,7 @@ AI.Blockly.Tests.MoveDetection = class {
         const moved = await AI.Blockly.Diff.movedIds(b1, b2);
         console.log(`${name} diff complete:`, moved);
 
-        assertEquals('moved ids length', 1, moved.size);   
-        assertEqualSets('moved ids', new Set(['x#ww8BrXT*5A{XM^8#Nq']), moved);
+        assertEquals('moved ids length', 2, moved.size);   
+        assertEqualSets('moved ids', new Set(['x#ww8BrXT*5A{XM^8#Nq', 'A%L/*!(?[qhngbz7(ymy']), moved);
     }
 };

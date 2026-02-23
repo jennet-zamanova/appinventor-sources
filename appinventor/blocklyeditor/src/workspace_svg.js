@@ -20,6 +20,7 @@ goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
+goog.require('AI.Blockly.DesignerDiff');
 goog.require('AI.Blockly.Tests.Diff');
 goog.require('AI.Blockly.Tests.MoveDetection');
 
@@ -1038,6 +1039,280 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
 Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
   await AI.Blockly.Tests.Diff.runAllTests();
   await AI.Blockly.Tests.MoveDetection.runAllTests();
+
+  const r1 = {
+        "$Name": "Screen1",
+        "$Type": "Form",
+        "$Version": "31",
+        "ActionBar": "True",
+        "AppName": "test_01",
+        "Title": "Screen2",
+        "Uuid": "0",
+        "$Components": [
+            {
+                "$Name": "CanvasNew",
+                "$Type": "Canvas",
+                "$Version": "15",
+                "Width": "200",
+                "Uuid": "-1996284915",
+                "$Components": [
+                    {
+                        "$Name": "Ball1",
+                        "$Type": "Ball",
+                        "$Version": "8",
+                        "Uuid": "616349471",
+                        "X": "69",
+                        "Y": "80"
+                    },
+                    {
+                        "$Name": "ImageSpriteMill",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "-2021865240",
+                        "X": "13",
+                        "Y": "15"
+                    }
+                ]
+            },
+            {
+                "$Name": "anoherButton1",
+                "$Type": "Button",
+                "$Version": "7",
+                "Text": "Text for Button1",
+                "TextAlignment": "0",
+                "Uuid": "-2025594693"
+            },
+            {
+                "$Name": "TableArrangement1",
+                "$Type": "TableArrangement",
+                "$Version": "1",
+                "Columns": "5",
+                "Width": "-70",
+                "Uuid": "-1080948459",
+                "$Components": [
+                    {
+                        "$Name": "ListView1",
+                        "$Type": "ListView",
+                        "$Version": "10",
+                        "Column": "1",
+                        "Row": "1",
+                        "Uuid": "-231192367"
+                    },
+                    {
+                        "$Name": "HorizontalArrangement1",
+                        "$Type": "HorizontalArrangement",
+                        "$Version": "4",
+                        "Column": "0",
+                        "Row": "1",
+                        "Uuid": "-1249304605",
+                        "$Components": [
+                            {
+                                "$Name": "Image100",
+                                "$Type": "Image",
+                                "$Version": "6",
+                                "Uuid": "648872491"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "$Name": "Map1",
+                "$Type": "Map",
+                "$Version": "7",
+                "EnableZoom": "False",
+                "Height": "-1010",
+                "ShowScale": "True",
+                "ShowUser": "True",
+                "Uuid": "-1247958717"
+            },
+            {
+                "$Name": "TimePick",
+                "$Type": "TimePicker",
+                "$Version": "4",
+                "Left": "2",
+                "Text": "Text for TimePicker1",
+                "Top": "55",
+                "Uuid": "-2091620516"
+            },
+            {
+                "$Name": "WebViewer1",
+                "$Type": "WebViewer",
+                "$Version": "11",
+                "Left": "1",
+                "Top": "0",
+                "Uuid": "-1993953193"
+            },
+            {
+                "$Name": "Slider1",
+                "$Type": "Slider",
+                "$Version": "3",
+                "Left": "200",
+                "Top": "71",
+                "Uuid": "-1803480872"
+            },
+            {
+                "$Name": "Notifier1",
+                "$Type": "Notifier",
+                "$Version": "6",
+                "TextColor": "&HFF0000",
+                "Uuid": "1499459139"
+            }
+        ]
+    };
+
+  const r2 = {
+        "$Name": "Screen1",
+        "$Type": "Form",
+        "$Version": "31",
+        "ActionBar": "True",
+        "AppName": "test_01",
+        "Title": "Screen1",
+        "Uuid": "0",
+        "$Components": [
+            {
+                "$Name": "Canvas1",
+                "$Type": "Canvas",
+                "$Version": "15",
+                "Width": "200",
+                "Uuid": "-1996284915",
+                "$Components": [
+                    {
+                        "$Name": "Ball1",
+                        "$Type": "Ball",
+                        "$Version": "8",
+                        "Uuid": "616349471",
+                        "X": "69",
+                        "Y": "8"
+                    },
+                    {
+                        "$Name": "ImageSprite1",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "817665180",
+                        "X": "-746",
+                        "Y": "14"
+                    },
+                    {
+                        "$Name": "ImageSprite2",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "-2021865240",
+                        "X": "113",
+                        "Y": "15"
+                    }
+                ]
+            },
+            {
+                "$Name": "Button1",
+                "$Type": "Button",
+                "$Version": "7",
+                "FontItalic": "True",
+                "Text": "Text for Button1",
+                "TextAlignment": "0",
+                "Uuid": "-2025594693"
+            },
+            {
+                "$Name": "TextBox1",
+                "$Type": "TextBox",
+                "$Version": "14",
+                "Uuid": "-713347679"
+            },
+            {
+                "$Name": "TableArrangement1",
+                "$Type": "TableArrangement",
+                "$Version": "1",
+                "Columns": "3",
+                "Width": "-1070",
+                "Uuid": "-1080948459",
+                "$Components": [
+                    {
+                        "$Name": "Switch1",
+                        "$Type": "Switch",
+                        "$Version": "1",
+                        "Column": "1",
+                        "On": "True",
+                        "Row": "0",
+                        "Text": "Text for Switch1",
+                        "Uuid": "-807574173"
+                    },
+                    {
+                        "$Name": "HorizontalArrangement1",
+                        "$Type": "HorizontalArrangement",
+                        "$Version": "4",
+                        "Column": "0",
+                        "Row": "1",
+                        "Uuid": "-1249304605",
+                        "$Components": [
+                            {
+                                "$Name": "Image1",
+                                "$Type": "Image",
+                                "$Version": "6",
+                                "Uuid": "648872491"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "$Name": "Map1",
+                "$Type": "Map",
+                "$Version": "7",
+                "EnableZoom": "False",
+                "Height": "-1010",
+                "ShowCompass": "True",
+                "ShowScale": "True",
+                "ShowUser": "True",
+                "Uuid": "-1247958717"
+            },
+            {
+                "$Name": "AbsoluteArrangement1",
+                "$Type": "AbsoluteArrangement",
+                "$Version": "1",
+                "Height": "-2",
+                "Width": "-2",
+                "Uuid": "1911248786",
+                "$Components": [
+                    {
+                        "$Name": "TimePicker1",
+                        "$Type": "TimePicker",
+                        "$Version": "4",
+                        "Left": "2",
+                        "Text": "Text for TimePicker1",
+                        "Top": "55",
+                        "Uuid": "-2091620516"
+                    },
+                    {
+                        "$Name": "Slider1",
+                        "$Type": "Slider",
+                        "$Version": "3",
+                        "Left": "200",
+                        "Top": "71",
+                        "Uuid": "-1803480872"
+                    },
+                    {
+                        "$Name": "WebViewer1",
+                        "$Type": "WebViewer",
+                        "$Version": "11",
+                        "Left": "0",
+                        "Top": "0",
+                        "Uuid": "-1993953193"
+                    },
+                    
+                ]
+            },
+            {
+                "$Name": "Notifier1",
+                "$Type": "Notifier",
+                "$Version": "6",
+                "TextColor": "&HFFFF0000",
+                "Uuid": "1499459139"
+            }
+        ]
+    }
+
+  console.log("designer: ", await AI.Blockly.DesignerDiff.diff(r1, r2));
+
   function createInvisibleAiWorkspaceFrom(mainWorkspace) {
     const div = document.createElement('div');
     div.style.display = 'none';
