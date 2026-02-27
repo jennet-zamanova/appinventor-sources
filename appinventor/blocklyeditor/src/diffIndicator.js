@@ -96,8 +96,8 @@ Blockly.DiffIndicator.prototype.createDom = function() {
        'cx': AI.ErrorIcon.ICON_RADIUS,
        'cy': AI.ErrorIcon.ICON_RADIUS - 15}, this.iconDiffGroup_);
   Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyDiffIconX',
-       'd': 'M 4,-11 12,-3 8,-7 4,-3 12,-11'},
+      {'class': 'blocklyDiffIconDelta',
+       'd': 'M2,-3 L8,-14 L13,-3 L2,-3'},
                            // X fills circle vvv
        //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},
       this.iconDiffGroup_);

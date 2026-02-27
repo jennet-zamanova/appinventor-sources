@@ -17,12 +17,34 @@ goog.provide('AI.Blockly.BlockSvg');
 goog.require('AI.Blockly.Block');
 goog.require('AI.Blockly.FieldFlydown');
 goog.require('AI.ErrorIcon');
+goog.require('AI.AddedBlockIcon');
+goog.require('AI.DeletedBlockIcon');
+goog.require('AI.DiffIcon');
+
 
 /**
  * Block's error icon (if any).
  * @type {AI.ErrorIcon}
  */
 Blockly.BlockSvg.prototype.error = null;
+
+/**
+ * Block's addedBlock icon (if any).
+ * @type {AI.AddedBlockIcon}
+ */
+Blockly.BlockSvg.prototype.addedBlock = null;
+
+/**
+ * Block's deletedBlock icon (if any).
+ * @type {AI.DeletedBlockIcon}
+ */
+Blockly.BlockSvg.prototype.deletedBlock = null;
+
+/**
+ * Block's addedBlock icon (if any).
+ * @type {AI.DiffIcon}
+ */
+Blockly.BlockSvg.prototype.diffBlock = null;
 
 /**
  * Flag to indicate a bad block.
@@ -77,6 +99,66 @@ Blockly.BlockSvg.prototype.setErrorIconText = function(text) {
   }
   if (this.rendered && changedState) {
     // Adding or removing a warning icon will cause the block to change shape so we need to re-render.
+    this.workspace.requestRender(this);
+  }
+};
+
+/**
+ * Add this block's add icon.
+ */
+Blockly.BlockSvg.prototype.setAddedBlockIcon = function() {
+  if (!AI.AddedBlockIcon) {
+    throw 'Adds not supported.';
+  }
+  if (this.isDeadOrDying()) {
+    return;  // do not process diffs if the block is being destroyed
+  }
+  if (!this.addedBlock) {
+      this.addedBlock = new AI.AddedBlockIcon(this);
+      this.addIcon(this.addedBlock);
+    }
+  if (this.rendered) {
+    // Adding or removing a add icon will cause the block to change shape so we need to re-render.
+    this.workspace.requestRender(this);
+  }
+};
+
+/**
+ * Add this block's deleted icon.
+ */
+Blockly.BlockSvg.prototype.setDeletedBlockIcon = function() {
+  if (!AI.DeletedBlockIcon) {
+    throw 'Deletes not supported.';
+  }
+  if (this.isDeadOrDying()) {
+    return;  // do not process diffs if the block is being destroyed
+  }
+  if (!this.deletedBlock) {
+      this.deletedBlock = new AI.DeletedBlockIcon(this);
+      this.addIcon(this.deletedBlock);
+    }
+  if (this.rendered) {
+    // Adding or removing a delete icon will cause the block to change shape so we need to re-render.
+    this.workspace.requestRender(this);
+  }
+};
+
+/**
+ * Add this block's modification icon.
+ */
+Blockly.BlockSvg.prototype.setModifiedBlockIcon = function() {
+  if (!AI.DiffIcon) {
+    throw 'Diffs not supported.';
+  }
+  if (this.isDeadOrDying()) {
+    return;  // do not process diffs if the block is being destroyed
+  }
+  if (!this.diffBlock) {
+      this.diffBlock = new AI.DiffIcon(this);
+      this.addIcon(this.diffBlock);
+    }
+  if (this.rendered) {
+    // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
     this.workspace.requestRender(this);
   }
 };

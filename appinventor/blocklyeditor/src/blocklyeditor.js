@@ -1310,42 +1310,60 @@ function openSecondaryWorkspace(file) {
   console.log("diff output is", diff);
   const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds]);
   console.log("ids: ", ids);
+  colorBlocks(mainWs, secondaryWs, diff);
   mainWs.addDiffHandler(secondaryWs, ids);
   mainWs.addDiffIndicator(secondaryWs, ids);
   mainWs.getDiffIndicator().updateDiffCount();
 }
 
 
-function initSecondaryWorkspace(container) {
-  const secondaryWorkspace = Blockly.inject(container, {
-    readOnly: true,          // 🔒 Users CANNOT edit, move, or delete blocks
-    scrollbars: true,
-    zoom: {
-      controls: true,        // They CAN zoom/pan to navigate
-      wheel: true,
-      startScale: 0.8
-    },
-    toolbox: null            // No toolbox — they can't add blocks
-  });
+function colorBlocks(mainWorkspace, secondaryWorkspace, diff) {
+  colorMovedBlocks(mainWorkspace, diff.movedIds);
+  colorMovedBlocks(secondaryWorkspace, diff.movedIds);
 
-  // Then load blocks into it (see step 4)
-  Blockly.svgResize(Blockly.getMainWorkspace());
-  loadBlocksIntoSecondary(secondaryWorkspace);
+  colorAddedBlocks(secondaryWorkspace, diff.newIds);
+  colorDeletedBlocks(mainWorkspace, diff.removedIds);
 }
 
-function loadBlocksIntoSecondary(workspace) {
-  // Option A: Load a pre-defined reference set of blocks (hardcoded XML)
-  const xmlText = `
-    <xml>
-      <block type="controls_if" x="20" y="20"></block>
-      <block type="math_arithmetic" x="20" y="120"></block>
-    </xml>`;
-
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(xmlText, 'text/xml');
-  Blockly.Xml.domToWorkspace(xml, workspace);
-
-  // Option B: Mirror blocks from the MAIN workspace
-  // const mainXml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-  // Blockly.Xml.domToWorkspace(mainXml, workspace);
+// color moved first, so if inserted or deleted can just add at the end
+// first color only the moved block itself without children
+// option 2 color kids as well
+function colorMovedBlocks(workspace, movedIds) {
+    for (const id of movedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_MOVED_ADDED_HUE);
+      block.initSvg();
+      block.setModifiedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
 }
+
+function colorAddedBlocks(workspace, addedIds) {
+  for (const id of addedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.initSvg();
+      block.setAddedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
+}
+
+function colorDeletedBlocks(workspace, deletedIds) {
+    for (const id of deletedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_REMOVED_HUE);
+      block.initSvg();
+      block.setDeletedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
+}
+

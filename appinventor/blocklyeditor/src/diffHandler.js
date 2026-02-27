@@ -196,7 +196,3 @@ Blockly.DiffHandler.prototype.countChildBlocks = function(block) {
 
   return count;
 };
-
-Blockly.DiffHandler.prototype.setError = function(block, message) {
-  block.setErrorIconText(message);
-}
