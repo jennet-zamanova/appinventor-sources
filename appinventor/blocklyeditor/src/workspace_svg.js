@@ -18,6 +18,8 @@ goog.require('AI.Blockly.SaveFile');
 goog.require('AI.Blockly.Versioning');
 goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
+goog.require('AI.Blockly.DiffHandler');
+goog.require('AI.Blockly.DiffIndicator');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
 goog.require('AI.Blockly.DesignerDiff');
@@ -204,6 +206,30 @@ Blockly.WorkspaceSvg.prototype.addWarningIndicator = function() {
     var svgWarningIndicator = this.warningIndicator_.createDom();
     this.svgGroup_.appendChild(svgWarningIndicator);
     this.warningIndicator_.init();
+  }
+};
+
+/**
+ * Add the diff handler.
+ */
+Blockly.WorkspaceSvg.prototype.addDiffHandler = function(secondaryWorkspace, ids) {
+  if (!this.diffHandler_) {
+    this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
+  }
+};
+
+/**
+ * Adds the diff indicator.
+ */
+Blockly.WorkspaceSvg.prototype.addDiffIndicator = function(secondaryWorkspace, ids) {
+  if (this.diffIndicator_ == null) {
+    if (!this.diffHandler_) {
+      this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
+    }
+    this.diffIndicator_ = new Blockly.DiffIndicator(this);
+    var svgDiffIndicator = this.diffIndicator_.createDom();
+    this.svgGroup_.appendChild(svgDiffIndicator);
+    this.diffIndicator_.init();
   }
 };
 
@@ -668,6 +694,22 @@ Blockly.WorkspaceSvg.prototype.getWarningHandler = function() {
  */
 Blockly.WorkspaceSvg.prototype.getWarningIndicator = function() {
   return this.warningIndicator_;
+};
+
+/**
+ * Get the diff indicator UI element.
+ * @returns {Blockly.DiffHandler}
+ */
+Blockly.WorkspaceSvg.prototype.getDiffHandler = function() {
+  return this.diffHandler_;
+};
+
+/**
+ * Get the diff indicator UI element.
+ * @returns {Blockly.DiffIndicator}
+ */
+Blockly.WorkspaceSvg.prototype.getDiffIndicator = function() {
+  return this.diffIndicator_;
 };
 
 //noinspection JSUnusedGlobalSymbols Called from BlocklyPanel.java
@@ -1343,7 +1385,7 @@ Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
 
   const blocksContent1 = this.getTopBlocks();
   const blocksContent2 = hiddenWs.getTopBlocks();
-  const diff = await AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(this.blockDB.keys()), new Set(hiddenWs.blockDB.keys()));
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(this.blockDB.keys()), new Set(hiddenWs.blockDB.keys()));
   console.log(diff);
   // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
   // console.log(changeSteps);

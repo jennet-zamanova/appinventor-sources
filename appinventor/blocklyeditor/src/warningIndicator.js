@@ -156,6 +156,7 @@ Blockly.WarningIndicator.prototype.init = function() {
     component: this,
     weight: 2,
     capabilities: [Blockly.ComponentManager.Capability.POSITIONABLE],
+    id: "warningIndicator"
   });
   // If the document resizes, reposition the warning indicator.
   // Blockly.browserEvents.bind(window, 'resize', this, this.position_);

@@ -1214,3 +1214,138 @@ top.document.addEventListener('mousedown', function(e) {
     Blockly.hideChaff();
   }
 }, false);
+
+function openSecondaryWorkspace(file) {
+  // TODO: really hacky - need to change!!!
+  console.log("called! ");
+  if (document.getElementById('secondary-workspace')) return;
+
+  var svgParent = document.querySelector('svg.blocklySvg');
+  if (!svgParent) {
+    console.error('Could not find Blockly SVG');
+    return;
+  }
+
+  var blocklyDiv = svgParent.parentElement;        // the unnamed div
+  var container = blocklyDiv.parentElement;         // 5136918324969472_Screen1
+
+  // Force side-by-side layout on the container
+  container.style.display = 'flex';
+  container.style.flexDirection = 'row';
+  container.style.overflow = 'hidden';
+
+  // Constrain the existing blockly div to left half
+  blocklyDiv.style.flex = '1';
+  blocklyDiv.style.minWidth = '0';
+  blocklyDiv.style.position = 'relative'; // override any absolute positioning
+
+  // Create secondary div on the right
+  var secondaryDiv = document.createElement('div');
+  secondaryDiv.id = 'secondary-workspace';
+  secondaryDiv.style.flex = '1';
+  secondaryDiv.style.minWidth = '0';
+  secondaryDiv.style.height = '100%';
+  secondaryDiv.style.position = 'relative';
+  secondaryDiv.style.borderLeft = '2px solid #ccc';
+  
+  // var sc = Blockly.BlocklyEditor.create(container, "second_workspace", true, true)
+
+  container.appendChild(secondaryDiv);
+
+  var mainWs = Blockly.getMainWorkspace();
+  // Inject read-only Blockly into secondary
+  var secondaryWs = Blockly.inject(secondaryDiv, {
+    readOnly: true,
+    scrollbars: true,
+    zoom: { controls: true, wheel: true, startScale: 0.8 },
+    parentWorkspace: mainWs,
+  });
+
+  // Force resize AFTER DOM has updated
+  setTimeout(function() {
+    Blockly.svgResize(mainWs);
+    Blockly.svgResize(secondaryWs);
+  }, 100);
+
+  // const xml = Blockly.utils.xml.textToDom(file);
+  // console.log("converted xml: ", xml);
+  // Blockly.Xml.domToWorkspace(xml, secondaryWs);
+  window.secondaryWorkspace = secondaryWs;
+
+  // Copy AI2-specific context from main workspace
+  // 1. Copy component database
+  if (mainWs.componentDb_) {
+    secondaryWs.componentDb_ = mainWs.componentDb_;
+  }
+
+  // 2. Copy warning handler (or disable it)
+  if (mainWs.warningHandler) {
+    secondaryWs.warningHandler = mainWs.warningHandler;
+  }
+
+  // 3. Copy type block map
+  if (mainWs.typeBlock) {
+    secondaryWs.typeBlock = mainWs.typeBlock;
+  }
+
+  // 4. Copy component instances
+  if (mainWs.getComponentMap) {
+    secondaryWs.getComponentMap = mainWs.getComponentMap.bind(mainWs);
+  }
+
+  secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
+  secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
+
+  // Now safe to load XML
+  try {
+    var xml = Blockly.utils.xml.textToDom(file);
+    Blockly.Xml.domToWorkspace(xml, secondaryWs);
+  } catch(e) {
+    console.error('Failed to load blocks into secondary workspace:', e);
+  }
+  
+  const blocksContent1 = mainWs.getTopBlocks();
+  const blocksContent2 = secondaryWs.getTopBlocks();
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(mainWs.blockDB.keys()), new Set(secondaryWs.blockDB.keys()));
+  console.log("diff output is", diff);
+  const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds]);
+  console.log("ids: ", ids);
+  mainWs.addDiffHandler(secondaryWs, ids);
+  mainWs.addDiffIndicator(secondaryWs, ids);
+  mainWs.getDiffIndicator().updateDiffCount();
+}
+
+
+function initSecondaryWorkspace(container) {
+  const secondaryWorkspace = Blockly.inject(container, {
+    readOnly: true,          // 🔒 Users CANNOT edit, move, or delete blocks
+    scrollbars: true,
+    zoom: {
+      controls: true,        // They CAN zoom/pan to navigate
+      wheel: true,
+      startScale: 0.8
+    },
+    toolbox: null            // No toolbox — they can't add blocks
+  });
+
+  // Then load blocks into it (see step 4)
+  Blockly.svgResize(Blockly.getMainWorkspace());
+  loadBlocksIntoSecondary(secondaryWorkspace);
+}
+
+function loadBlocksIntoSecondary(workspace) {
+  // Option A: Load a pre-defined reference set of blocks (hardcoded XML)
+  const xmlText = `
+    <xml>
+      <block type="controls_if" x="20" y="20"></block>
+      <block type="math_arithmetic" x="20" y="120"></block>
+    </xml>`;
+
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, 'text/xml');
+  Blockly.Xml.domToWorkspace(xml, workspace);
+
+  // Option B: Mirror blocks from the MAIN workspace
+  // const mainXml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+  // Blockly.Xml.domToWorkspace(mainXml, workspace);
+}

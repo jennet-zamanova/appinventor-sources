@@ -11,7 +11,7 @@ goog.require('zhangShasha');
 // if moved to an empty spot wont recognize (in mutations)
 AI.Blockly.Diff = class {
 
-    static async diff(blocksContent1, blocksContent2, ids1, ids2) {
+    static diff(blocksContent1, blocksContent2, ids1, ids2) {
         
         const removedIds = new Set();
         for (const id of ids1) {
