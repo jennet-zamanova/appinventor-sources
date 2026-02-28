@@ -12,7 +12,6 @@
 
 package com.google.appinventor.client.wizards;
 
-import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -21,8 +20,14 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.dom.client.Element;
+import com.google.appinventor.client.jzip.JSZip;
+import com.google.appinventor.client.jzip.LoadOptions;
 import com.google.appinventor.client.utils.Promise;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -30,23 +35,29 @@ import java.util.logging.Logger;
  *
  */
 public class DiffFileUploadWizard {
-  interface DiffFileUploadWizardUiBinder extends UiBinder<Dialog, DiffFileUploadWizard> {}
+  interface DiffFileUploadWizardUiBinder extends UiBinder<Dialog, DiffFileUploadWizard> {
+  }
+
   private static final Logger LOG = Logger.getLogger(ProjectUploadWizard.class.getName());
 
-  private static final DiffFileUploadWizardUiBinder uibinder =
-      GWT.create(DiffFileUploadWizardUiBinder.class);
+  private static final DiffFileUploadWizardUiBinder uibinder = GWT.create(DiffFileUploadWizardUiBinder.class);
 
-  @UiField Dialog uploadDialog;
-  @UiField FileUpload upload;
-  @UiField Button okButton;
-  @UiField Button cancelButton;
+  @UiField
+  Dialog uploadDialog;
+  @UiField
+  FileUpload upload;
+  @UiField
+  Button okButton;
+  @UiField
+  Button cancelButton;
 
   // Project archive extension
-  private static final String PROJECT_ARCHIVE_EXTENSION = ".xml";
+  private static final String PROJECT_ARCHIVE_EXTENSION = ".aia";
   private final FileContentCallback fileContentCallback;
 
   public interface FileContentCallback {
-    void onContent(String content);
+    void onContent(Map<String, String> content);
+
     void onError(String message);
   }
 
@@ -57,7 +68,7 @@ public class DiffFileUploadWizard {
     LOG.warning("Create DiffFileUploadWizard");
     // Initialize UI
     uibinder.createAndBindUi(this);
-    upload.setName("Upload XML Archive");
+    upload.setName("Upload AIA Archive");
     upload.getElement().setAttribute("accept", PROJECT_ARCHIVE_EXTENSION);
     this.fileContentCallback = callback;
   }
@@ -71,44 +82,84 @@ public class DiffFileUploadWizard {
     uploadDialog.hide();
   }
 
-
   @UiHandler("okButton")
   void executeUpload(ClickEvent e) {
     String filename = upload.getFilename();
     LOG.info("upload: " + upload + upload.getElement() + upload.getElement());
     if (filename.endsWith(PROJECT_ARCHIVE_EXTENSION)) {
-      // String content = upload.getElement().getInnerText();
 
-      // LOG.info("contents: " + content + " file " + filename);
-      
-      getFileText(upload.getElement())
-        .then(xmlContent -> {
-            LOG.info("contents: " + xmlContent + " file " + filename);
-            this.fileContentCallback.onContent(xmlContent);
-            // sendContentToSecondaryWorkspace(xmlContent);
-            return Promise.resolve(xmlContent);
-        })
-        .error(error -> {
-            LOG.warning("Failed to read .xml file: " + error);
-            return Promise.reject(error);
-        });
+      this.handleProjectUpload(upload);
+
       uploadDialog.hide();
     } else {
       this.fileContentCallback.onError("The selected project is not a project source file!\n" +
-      "Project source files are aia files.");
+          "Project source files are aia files.");
     }
   }
 
-  private static native Promise<String> getFileText(Element element) /*-{
+  private void handleProjectUpload(FileUpload upload) {
+
+    getFileBase64(upload.getElement())
+        .then(zipBase64 -> getFileConents(zipBase64))
+        .then(response -> {
+          LOG.info("response" + response.toString());
+          this.fileContentCallback.onContent(response);
+          return null;
+        })
+        .error(error -> {
+          this.fileContentCallback.onError("Failed to upload file: " + error.toString());
+          return null;
+        });
+  }
+
+  public Promise<Map<String, String>> getFileConents(String zipData) {
+
+    final JSZip zip = new JSZip();
+
+    return zip.loadAsync(zipData, LoadOptions.create(true))
+        .then0(() -> {
+          Map<String, String> filesMap = new HashMap<>();
+          final List<Promise<?>> promises = new ArrayList<>();
+
+          zip.forEach((name, zipObject) -> {
+            // Skip directories
+            if (!zipObject.dir) {
+
+              Promise<?> p = zipObject.async("string")
+                  .then(content -> {
+                    filesMap.put(name, (String) content);
+                    return null;
+                  });
+
+              promises.add(p);
+            }
+          });
+
+          Promise<?>[] promisesArray = promises.toArray(new Promise[0]);
+
+          return Promise.allOf(promisesArray).then0(() -> Promise.resolve(filesMap));
+        });
+  }
+
+  private static native Promise<String> getFileBase64(Element element) /*-{
+    function _arrayBufferToBase64(buffer) {
+      var binary = '';
+      var bytes = new Uint8Array(buffer);
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return $wnd.btoa(binary);
+    }
     return new Promise(function(resolve, reject) {
       var reader = new FileReader();
       reader.onload = function(event) {
-        resolve(event.target.result); // plain text, no Base64 needed
+        resolve(_arrayBufferToBase64(event.target.result));
       };
       reader.onerror = function(event) {
         reject(new Error("Failed to read file: " + event.target.error));
       };
-      reader.readAsText(element.files[0]); // text instead of ArrayBuffer
+      reader.readAsArrayBuffer(element.files[0]);
     });
   }-*/;
 }

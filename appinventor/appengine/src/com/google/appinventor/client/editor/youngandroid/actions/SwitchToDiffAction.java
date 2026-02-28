@@ -11,6 +11,8 @@ import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.wizards.DiffFileUploadWizard;
 import com.google.appinventor.client.wizards.DiffFileUploadWizard.FileContentCallback;
 import com.google.gwt.user.client.Command;
+
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SwitchToDiffAction implements Command {
@@ -28,14 +30,21 @@ public class SwitchToDiffAction implements Command {
     if (toolbar.getCurrentView() == DesignToolbar.View.BLOCKS) { 
       FileContentCallback callback = new FileContentCallback() {
         @Override
-        public void onContent(String content) {
-          // parse it, save it, display it raw — whatever you want
-          SwitchToDiffAction.openSecondaryWorkspace(content);
-          LOG.info("file got from upload: " + content.length());
+        public void onContent(Map<String, String> files) {
+          for (String fileName : files.keySet()) {
+            if (fileName.endsWith("Screen1.bky")){
+              String content = files.get(fileName);
+              // parse it, save it, display it raw — whatever you want
+              SwitchToDiffAction.openSecondaryWorkspace(content);
+              LOG.info("file got from upload: " + content.length());
+              return;
+            }
+          }
+          LOG.warning("did not find screen 1 blocks!!");
         }
         @Override
         public void onError(String message) {
-            LOG.info("something went wrong");
+            LOG.warning("something went wrong");
         }
       };
       new DiffFileUploadWizard(callback).show();
