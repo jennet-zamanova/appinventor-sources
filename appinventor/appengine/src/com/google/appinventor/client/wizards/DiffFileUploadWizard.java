@@ -102,7 +102,7 @@ public class DiffFileUploadWizard {
     getFileBase64(upload.getElement())
         .then(zipBase64 -> getFileConents(zipBase64))
         .then(response -> {
-          LOG.info("response" + response.toString());
+          LOG.info("response" + response.toString().length());
           this.fileContentCallback.onContent(response);
           return null;
         })

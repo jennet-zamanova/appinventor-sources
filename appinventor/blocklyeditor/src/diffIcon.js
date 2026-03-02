@@ -61,7 +61,7 @@ AI.DiffIcon = class extends Blockly.icons.Icon {
       this.svgRoot);
 
     Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyDiffIconDelta',
+      {'class': 'blocklyDiffIcon',
         'd': 'M3,13 L8,2 L13,13 L3,13'},
       // X fills circle vvv
       //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},

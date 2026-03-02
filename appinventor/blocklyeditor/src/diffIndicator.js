@@ -84,30 +84,30 @@ Blockly.DiffIndicator.prototype.createDom = function() {
   this.svgGroup_ = Blockly.utils.dom.createSvgElement('g',
       {'id': "indicatorDiff"}, null);
   this.diffCount_ = Blockly.utils.dom.createSvgElement('text',
-      {'fill': "black", 'transform':"translate(85,-1)"},
+      {'fill': "black", 'transform':"translate(20,-1)"},
       this.svgGroup_);
   this.diffCount_.textContent = "0";
 
   this.iconDiffGroup_ = Blockly.utils.dom.createSvgElement('g',
-      {'class': 'blocklyIconGroup', 'transform':"translate(65,0)"}, this.svgGroup_);
+      {'class': 'blocklyIconGroup', 'transform':"translate(0,0)"}, this.svgGroup_);
   Blockly.utils.dom.createSvgElement('circle',
       {'class': 'blocklyDiffIconOutline',
        'r': AI.ErrorIcon.ICON_RADIUS,
        'cx': AI.ErrorIcon.ICON_RADIUS,
        'cy': AI.ErrorIcon.ICON_RADIUS - 15}, this.iconDiffGroup_);
   Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyDiffIconDelta',
+      {'class': 'blocklyDiffIcon',
        'd': 'M2,-3 L8,-14 L13,-3 L2,-3'},
                            // X fills circle vvv
        //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},
       this.iconDiffGroup_);
 
   this.diffNavPrevious_ = Blockly.utils.dom.createSvgElement('path',
-      {"d": "M 67,7 L 77,17 L 87,7 Z", 'class':"warningNav"},
+      {"d": "M 2,7 L 12,17 L 22,7 Z", 'class':"warningNav"},
       this.svgGroup_);
 
   this.diffNavNext_ = Blockly.utils.dom.createSvgElement('path',
-      {"d": "M 87,-21 L 67,-21 L 77,-31 Z", 'class':"warningNav"},
+      {"d": "M 22,-21 L 2,-21 L 12,-31 Z", 'class':"warningNav"},
       this.svgGroup_);
 
   return this.svgGroup_;

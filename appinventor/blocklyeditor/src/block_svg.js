@@ -119,6 +119,9 @@ Blockly.BlockSvg.prototype.setAddedBlockIcon = function() {
     }
   if (this.rendered) {
     // Adding or removing a add icon will cause the block to change shape so we need to re-render.
+    // for specificity
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'diffBlock');
     this.workspace.requestRender(this);
   }
 };
@@ -139,6 +142,9 @@ Blockly.BlockSvg.prototype.setDeletedBlockIcon = function() {
     }
   if (this.rendered) {
     // Adding or removing a delete icon will cause the block to change shape so we need to re-render.
+    // for specificity
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'diffBlock');
     this.workspace.requestRender(this);
   }
 };
@@ -159,9 +165,53 @@ Blockly.BlockSvg.prototype.setModifiedBlockIcon = function() {
     }
   if (this.rendered) {
     // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
+    // for specificity
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'diffBlock');
     this.workspace.requestRender(this);
   }
 };
+
+// highlight class does not seem to appear
+// modify svg for now
+Blockly.BlockSvg.prototype.highlightDiff = function() {
+  if (this.addedBlock) {
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'addedBlock');
+  } else if (this.deletedBlock) {
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'deletedBlock');
+  } else if (this.diffBlock) {
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'modifiedBlock');
+  }
+  if (this.rendered) {
+    // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
+    this.workspace.requestRender(this);
+  }
+}
+
+Blockly.BlockSvg.prototype.unhighlightDiff = function() {
+  if (Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
+    'addedBlock') || Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
+    'deletedBlock') || Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
+    'modifiedBlock')) {
+    if (this.addedBlock) {
+      Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
+                            'addedBlock');
+    } else if (this.deletedBlock) {
+      Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
+                            'deletedBlock');
+    } else if (this.diffBlock) {
+      Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
+                            'modifiedBlock');
+    }
+    if (this.rendered) {
+      // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
+      this.workspace.requestRender(this);
+    }
+  }
+}
 
 /**
  * [lyn, 04/01/14] Global flag to control whether rendering is done.

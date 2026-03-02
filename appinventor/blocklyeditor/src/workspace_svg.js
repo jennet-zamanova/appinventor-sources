@@ -20,6 +20,7 @@ goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
 goog.require('AI.Blockly.DiffHandler');
 goog.require('AI.Blockly.DiffIndicator');
+goog.require('AI.Blockly.WorkspaceName');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
 goog.require('AI.Blockly.DesignerDiff');
@@ -230,6 +231,15 @@ Blockly.WorkspaceSvg.prototype.addDiffIndicator = function(secondaryWorkspace, i
     var svgDiffIndicator = this.diffIndicator_.createDom();
     this.svgGroup_.appendChild(svgDiffIndicator);
     this.diffIndicator_.init();
+  }
+};
+
+Blockly.WorkspaceSvg.prototype.addWorkspaceName = function(name) {
+  if (!this.workspaceName_) {
+    this.workspaceName_ = new Blockly.WorkspaceName(this);
+    var svgWorkspaceName = this.workspaceName_.createDom(name);
+    this.svgGroup_.appendChild(svgWorkspaceName);
+    this.workspaceName_.init();
   }
 };
 

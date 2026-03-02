@@ -61,5 +61,9 @@
                     ui:field="switchToBlocks" align="right" styleName="ode-ProjectListButton bright primary">
       <ya:SwitchToBlocksEditorAction/>
     </ai:ToolbarItem>
+    <ai:ToolbarItem name="diff" caption="Diff Blocks"
+                    ui:field="switchToDiff" align="right">
+      <ya:SwitchToDiffAction />
+    </ai:ToolbarItem>
   </ai:Toolbar>
 </ui:UiBinder>

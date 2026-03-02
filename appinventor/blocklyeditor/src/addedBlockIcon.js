@@ -61,12 +61,12 @@ AI.AddedBlockIcon = class extends Blockly.icons.Icon {
       this.svgRoot);
 
     Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyAddedBlockIconPlus',
+      {'class': 'blocklyDiffIcon',
         'd': 'M8,2 V14 M2,8 H14'},
       // X fills circle vvv
       //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},
       this.svgRoot);
-    Blockly.utils.dom.addClass(this.svgRoot, 'blockly-icon-added-block');
+    Blockly.utils.dom.addClass(this.svgRoot, 'blocklyIconAddedBlock');
   }
 
   getSize() {

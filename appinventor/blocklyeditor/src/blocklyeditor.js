@@ -1280,7 +1280,7 @@ function openSecondaryWorkspace(file) {
 
   // 2. Copy warning handler (or disable it)
   if (mainWs.warningHandler) {
-    secondaryWs.warningHandler = mainWs.warningHandler;
+    secondaryWs.warningHandler = null;
   }
 
   // 3. Copy type block map
@@ -1293,12 +1293,17 @@ function openSecondaryWorkspace(file) {
     secondaryWs.getComponentMap = mainWs.getComponentMap.bind(mainWs);
   }
 
+  if (mainWs.variableDb_) {
+    secondaryWs.variableDb_ = mainWs.variableDb_;
+  }
+
   secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
   secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
 
   // Now safe to load XML
   try {
     var xml = Blockly.utils.xml.textToDom(file);
+    console.log("xml: ", xml);
     Blockly.Xml.domToWorkspace(xml, secondaryWs);
   } catch(e) {
     console.error('Failed to load blocks into secondary workspace:', e);
@@ -1314,6 +1319,8 @@ function openSecondaryWorkspace(file) {
   mainWs.addDiffHandler(secondaryWs, ids);
   mainWs.addDiffIndicator(secondaryWs, ids);
   mainWs.getDiffIndicator().updateDiffCount();
+  mainWs.addWorkspaceName("Original");
+  secondaryWs.addWorkspaceName("Uploaded");
 }
 
 

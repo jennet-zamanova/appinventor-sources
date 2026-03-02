@@ -153,6 +153,7 @@ public class DesignToolbar extends Toolbar {
   @UiField protected ToolbarItem removeFormItem;
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
+  @UiField protected ToolbarItem switchToDiff;
   @UiField protected ToolbarItem sendToGalleryItem;
 
   /**

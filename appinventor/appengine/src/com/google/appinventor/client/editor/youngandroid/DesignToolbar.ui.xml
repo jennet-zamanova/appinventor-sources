@@ -40,7 +40,7 @@
       <actions:SendToGalleryAction />
     </ai:ToolbarItem>
     <ai:ToolbarItem name="Show Diff" caption="Show diff" ui:field="showDiffItem"
-                    align="center">
+                    align="center" visible="false">
       <ya:ShowDiffAction />
     </ai:ToolbarItem>
     <ai:ToolbarItem name ="Console Toggle" caption="{messages.toggleConsoleButton}" ui:field="toggleConsoleItem" align="right">

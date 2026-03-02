@@ -61,7 +61,7 @@ AI.DeletedBlockIcon = class extends Blockly.icons.Icon {
       this.svgRoot);
 
     Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyDeletedBlockIconMinus',
+      {'class': 'blocklyDiffIcon',
         'd': 'M2,8 H14'},
       // X fills circle vvv
       //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},

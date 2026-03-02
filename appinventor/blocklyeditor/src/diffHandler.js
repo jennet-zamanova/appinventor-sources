@@ -56,7 +56,6 @@ Blockly.DiffHandler.prototype.currentDiff = -1;
  * the total number of warnings and errors it is displaying.
  */
 Blockly.DiffHandler.prototype.updateDiffCount = function() {
-  console.log("workspace: ", this.mainWorkspace);
   var indicator = this.mainWorkspace.getDiffIndicator();
   if (indicator) {
     // Indicator is only available after the workspace has been drawn.
@@ -76,7 +75,6 @@ Blockly.DiffHandler.prototype.updateCurrentDiff = function() {
 };
 
 Blockly.DiffHandler.prototype.previousDiff = function() {
-  console.log("trying to get previous block: ", this.allDiffIds, this.currentDiffBlockId, this.currentDiff);
   var length = this.allDiffIds.length;
   if (!length) return;
   if (this.currentDiffBlockId) {
@@ -94,14 +92,12 @@ Blockly.DiffHandler.prototype.previousDiff = function() {
 };
 
 Blockly.DiffHandler.prototype.nextDiff = function() {
-  console.log("trying to get next block: ", this.allDiffIds, this.currentDiffBlockId, this.currentDiff);
   var length = this.allDiffIds.length;
   if (!length) return;
   if (this.currentDiffBlockId) {
     this.unHighlightBlock_(this.currentDiffBlockId, this.diffCollapseStack1, this.mainWorkspace);
     this.unHighlightBlock_(this.currentDiffBlockId, this.diffCollapseStack2, this.secondaryWorkspace);
   }
-  console.log("length: ", length);
   if (this.currentDiff < length - 1) {
     this.currentDiff++;
   } else {
@@ -119,13 +115,10 @@ Blockly.DiffHandler.prototype.nextDiff = function() {
  * @private
  */
 Blockly.DiffHandler.prototype.highlightBlock_ = function(blockId, workspace) {
-  console.log("blockid: ", blockId);
   var collapseStack = [];
   var block = workspace.getBlockById(blockId);
-  console.log("highlight: ", block);
   if (block) {
-    block.setHighlighted(true);
-    console.log("should've highlighted blocks");
+    this.addHighlight_(block);
 
     do {
       if (block.isCollapsed()) {
@@ -150,8 +143,7 @@ Blockly.DiffHandler.prototype.unHighlightBlock_ =
   function(blockId, collapseStack, workspace) {
     const block = workspace.getBlockById(blockId);
     if (block) {
-      block.setHighlighted(false);
-      
+      this.removeHighlight_(block);
       for (var i = 0, blockId; (blockId = collapseStack[i]); i++) {
         const tempBlock = workspace.getBlockById(blockId);
         if (tempBlock) {
@@ -160,6 +152,16 @@ Blockly.DiffHandler.prototype.unHighlightBlock_ =
       }
     }
   };
+
+Blockly.DiffHandler.prototype.addHighlight_ = function(block) {
+  // block.setHighlighted(true);
+  block.highlightDiff();
+}
+
+Blockly.DiffHandler.prototype.removeHighlight_ = function(block) {
+  // block.setHighlighted(false);
+  block.unhighlightDiff();
+}
 
 /**
  * Hides any currently highlighted blocks (either highlighted for warning or
@@ -185,7 +187,7 @@ Blockly.DiffHandler.prototype.countChildBlocks = function(block) {
   for (var i = 0; i < childBlocks.length; i++) {
     var childBlock = childBlocks[i];
     if (childBlock) {
-      console.log(`Found child block: ${childBlock.type} (ID: ${childBlock.id})`);
+      // console.log(`Found child block: ${childBlock.type} (ID: ${childBlock.id})`);
       // Count the child block itself
       count += 1;
       // Recursively count the child block's children
