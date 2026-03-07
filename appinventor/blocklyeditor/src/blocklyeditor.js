@@ -1215,6 +1215,13 @@ top.document.addEventListener('mousedown', function(e) {
   }
 }, false);
 
+function openDesignerDiff(designer1, designer2) {
+  console.log("screen1 json: ", designer1);
+  const out = AI.Blockly.DesignerDiff.diff(designer1?.Properties, designer2?.Properties);
+  console.log("output: ", out);
+  return out
+}
+
 function openSecondaryWorkspace(file) {
   // TODO: really hacky - need to change!!!
   console.log("called! ");

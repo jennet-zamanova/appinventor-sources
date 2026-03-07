@@ -11,8 +11,9 @@ goog.require('zhangShasha');
 // if moved to an empty spot wont recognize (in mutations)
 AI.Blockly.DesignerDiff = class {
 
-    static async diff(designer1, designer2) {
+    static diff(designer1, designer2) {
 
+        console.log("comps: ", designer1, designer2);
         const ids1 = AI.Blockly.DesignerDiff.getAllIdsForComponent(designer1);
         const ids2 = AI.Blockly.DesignerDiff.getAllIdsForComponent(designer2);
         
