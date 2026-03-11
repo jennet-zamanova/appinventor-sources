@@ -188,6 +188,9 @@ public abstract class FileEditor extends Composite {
   public void getBlocksImage(Callback<String, String> callback) {
   }
 
+  public void diff() {
+  }
+
   /**
    * Make the workspace managed by the file editor the active workspace.
    * This is called on a YaBlocksEditor to transition between screens when working with the

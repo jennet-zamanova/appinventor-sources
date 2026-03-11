@@ -39,6 +39,10 @@
        ui:field="sendToGalleryItem" align="center">
       <actions:SendToGalleryAction />
     </ai:ToolbarItem>
+    <ai:ToolbarItem name="Show Diff" caption="Show diff" ui:field="showDiffItem"
+                    align="center" visible="false">
+      <ya:ShowDiffAction />
+    </ai:ToolbarItem>
     <ai:ToolbarItem name ="Console Toggle" caption="{messages.toggleConsoleButton}" ui:field="toggleConsoleItem" align="right">
       <ya:ToggleConsoleAction />
     </ai:ToolbarItem>
@@ -49,6 +53,10 @@
     <ai:ToolbarItem name="switchToBlocks" caption="{messages.switchToBlocksEditorButton}"
                     ui:field="switchToBlocks" align="right">
       <ya:SwitchToBlocksEditorAction />
+    </ai:ToolbarItem>
+    <ai:ToolbarItem name="diff" caption="Diff Blocks"
+                    ui:field="switchToDiff" align="right">
+      <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
   </ai:Toolbar>
 </ui:UiBinder>

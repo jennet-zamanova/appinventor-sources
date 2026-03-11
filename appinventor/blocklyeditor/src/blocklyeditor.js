@@ -1214,3 +1214,170 @@ top.document.addEventListener('mousedown', function(e) {
     Blockly.hideChaff();
   }
 }, false);
+
+function openDesignerDiff(designer1, designer2) {
+  console.log("screen1 json: ", designer1);
+  const out = AI.Blockly.DesignerDiff.diff(designer1?.Properties, designer2?.Properties);
+  console.log("output: ", out);
+  return out
+}
+
+function openSecondaryWorkspace(file) {
+  // TODO: really hacky - need to change!!!
+  console.log("called! ");
+  if (document.getElementById('secondary-workspace')) return;
+
+  var svgParent = document.querySelector('svg.blocklySvg');
+  if (!svgParent) {
+    console.error('Could not find Blockly SVG');
+    return;
+  }
+
+  var blocklyDiv = svgParent.parentElement;        // the unnamed div
+  var container = blocklyDiv.parentElement;         // 5136918324969472_Screen1
+
+  // Force side-by-side layout on the container
+  container.style.display = 'flex';
+  container.style.flexDirection = 'row';
+  container.style.overflow = 'hidden';
+
+  // Constrain the existing blockly div to left half
+  blocklyDiv.style.flex = '1';
+  blocklyDiv.style.minWidth = '0';
+  blocklyDiv.style.position = 'relative'; // override any absolute positioning
+
+  // Create secondary div on the right
+  var secondaryDiv = document.createElement('div');
+  secondaryDiv.id = 'secondary-workspace';
+  secondaryDiv.style.flex = '1';
+  secondaryDiv.style.minWidth = '0';
+  secondaryDiv.style.height = '100%';
+  secondaryDiv.style.position = 'relative';
+  secondaryDiv.style.borderLeft = '2px solid #ccc';
+  
+  // var sc = Blockly.BlocklyEditor.create(container, "second_workspace", true, true)
+
+  container.appendChild(secondaryDiv);
+
+  var mainWs = Blockly.getMainWorkspace();
+  // Inject read-only Blockly into secondary
+  var secondaryWs = Blockly.inject(secondaryDiv, {
+    readOnly: true,
+    scrollbars: true,
+    zoom: { controls: true, wheel: true, startScale: 0.8 },
+    parentWorkspace: mainWs,
+  });
+
+  // Force resize AFTER DOM has updated
+  setTimeout(function() {
+    Blockly.svgResize(mainWs);
+    Blockly.svgResize(secondaryWs);
+  }, 100);
+
+  // const xml = Blockly.utils.xml.textToDom(file);
+  // console.log("converted xml: ", xml);
+  // Blockly.Xml.domToWorkspace(xml, secondaryWs);
+  window.secondaryWorkspace = secondaryWs;
+
+  // Copy AI2-specific context from main workspace
+  // 1. Copy component database
+  if (mainWs.componentDb_) {
+    secondaryWs.componentDb_ = mainWs.componentDb_;
+  }
+
+  // 2. Copy warning handler (or disable it)
+  if (mainWs.warningHandler) {
+    secondaryWs.warningHandler = null;
+  }
+
+  // 3. Copy type block map
+  if (mainWs.typeBlock) {
+    secondaryWs.typeBlock = mainWs.typeBlock;
+  }
+
+  // 4. Copy component instances
+  if (mainWs.getComponentMap) {
+    secondaryWs.getComponentMap = mainWs.getComponentMap.bind(mainWs);
+  }
+
+  if (mainWs.variableDb_) {
+    secondaryWs.variableDb_ = mainWs.variableDb_;
+  }
+
+  secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
+  secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
+
+  // Now safe to load XML
+  try {
+    var xml = Blockly.utils.xml.textToDom(file);
+    console.log("xml: ", xml);
+    Blockly.Xml.domToWorkspace(xml, secondaryWs);
+  } catch(e) {
+    console.error('Failed to load blocks into secondary workspace:', e);
+  }
+  
+  const blocksContent1 = mainWs.getTopBlocks();
+  const blocksContent2 = secondaryWs.getTopBlocks();
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(mainWs.blockDB.keys()), new Set(secondaryWs.blockDB.keys()));
+  console.log("diff output is", diff);
+  const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds]);
+  console.log("ids: ", ids);
+  colorBlocks(mainWs, secondaryWs, diff);
+  mainWs.addDiffHandler(secondaryWs, ids);
+  mainWs.addDiffIndicator(secondaryWs, ids);
+  mainWs.getDiffIndicator().updateDiffCount();
+  mainWs.addWorkspaceName("Original");
+  secondaryWs.addWorkspaceName("Uploaded");
+}
+
+
+function colorBlocks(mainWorkspace, secondaryWorkspace, diff) {
+  colorMovedBlocks(mainWorkspace, diff.movedIds);
+  colorMovedBlocks(secondaryWorkspace, diff.movedIds);
+
+  colorAddedBlocks(secondaryWorkspace, diff.newIds);
+  colorDeletedBlocks(mainWorkspace, diff.removedIds);
+}
+
+// color moved first, so if inserted or deleted can just add at the end
+// first color only the moved block itself without children
+// option 2 color kids as well
+function colorMovedBlocks(workspace, movedIds) {
+    for (const id of movedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_MOVED_ADDED_HUE);
+      block.initSvg();
+      block.setModifiedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
+}
+
+function colorAddedBlocks(workspace, addedIds) {
+  for (const id of addedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_ADDED_HUE);
+      block.initSvg();
+      block.setAddedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
+}
+
+function colorDeletedBlocks(workspace, deletedIds) {
+    for (const id of deletedIds) {
+    const block = workspace.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(Blockly.BLOCK_REMOVED_HUE);
+      block.initSvg();
+      block.setDeletedBlockIcon();
+      workspace.requestRender(block);
+    }
+  }
+}
+

@@ -23,7 +23,7 @@
 }
 .blocklyHighlightedConnectionPath {
   stroke-width: 4px;
-  stroke: #fc3;
+  stroke: rgb(255, 51, 88);
   fill: none;
 }
 .blocklyPathLight {
@@ -254,4 +254,34 @@
 
 .blocklyIconGroup:hover>.blocklyWarningIconMark {
   fill: #000;
+}
+
+.diffBlock.blocklySelected.modifiedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: rgb(33 68 128);
+  filter: brightness(1.4);
+}
+
+.diffBlock.blocklySelected.addedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #0c450c;
+  filter: brightness(1.35);
+}
+
+.diffBlock.blocklySelected.deletedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #ff0000;
+  filter: brightness(1.2);
+}
+
+.diffBlock.blocklySelected.modifiedBlock>g>.blocklyText {
+  fill: white;
+}
+
+.diffBlock.blocklySelected.addedBlock>g>.blocklyText {
+  fill: rgb(101, 101, 101);
+}
+
+.diffBlock.blocklySelected.deletedBlock>g>.blocklyText {
+  fill: rgb(101, 101, 101);
 }

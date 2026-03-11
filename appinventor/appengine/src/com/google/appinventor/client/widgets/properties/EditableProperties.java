@@ -113,6 +113,19 @@ public class EditableProperties extends Properties<EditableProperty> {
   }
 
   /**
+   * Adds the diff properties from this collection to a properties panel for display.
+   *
+   * @param panel  properties panel
+   */
+  void addToDiffPropertiesPanel(PropertiesPanel panel) {
+    for (EditableProperty property : this) {
+      if (property.isVisible()) {
+        panel.addDiffProperty(property);
+      }
+    }
+  }
+
+  /**
    * Orphans all properties and then deletes them from this collection.
    */
   public void clear() {

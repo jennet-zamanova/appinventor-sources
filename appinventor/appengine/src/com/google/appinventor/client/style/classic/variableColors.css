@@ -300,13 +300,37 @@ body {
   color: gray-800;
 }
 
-.gwt-Tree .gwt-TreeItem-selected {
+.gwt-Tree .gwt-TreeItem-selected,
+.gwt-Tree .gwt-TreeItem-deleted, 
+.gwt-Tree .gwt-TreeItem-added, 
+.gwt-Tree .gwt-TreeItem-updated, 
+.gwt-Tree .gwt-TreeItem-moved {
   background: none;
 }
 
 .gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-selected span {
   background-color: clr-primary-700;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-deleted span {
+  background-color: row-deleted-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-added span {
+  background-color: row-added-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-updated span {
+  background-color: row-updated-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-moved span {
+  background-color: row-moved-highlight !important;
 }
 
 .gwt-Tree-focused {
