@@ -902,6 +902,12 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     return itemNode;
   }
 
+  public void color(String colorClass) {
+    LOG.info("coloring item");
+    this.addStyleName(colorClass);
+    LOG.info("style is now: " + this.getStyleName());
+  }
+
   /**
    * If this component isn't a Form, and this component's type isn't already in typesAndIcons,
    * adds this component's type name as a key to typesAndIcons, mapped to the HTML string used

@@ -123,7 +123,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -204,6 +206,15 @@ public class Ode implements EntryPoint {
   public static final int USERADMIN = 2;
   public static final int TRASHCAN = 3;
   public static int currentView = PROJECTS;
+  public static boolean isInDiffView = false;
+
+  // diff info
+  private String newIds;
+  private String deletedIds;
+  private String movedIds;
+  private String updatedIds;
+  private String modifiedIds;
+  private HashMap<String, List<String>> modifiedAttributes;
 
   /*
    * The following fields define the general layout of the UI as seen in the following diagram:
@@ -2604,7 +2615,64 @@ public class Ode implements EntryPoint {
     }
   }
 
+  public boolean getInDiffView() {
+    return isInDiffView;
+  }
+
+  public String getNewIds() {
+    return this.newIds;
+  }
+
+  public HashMap<String, List<String>> getModifiedAttributes() {
+    return this.modifiedAttributes;
+  }
+  
+  public String getDeletedIds() {
+    return this.deletedIds;
+  }
+  
+  public String getMovedIds() {
+    return this.movedIds;
+  }
+  
+  public String getUpdatedIds() {
+    return this.updatedIds;
+  }
+
+  public String getModifiedIds() {
+    return this.modifiedIds;
+  }
+
+  public void setInDiffView(boolean inDiffView) {
+    isInDiffView = inDiffView;
+  }
+
+  public void setNewIds(String ids) {
+    this.newIds = ids;
+  }
+  
+  public void setDeletedIds(String ids) {
+    this.deletedIds = ids;
+  }
+  
+  public void setMovedIds(String ids) {
+    this.movedIds = ids;
+  }
+  
+  public void setUpdatedIds(String ids) {
+    this.updatedIds = ids;
+  }
+
+  public void setModifiedIds(String ids) {
+    this.modifiedIds = ids;
+  }
+
+  public void setModifiedAttributes(HashMap<String, List<String>> attributesMap) {
+    this.modifiedAttributes = attributesMap;
+  }
+
   public void showDiff() {
+    isInDiffView = true;
     if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS
         // currentFileEditor may be null when switching projects
         && currentFileEditor != null) {

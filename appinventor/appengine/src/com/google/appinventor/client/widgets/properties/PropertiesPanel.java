@@ -134,6 +134,37 @@ public class PropertiesPanel extends Composite implements ComponentDatabaseChang
   }
 
   /**
+   * Adds an updated property to be displayed in the UI.
+   *
+   * @param property  new property to be shown
+   */
+  void addDiffProperty(EditableProperty property) {
+    VerticalPanel parent = getContainer(property.getCategory());
+    parent.setStyleName(".changed");
+    if ( parent != null ) {
+      HorizontalPanel header = new HorizontalPanel();
+      Label label = new Label(property.getCaption());
+      label.setStyleName("ode-PropertyLabel-Moved");
+      header.add(label);
+      header.setStyleName("ode-PropertyHeader-Moved");
+      if ( hasValidDescription(property) ) {
+        PropertyHelpWidget helpImage = new PropertyHelpWidget(property);
+        header.add(helpImage);
+        helpImage.setStylePrimaryName("ode-PropertyHelpWidget");
+      }
+      parent.add(header);
+      // Since UIObject#setStyleName(String) clears existing styles, only
+      // style the editor if it hasn't already been styled during instantiation.
+      PropertyEditor editor = property.getEditor();
+      if (!editor.getStyleName().contains("ode-PropertyEditor-Moved")) {
+        editor.setStyleName("ode-PropertyEditor-Moved");
+      }
+      parent.add(editor);
+      parent.setWidth("100%");
+    }
+  }
+
+  /**
    * Removes all properties from the properties panel.
    */
   public void clear() {
@@ -152,6 +183,18 @@ public class PropertiesPanel extends Composite implements ComponentDatabaseChang
   public void setProperties(EditableProperties properties) {
     clear();
     properties.addToPropertiesPanel(this);
+    updateStackPanel();
+  }
+
+  /**
+   * Shows a filtered set of properties in the panel. Any previous content will be
+   * removed.
+   *
+   * @param properties  properties to be shown
+   */
+  public void setDiffProperties(EditableProperties properties) {
+    clear();
+    properties.addToDiffPropertiesPanel(this);
     updateStackPanel();
   }
 

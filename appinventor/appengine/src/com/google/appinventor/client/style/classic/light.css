@@ -74,3 +74,7 @@
 
 @def project-background                  url('static/images/toolbarBG.png');
 @def row-highlight                       #fff6c3;
+@def row-deleted-highlight               #e0a6ac;
+@def row-added-highlight                 #a6e0a8;
+@def row-updated-highlight               #d2e0a6;
+@def row-moved-highlight                 #99d8e7;

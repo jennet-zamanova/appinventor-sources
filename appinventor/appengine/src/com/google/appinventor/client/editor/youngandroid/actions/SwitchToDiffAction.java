@@ -7,6 +7,8 @@
 package com.google.appinventor.client.editor.youngandroid.actions;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.boxes.SourceStructureBox;
+import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.json.JsObject;
@@ -21,7 +23,11 @@ import com.google.gwt.core.client.JsArray;
 
 import com.google.gwt.user.client.Command;
 
+import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class SwitchToDiffAction implements Command {
@@ -59,26 +65,54 @@ public class SwitchToDiffAction implements Command {
               LOG.info("screen file got from upload: " + content);
               JSONObject j = YoungAndroidSourceAnalyzer.parseSourceFile(content, new ClientJsonParser());
               LOG.info("output is: " + j.toString() + j.toJson() + j);
-
-              if (Ode.getInstance().getCurrentFileEditor() instanceof YaFormEditor) {
-                String screen1 = Ode.getInstance().getCurrentFileEditor().getRawFileContent();
+              FileEditor currentFileEditor = Ode.getInstance().getCurrentFileEditor();
+              if (currentFileEditor instanceof YaFormEditor) {
+                String screen1 = currentFileEditor.getRawFileContent();
                 JSONObject j1 = YoungAndroidSourceAnalyzer.parseSourceFile(screen1, new ClientJsonParser());
                 LOG.info("screen1: " + j1);
                 JavaScriptObject out = SwitchToDiffAction.openDesignerDiff(j1.toJson(), j.toJson());
                 LOG.info("result" + out);
                 DiffResult diffResult = out.cast();
-                JsArrayString newIds = diffResult.getNewIds();
-                JsArrayString deletedIds = diffResult.getRemovedIds();
-                JsArrayString movedIds = diffResult.getMovedIds();
-                JsArrayString updatedIds = diffResult.getUpdatedIds();
-                JsObject<JsArray<JsObject<String>>> updateInfo = diffResult.getUpdatedIdsInfo();
+                String newIds = diffResult.getNewIds().toString();
+                String deletedIds = diffResult.getRemovedIds().toString();
+                String movedIds = diffResult.getMovedIds().toString();
+                String modifiedIds = diffResult.getUpdatedIds().toString();
+                UpdateMap updateInfo = diffResult.getUpdatedIdsInfo();
                 LOG.info("new " + newIds);
                 LOG.info("deleted " + deletedIds);
                 LOG.info("moved " + movedIds);
-                LOG.info("updated " + updatedIds);
+                LOG.info("updated " + modifiedIds);
                 LOG.info("updated info " + updateInfo);
-                LOG.info("updateInfo get key " + JsObject.keys(updateInfo));
-                Ode.getInstance().toggleDiffView();
+                LOG.info("updateInfo get key " + updateInfo.getKeys());
+                JsArrayString keys = updateInfo.getKeys();
+                LOG.info("try to color components tree");
+                HashMap<String, List<String>> idToAttribute = new HashMap<>();
+                for (int i = 0; i < keys.length(); i++) {
+                    String key = keys.get(i);
+                    JsArrayString attributes = updateInfo.getModifiedAttributes(key);
+                    LOG.info("attributes: " + attributes);
+                    List<String> attributesList = new ArrayList<>();
+                    for (int t = 0; t < attributes.length(); t++) {
+                      attributesList.add(attributes.get(t));
+                    }
+                    idToAttribute.put(key, attributesList);
+                }
+                LOG.info("idToAttribute: " + idToAttribute);
+                // ((YaFormEditor) currentFileEditor).getForm().colorTree();
+                Ode.getInstance().setInDiffView(true);
+                Ode.getInstance().setNewIds(newIds);
+                Ode.getInstance().setDeletedIds(deletedIds);
+                Ode.getInstance().setMovedIds(movedIds);
+                Ode.getInstance().setModifiedIds(modifiedIds);
+                Ode.getInstance().setUpdatedIds(newIds + ", " + deletedIds + ", " + movedIds + ", " + modifiedIds);
+                Ode.getInstance().setModifiedAttributes(idToAttribute);
+                SourceStructureBox.getSourceStructureBox()
+                                  .getSourceStructureExplorer()
+                                  .updateTree(((YaFormEditor) currentFileEditor).getForm()
+                                                                                .buildComponentsTree(),
+                                              null);
+
+                // Ode.getInstance().toggleDiffView();
                 return;
               }
               
@@ -105,6 +139,26 @@ public class SwitchToDiffAction implements Command {
     $wnd.openSecondaryWorkspace(file);
   }-*/;
 
+  // <JsArray<JsObject<String>>>
+  private static class UpdateMap extends JavaScriptObject {
+    protected UpdateMap() {}
+
+    private final native JsArrayString getKeys()/*-{ 
+      return this.keys().toArray(); 
+    }-*/;
+
+    private final native JsArray<JsObject<String>> get(String k)/*-{
+      return this.get(k);
+    }-*/;
+
+    private final native JsArrayString getModifiedAttributes(String k)/*-{
+      var propertiesInfo = this.get(k);
+      return propertiesInfo.map(function(prop) {
+                                  return prop.attribute;
+                                });
+    }-*/;
+  }
+
   private static class DiffResult extends JavaScriptObject {
     protected DiffResult() {}
 
@@ -128,7 +182,7 @@ public class SwitchToDiffAction implements Command {
       return Array.from(this["updateIds"]);   
     }-*/;
 
-    private final native JsObject<JsArray<JsObject<String>>> getUpdatedIdsInfo()/*-{ 
+    private final native UpdateMap getUpdatedIdsInfo()/*-{ 
       return this["updateInfo"];   
     }-*/;
   }
