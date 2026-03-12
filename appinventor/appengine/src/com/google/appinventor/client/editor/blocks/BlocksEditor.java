@@ -15,6 +15,7 @@ import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.PaletteBox;
+import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocklyPanel.BlocklyWorkspaceChangeListener;
@@ -631,15 +632,28 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
       // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets()
       //     .getWidget(2));
 
-      Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("BLOCKS");
-      int[] widgetLocations = (int[]) widgetsMap[0];
-      Widget[] widgets = (Widget[]) widgetsMap[1];
-      for (int i = 0; i < widgetLocations.length; i++) {
-        int idx = widgetLocations[i];
-        Widget w = widgets[i];
-        LOG.info("widget being added: " + w + i);
-        Ode.getInstance().getWorkColumns().insert(w, idx);
+      // Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("BLOCKS");
+      // int[] widgetLocations = (int[]) widgetsMap[0];
+      // Widget[] widgets = (Widget[]) widgetsMap[1];
+      // for (int i = 0; i < widgetLocations.length; i++) {
+      //   int idx = widgetLocations[i];
+      //   Widget w = widgets[i];
+      //   LOG.info("widget being added: " + w + i);
+      //   Ode.getInstance().getWorkColumns().insert(w, idx);
+      // }
+
+      Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("BLOCKS");
+      Widget[] widgetsBeforeViewer = allWidgets[0];
+      Widget[] widgetsAfterViewer = allWidgets[1];
+      for (int i = 0; i < widgetsBeforeViewer.length; i++) {
+        LOG.info("widget: "+widgetsBeforeViewer[i]);
+        Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
       }
+      for (Widget w: widgetsAfterViewer) {
+        LOG.info("widget: "+w);
+        Ode.getInstance().getWorkColumns().add(w);
+      }
+      // Ode.getInstance().getWorkColumns().insert(ViewerBox.getViewerBox(), 1);
       // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 1);
 
 
@@ -665,15 +679,29 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     // it gets adjusted by default
     // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets().getWidget(0));
 
-    Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("DESIGNER");
-      int[] widgetLocations = (int[]) widgetsMap[0];
-      Widget[] widgets = (Widget[]) widgetsMap[1];
-      for (int i = 0; i < widgetLocations.length; i++) {
-        int idx = widgetLocations[i];
-        Widget w = widgets[i];
-        LOG.info("widget being added: " + w + i);
-        Ode.getInstance().getWorkColumns().insert(w, idx);
+    // Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("DESIGNER");
+    //   int[] widgetLocations = (int[]) widgetsMap[0];
+    //   Widget[] widgets = (Widget[]) widgetsMap[1];
+    //   for (int i = 0; i < widgetLocations.length; i++) {
+    //     int idx = widgetLocations[i];
+    //     Widget w = widgets[i];
+    //     LOG.info("widget being added: " + w + i);
+    //     Ode.getInstance().getWorkColumns().insert(w, idx);
+    //   }
+
+    Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("DESIGNER");
+      Widget[] widgetsBeforeViewer = allWidgets[0];
+      Widget[] widgetsAfterViewer = allWidgets[1];
+      for (int i = 0; i < widgetsBeforeViewer.length; i++) {
+        LOG.info("widget: "+widgetsBeforeViewer[i]);
+        Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
       }
+      for (Widget w: widgetsAfterViewer) {
+        LOG.info("widget: "+w);
+        Ode.getInstance().getWorkColumns().add(w);
+      }
+
+    
     // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 3);
 
 

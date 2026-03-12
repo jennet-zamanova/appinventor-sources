@@ -221,6 +221,9 @@ public abstract class ProjectEditor extends Composite {
     // to a previously opened project from another project.
     selectedFileEditor = fileEditor;
     deckPanel.showWidget(index);
+    // in file editor add getcolumns function
+    // call here and readd to workcolumns
+    // then call onshow
     selectedFileEditor.onShow();
   }
 
@@ -256,15 +259,15 @@ public abstract class ProjectEditor extends Composite {
     return Collections.unmodifiableCollection(openFileEditors.values());
   }
 
-  public final Object[] getWidgetsToShowInView(String view) {
-    Object[] widgetsToShow = new Object[]{}; 
+  public final Widget[][] getWidgetsToShowInView(String view) {
+    Widget[][] widgetsToShow = new Widget[][]{}; 
     if (view == "DESIGNER") {
-      widgetsToShow[0] = new int[]{3};
-      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
-      // widgetsToShow[1] = new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
+      widgetsToShow[0] = new Widget[]{PaletteBox.getPaletteBox()};
+      // widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
     } else if (view == "BLOCKS") {
-      widgetsToShow[0] = new int[]{1};
-      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+      widgetsToShow[0] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+      widgetsToShow[1] = new Widget[]{};
       // widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
     }
     return widgetsToShow;

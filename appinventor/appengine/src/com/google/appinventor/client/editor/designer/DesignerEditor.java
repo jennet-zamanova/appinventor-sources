@@ -234,6 +234,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
     SourceStructureBox.getSourceStructureBox().setVisible(true);
 
+    // todo: why palette not updated?
+
     // Show the assets box.
     AssetListBox assetListBox = AssetListBox.getAssetListBox();
     assetListBox.setVisible(true);
