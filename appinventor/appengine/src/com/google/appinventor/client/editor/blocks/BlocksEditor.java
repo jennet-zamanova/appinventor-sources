@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * BlocksEditor is an ancestor of all blocks editors in App Inventor.
@@ -607,6 +608,7 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
   private void loadBlocksEditor() {
 
     // Set the palette box's content.
+    // TODO: why??
     if (palettePanel != null) {
       PaletteBox paletteBox = PaletteBox.getPaletteBox();
       paletteBox.setContent(palettePanel.getWidget());
@@ -620,13 +622,20 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
       // don't want a component drawer open in the blocks editor when we
       // come back to it.
       updateBlocksTree(root, null);
-
-      Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets()
-          .getWidget(2));
+      // LOG.info("widgets in structure and assets: " + Ode.getInstance().getStructureAndAssets().getWidgetCount());
+      // for (int w = 0; w < Ode.getInstance().getStructureAndAssets().getWidgetCount(); w++) {
+      //   LOG.info("widget: " + Ode.getInstance().getStructureAndAssets().getWidget(w));
+      // }
+      
+      // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets()
+      //     .getWidget(2));
+      //   for (int w = 0; w < Ode.getInstance().getWorkColumns().getWidgetCount(); w++) {
+      //   LOG.info("column: " + Ode.getInstance().getWorkColumns().getWidget(w));
+      // }
       Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 1);
-      Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
+      // Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
       BlockSelectorBox.getBlockSelectorBox().setVisible(true);
-      AssetListBox.getAssetListBox().setVisible(true);
+      // AssetListBox.getAssetListBox().setVisible(true);
       blocksArea.injectWorkspace(Ode.getUserDarkThemeEnabled(),
           Ode.getInstance().isDeckPanelAnimating() ? Ode.DECKPANEL_ANIMATION_DURATION_MS : 0);
       hideBlocksDrawer();
@@ -643,11 +652,13 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     paletteBox.clear();
     paletteBox.setVisible(true);
 
-    Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets().getWidget(0));
+    // it gets adjusted by default
+    // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets().getWidget(0));
     Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 3);
-    Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
+    // Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
     BlockSelectorBox.getBlockSelectorBox().setVisible(false);
-    AssetListBox.getAssetListBox().setVisible(true);
+    // TODO: isnt it always there?
+    // AssetListBox.getAssetListBox().setVisible(true);
 
     // Clear and hide the blocks selector tree
     sourceStructureExplorer.clearTree();

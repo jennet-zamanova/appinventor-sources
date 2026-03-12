@@ -14,6 +14,7 @@ import static com.google.appinventor.client.utils.Promise.resolve;
 import static com.google.appinventor.client.wizards.TemplateUploadWizard.TEMPLATES_ROOT_DIRECTORY;
 
 import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.ProjectListBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
@@ -242,6 +243,7 @@ public class Ode implements EntryPoint {
   @UiField (provided = true) protected ViewerBox viewerBox = ViewerBox.getViewerBox();
   @UiField (provided = true) protected AssetListBox assetListBox = AssetListBox.getAssetListBox();
   @UiField (provided = true) protected SourceStructureBox sourceStructureBox;
+  @UiField (provided = true) protected BlockSelectorBox blockSelectorBox;
   @UiField (provided = true) protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
 
   // mode
@@ -984,6 +986,7 @@ public class Ode implements EntryPoint {
   private Promise<Object> initializeUi(Object result) {
     EDITORS.register(YoungAndroidProjectNode.class, node -> new YaProjectEditor(node, uiFactory));
     sourceStructureBox = SourceStructureBox.getSourceStructureBox();
+    blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
     folderManager = new FolderManager(uiFactory);
     projectManager = new ProjectManager();
     editorManager = new EditorManager();

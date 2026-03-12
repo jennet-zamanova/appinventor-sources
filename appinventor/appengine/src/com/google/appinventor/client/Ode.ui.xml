@@ -29,7 +29,7 @@
             <box:ViewerBox ui:field="viewerBox" />
             <g:FlowPanel ui:field="structureAndAssets">
               <box:SourceStructureBox ui:field="sourceStructureBox" />
-              <box:BlockSelectorBox />
+              <box:BlockSelectorBox ui:field="blockSelectorBox"/>
               <box:AssetListBox  ui:field="assetListBox" />
             </g:FlowPanel>
             <box:PropertiesBox ui:field="propertiesBox" width="222px" />

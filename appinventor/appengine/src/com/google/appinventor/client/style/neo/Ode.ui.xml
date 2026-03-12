@@ -30,7 +30,7 @@
             <box:ViewerBox ui:field="viewerBox" />
             <g:FlowPanel ui:field="structureAndAssets" styleName="ode-Designer-RightColumns">
               <box:SourceStructureBox ui:field="sourceStructureBox"  />
-              <box:BlockSelectorBox />
+              <box:BlockSelectorBox ui:field="blockSelectorBox"/>
               <g:FlowPanel>
                 <g:Label text="{messages.assetListBoxCaption}" styleName="ode-AssetsTitle" />
                 <box:AssetListBox  ui:field="assetListBox" />

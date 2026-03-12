@@ -8,6 +8,11 @@ package com.google.appinventor.client.editor;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.UiStyleFactory;
+import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.BlockSelectorBox;
+import com.google.appinventor.client.boxes.PaletteBox;
+import com.google.appinventor.client.boxes.PropertiesBox;
+import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.settings.Settings;
 import com.google.appinventor.client.settings.project.ProjectSettings;
@@ -17,6 +22,8 @@ import com.google.appinventor.shared.settings.SettingsConstants;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
+
+import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -247,6 +254,16 @@ public abstract class ProjectEditor extends Composite {
    */
   public final Iterable<FileEditor> getOpenFileEditors() {
     return Collections.unmodifiableCollection(openFileEditors.values());
+  }
+
+  public final Widget[] getWidgetsToShowInView(String view) {
+    Widget[] widgetsToShow = new Widget[]{}; 
+    if (view == "DESIGNER") {
+      widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
+    } else if (view == "BLOCKS") {
+      widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
+    }
+    return widgetsToShow;
   }
 
   /**
