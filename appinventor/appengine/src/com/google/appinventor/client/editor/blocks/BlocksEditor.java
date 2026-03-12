@@ -6,6 +6,7 @@
 package com.google.appinventor.client.editor.blocks;
 
 import static com.google.appinventor.client.Ode.MESSAGES;
+import static com.google.appinventor.client.Ode.getInstance;
 
 import com.google.appinventor.client.ErrorReporter;
 import com.google.appinventor.client.Images;
@@ -26,6 +27,7 @@ import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
 import com.google.appinventor.client.editor.youngandroid.events.EventHelper;
 import com.google.appinventor.client.explorer.SourceStructureExplorer;
 import com.google.appinventor.client.explorer.SourceStructureExplorerItem;
+import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.tracking.Tracking;
 import com.google.appinventor.shared.properties.json.JSONArray;
 import com.google.appinventor.shared.properties.json.JSONValue;
@@ -104,6 +106,7 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
   // static methods that are called from the Javascript Blockly world.
   private static Map<String, BlocksEditor<?, ?>> formToBlocksEditor = new HashMap<String, BlocksEditor<?, ?>>();
 
+  // private final ProjectEditor projectEditor;
   /**
    * Creates a {@code FileEditor} instance.
    *
@@ -117,6 +120,7 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     this.blocksNode = blocksNode;
     this.language = language;
     this.componentDatabase = componentDatabase;
+    // this.projectEditor = projectEditor;
     entityName = blocksNode.getProjectId() + "_" + blocksNode.getEntityName();
     blocksArea = new BlocklyPanel(entityName, target);
     blocksArea.setLanguageVersion(systemVersion, language.getVersion());
@@ -609,6 +613,7 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
 
     // Set the palette box's content.
     // TODO: why??
+    LOG.info("load blocks editor");
     if (palettePanel != null) {
       PaletteBox paletteBox = PaletteBox.getPaletteBox();
       paletteBox.setContent(palettePanel.getWidget());
@@ -622,17 +627,22 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
       // don't want a component drawer open in the blocks editor when we
       // come back to it.
       updateBlocksTree(root, null);
-      // LOG.info("widgets in structure and assets: " + Ode.getInstance().getStructureAndAssets().getWidgetCount());
-      // for (int w = 0; w < Ode.getInstance().getStructureAndAssets().getWidgetCount(); w++) {
-      //   LOG.info("widget: " + Ode.getInstance().getStructureAndAssets().getWidget(w));
-      // }
       
       // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets()
       //     .getWidget(2));
-      //   for (int w = 0; w < Ode.getInstance().getWorkColumns().getWidgetCount(); w++) {
-      //   LOG.info("column: " + Ode.getInstance().getWorkColumns().getWidget(w));
-      // }
-      Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 1);
+
+      Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("BLOCKS");
+      int[] widgetLocations = (int[]) widgetsMap[0];
+      Widget[] widgets = (Widget[]) widgetsMap[1];
+      for (int i = 0; i < widgetLocations.length; i++) {
+        int idx = widgetLocations[i];
+        Widget w = widgets[i];
+        LOG.info("widget being added: " + w + i);
+        Ode.getInstance().getWorkColumns().insert(w, idx);
+      }
+      // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 1);
+
+
       // Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
       BlockSelectorBox.getBlockSelectorBox().setVisible(true);
       // AssetListBox.getAssetListBox().setVisible(true);
@@ -654,7 +664,19 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
 
     // it gets adjusted by default
     // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets().getWidget(0));
-    Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 3);
+
+    Object[] widgetsMap = this.projectEditor.getWidgetsToShowInView("DESIGNER");
+      int[] widgetLocations = (int[]) widgetsMap[0];
+      Widget[] widgets = (Widget[]) widgetsMap[1];
+      for (int i = 0; i < widgetLocations.length; i++) {
+        int idx = widgetLocations[i];
+        Widget w = widgets[i];
+        LOG.info("widget being added: " + w + i);
+        Ode.getInstance().getWorkColumns().insert(w, idx);
+      }
+    // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 3);
+
+
     // Ode.getInstance().getStructureAndAssets().insert(BlockSelectorBox.getBlockSelectorBox(), 0);
     BlockSelectorBox.getBlockSelectorBox().setVisible(false);
     // TODO: isnt it always there?

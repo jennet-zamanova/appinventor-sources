@@ -256,12 +256,16 @@ public abstract class ProjectEditor extends Composite {
     return Collections.unmodifiableCollection(openFileEditors.values());
   }
 
-  public final Widget[] getWidgetsToShowInView(String view) {
-    Widget[] widgetsToShow = new Widget[]{}; 
+  public final Object[] getWidgetsToShowInView(String view) {
+    Object[] widgetsToShow = new Object[]{}; 
     if (view == "DESIGNER") {
-      widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
+      widgetsToShow[0] = new int[]{3};
+      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+      // widgetsToShow[1] = new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
     } else if (view == "BLOCKS") {
-      widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
+      widgetsToShow[0] = new int[]{1};
+      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+      // widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
     }
     return widgetsToShow;
   }
