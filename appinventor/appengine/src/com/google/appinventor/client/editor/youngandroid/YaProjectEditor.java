@@ -347,11 +347,12 @@ public final class YaProjectEditor extends ProjectEditor implements ProjectChang
       if (fileId.startsWith("sketches/")) {
         entityName = "iot:" + entityName;
       }
-      if (selectedFileEditor.getEditorType().equalsIgnoreCase(BlocksEditor.EDITOR_TYPE)) {
-        designToolbar.switchToScreen(projectId, entityName, DesignToolbar.View.BLOCKS);
-      } else {
-        designToolbar.switchToScreen(projectId, entityName, DesignToolbar.View.DESIGNER);
-      }
+      LOG.info("show called in yaprojecteditor" + selectedFileEditor.getEditorType());
+      // if (selectedFileEditor.getEditorType().equalsIgnoreCase(BlocksEditor.EDITOR_TYPE)) {
+      //   designToolbar.switchToScreen(projectId, entityName, DesignToolbar.View.BLOCKS);
+      // } else {
+      //   designToolbar.switchToScreen(projectId, entityName, DesignToolbar.View.DESIGNER);
+      // }
     }
   }
 

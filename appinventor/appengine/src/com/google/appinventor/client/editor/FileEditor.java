@@ -13,6 +13,7 @@ import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import java.util.logging.Logger;
 
 /**
@@ -220,4 +221,10 @@ public abstract class FileEditor extends Composite {
    * @return type string, the name of the entity
    */
   public abstract String getEntityName();
+
+  /**
+   * Get work columns order to be displayed
+   * @return an array of widgets in the correct order
+   */
+  public abstract Widget[] getWidgetsInRightOrder();
 }

@@ -23,6 +23,7 @@ import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.EditorManager;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.WorkColumnsEditor;
 import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.simple.palette.DropTargetProvider;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
@@ -227,24 +228,16 @@ public class Ode implements EntryPoint {
   @UiField(provided = true) protected DeckPanel deckPanel;
   @UiField(provided = true) protected FlowPanel overDeckPanel;
   @UiField protected TutorialPanel tutorialPanel;
-  @UiField protected ConsolePanel consolePanel;
   private int projectsTabIndex;
   private int projectEditorTabIndex;
   private int debuggingTabIndex;
   private int userAdminTabIndex;
   @UiField protected TopPanel topPanel;
   @UiField protected StatusPanel statusPanel;
-  @UiField protected FlowPanel workColumns;
-  @UiField protected FlowPanel structureAndAssets;
   @UiField protected ProjectToolbar projectToolbar;
   @UiField (provided = true) protected ProjectListBox projectListbox;
-  @UiField protected DesignToolbar designToolbar;
-  @UiField (provided = true) protected PaletteBox paletteBox = PaletteBox.getPaletteBox();
-  @UiField (provided = true) protected ViewerBox viewerBox = ViewerBox.getViewerBox();
-  @UiField (provided = true) protected AssetListBox assetListBox = AssetListBox.getAssetListBox();
-  @UiField (provided = true) protected SourceStructureBox sourceStructureBox;
-  @UiField (provided = true) protected BlockSelectorBox blockSelectorBox;
-  @UiField (provided = true) protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
+  @UiField protected WorkColumnsEditor workColumnsEditor;
+
 
   // mode
   @UiField(provided = true) static Resources.Style style;
@@ -252,7 +245,7 @@ public class Ode implements EntryPoint {
   // Is the tutorial toolbar currently displayed?
   private boolean tutorialVisible = false;
 
-  private boolean consoleVisible = false;
+  
   private boolean isDeckPanelAnimating = false;
 
   // Popup that indicates that an asynchronous request is pending. It is visible
@@ -439,7 +432,7 @@ public class Ode implements EntryPoint {
           projectToolbar.setTrashTabButtonsVisible(false);
         }
       };
-    if (designToolbar.getCurrentView() != DesignToolbar.View.BLOCKS) {
+    if (getDesignToolbar().getCurrentView() != DesignToolbar.View.BLOCKS) {
       next.run();
     } else {
       // maybe take a screenshot, second argument is true so we wait for i/o to complete
@@ -475,9 +468,7 @@ public class Ode implements EntryPoint {
   }
 
   public void showComponentDesigner() {
-    paletteBox.setVisible(true);
-    sourceStructureBox.setVisible(true);
-    propertiesBox.setVisible(true);
+    workColumnsEditor.setDesignerComponentsVisible(true);
     if (currentFileEditor instanceof YaFormEditor) {
       YaFormEditor formEditor = (YaFormEditor) currentFileEditor;
       YaVisibleComponentsPanel panel = formEditor.getVisibleComponentsPanel();
@@ -490,9 +481,7 @@ public class Ode implements EntryPoint {
   }
 
   public void hideComponentDesigner() {
-    paletteBox.setVisible(false);
-    sourceStructureBox.setVisible(false);
-    propertiesBox.setVisible(false);
+    workColumnsEditor.setDesignerComponentsVisible(false);
     if (currentFileEditor instanceof YaFormEditor) {
       YaFormEditor formEditor = (YaFormEditor) currentFileEditor;
       YaVisibleComponentsPanel panel = formEditor.getVisibleComponentsPanel();
@@ -649,8 +638,8 @@ public class Ode implements EntryPoint {
       // The project nodes have been loaded. Tell the viewer to open
       // the project. This will cause the projects source files to be fetched
       // asynchronously, and loaded into file editors.
-
-      viewerBox.show(projectRootNode);
+      LOG.info("trying to open project" + projectRootNode);
+      workColumnsEditor.getViewerBox().show(projectRootNode);
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
       // will get called at the appropriate time.
@@ -660,7 +649,7 @@ public class Ode implements EntryPoint {
         History.newItem(projectIdString, false);
       }
       assetManager.loadAssets(project.getProjectId());
-      assetListBox.getAssetList().refreshAssetList(project.getProjectId());
+      workColumnsEditor.getAssetListBox().getAssetList().refreshAssetList(project.getProjectId());
     }
     getTopToolbar().updateFileMenuButtons(1);
   }
@@ -984,9 +973,10 @@ public class Ode implements EntryPoint {
    * Initializes all UI elements.
    */
   private Promise<Object> initializeUi(Object result) {
+    LOG.info("try to initialize ui!");
     EDITORS.register(YoungAndroidProjectNode.class, node -> new YaProjectEditor(node, uiFactory));
-    sourceStructureBox = SourceStructureBox.getSourceStructureBox();
-    blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
+    
+    // workColumnsEditor.initializeUi();
     folderManager = new FolderManager(uiFactory);
     projectManager = new ProjectManager();
     editorManager = new EditorManager();
@@ -1067,6 +1057,10 @@ public class Ode implements EntryPoint {
 
     // Debugging Panel
     debuggingTabIndex = 3;
+
+    LOG.info("registered, try to create workcolumns");
+    workColumnsEditor = new WorkColumnsEditor();
+    LOG.info("work columns edito: " + workColumnsEditor);
 
     RootPanel.get().add(mainPanel);
 
@@ -1153,31 +1147,41 @@ public class Ode implements EntryPoint {
   }
 
   /**
+   * Returns the work columns.
+   *
+   * @return  {@link WorkColumnsEditor}
+   */
+  public WorkColumnsEditor getWorkColumnsEditor() {
+    return workColumnsEditor;
+  }
+
+  /**
    * Returns the structureAndAssets panel.
    *
-   * @return  {@link VerticalPanel}
+   * @return {@link VerticalPanel}
    */
-  public FlowPanel getStructureAndAssets() {
-    return structureAndAssets;
+    public FlowPanel getStructureAndAssets() {
+      return workColumnsEditor.getStructureAndAssets();
   }
 
   /**
    * Returns the workColumns panel.
    *
-   * @return  {@link HorizontalPanel}
+   * @return {@link HorizontalPanel}
    */
   public FlowPanel getWorkColumns() {
-    return workColumns;
+      return workColumnsEditor.getWorkColumns();
   }
 
   /**
    * Returns the design tool bar.
    *
-   * @return  {@link DesignToolbar}
+   * @return {@link DesignToolbar}
    */
   public DesignToolbar getDesignToolbar() {
-    return designToolbar;
+      return workColumnsEditor.getDesignToolbar();
   }
+
 
   /**
    * Returns the design tool bar.
@@ -1256,7 +1260,7 @@ public class Ode implements EntryPoint {
     }
     LOG.info("Ode: Setting current file editor to " + currentFileEditor.getFileId());
     if (currentFileEditor instanceof YaFormEditor) {
-      sourceStructureBox.show(((YaFormEditor) currentFileEditor).getForm());
+      workColumnsEditor.getSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
     }
     switchToProjectEditor();
     if (!windowClosing) {
@@ -1354,7 +1358,7 @@ public class Ode implements EntryPoint {
    * HideChaff when switching view from block to others
    */
   private void hideChaff() {
-    if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS
+    if (getDesignToolbar().getCurrentView() == DesignToolbar.View.BLOCKS
         // currentFileEditor may be null when switching projects
         && currentFileEditor != null) {
       currentFileEditor.hideChaff();
@@ -2422,7 +2426,7 @@ public class Ode implements EntryPoint {
     }
     // If we are not in the blocks editor, we do nothing
     // but we do run our callback
-    if (designToolbar.getCurrentView() != DesignToolbar.View.BLOCKS) {
+    if (getDesignToolbar().getCurrentView() != DesignToolbar.View.BLOCKS) {
       next.run();
       return;
     }
@@ -2505,13 +2509,7 @@ public class Ode implements EntryPoint {
   }
 
   public void setConsoleVisible(boolean visible) {
-    consoleVisible = visible;
-    if (visible) {
-      consolePanel.setVisible(true);
-      consolePanel.setWidth("300px");
-    } else {;
-      consolePanel.setVisible(false);
-    }
+    workColumnsEditor.setConsoleVisible(visible);
     if (currentFileEditor != null) {
       currentFileEditor.resize();
     }
@@ -2532,7 +2530,7 @@ public class Ode implements EntryPoint {
   }
 
   public boolean isConsoleVisible() {
-    return consoleVisible;
+    return workColumnsEditor.isConsoleVisible();
   }
 
   public boolean isDeckPanelAnimating() {
@@ -2541,7 +2539,7 @@ public class Ode implements EntryPoint {
 
   public void setTutorialURL(String newURL) {
     if (newURL.isEmpty()) {
-      designToolbar.setTutorialToggleVisible(false);
+      getDesignToolbar().setTutorialToggleVisible(false);
       setTutorialVisible(false, false);
       return;
     }
@@ -2555,7 +2553,7 @@ public class Ode implements EntryPoint {
     }
 
     if (!isUrlAllowed) {
-      designToolbar.setTutorialToggleVisible(false);
+      getDesignToolbar().setTutorialToggleVisible(false);
       setTutorialVisible(false, false);
     } else {
       String locale = Window.Location.getParameter("locale");
@@ -2566,7 +2564,7 @@ public class Ode implements EntryPoint {
       boolean isHttps = Window.Location.getProtocol() == "https:" || urlSplits[0] == "https:";
       String effectiveUrl = (isHttps ? "https://" : "http://") + urlSplits[1];
       tutorialPanel.setUrl(effectiveUrl);
-      designToolbar.setTutorialToggleVisible(true);
+      getDesignToolbar().setTutorialToggleVisible(true);
       setTutorialVisible(true, false);
     }
   }

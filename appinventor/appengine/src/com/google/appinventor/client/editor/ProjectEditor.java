@@ -259,19 +259,19 @@ public abstract class ProjectEditor extends Composite {
     return Collections.unmodifiableCollection(openFileEditors.values());
   }
 
-  public final Widget[][] getWidgetsToShowInView(String view) {
-    Widget[][] widgetsToShow = new Widget[][]{}; 
-    if (view == "DESIGNER") {
-      widgetsToShow[0] = new Widget[]{PaletteBox.getPaletteBox()};
-      // widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
-      widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
-    } else if (view == "BLOCKS") {
-      widgetsToShow[0] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
-      widgetsToShow[1] = new Widget[]{};
-      // widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
-    }
-    return widgetsToShow;
-  }
+  // public final Widget[][] getWidgetsToShowInView(String view) {
+  //   Widget[][] widgetsToShow = new Widget[][]{}; 
+  //   if (view == "DESIGNER") {
+  //     widgetsToShow[0] = new Widget[]{PaletteBox.getPaletteBox()};
+  //     // widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+  //     widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
+  //   } else if (view == "BLOCKS") {
+  //     widgetsToShow[0] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
+  //     widgetsToShow[1] = new Widget[]{};
+  //     // widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
+  //   }
+  //   return widgetsToShow;
+  // }
 
   /**
    * Returns the currently selected file editor

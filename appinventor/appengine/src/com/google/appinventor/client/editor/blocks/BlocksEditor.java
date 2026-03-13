@@ -615,11 +615,11 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     // Set the palette box's content.
     // TODO: why??
     LOG.info("load blocks editor");
-    if (palettePanel != null) {
-      PaletteBox paletteBox = PaletteBox.getPaletteBox();
-      paletteBox.setContent(palettePanel.getWidget());
-    }
-    PaletteBox.getPaletteBox().setVisible(false);
+    // if (palettePanel != null) {
+    //   PaletteBox paletteBox = PaletteBox.getPaletteBox();
+    //   paletteBox.setContent(palettePanel.getWidget());
+    // }
+    // PaletteBox.getPaletteBox().setVisible(false);
 
     // Update the source structure explorer with the tree of this form's components.
     DesignerRootComponent root = designer == null ? null : designer.getRoot();
@@ -642,17 +642,18 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
       //   Ode.getInstance().getWorkColumns().insert(w, idx);
       // }
 
-      Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("BLOCKS");
-      Widget[] widgetsBeforeViewer = allWidgets[0];
-      Widget[] widgetsAfterViewer = allWidgets[1];
-      for (int i = 0; i < widgetsBeforeViewer.length; i++) {
-        LOG.info("widget: "+widgetsBeforeViewer[i]);
-        Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
-      }
-      for (Widget w: widgetsAfterViewer) {
-        LOG.info("widget: "+w);
-        Ode.getInstance().getWorkColumns().add(w);
-      }
+      // Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("BLOCKS");
+      // Widget[] widgetsBeforeViewer = allWidgets[0];
+      // Widget[] widgetsAfterViewer = allWidgets[1];
+      // for (int i = 0; i < widgetsBeforeViewer.length; i++) {
+      //   LOG.info("widget: "+widgetsBeforeViewer[i]);
+      //   Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
+      // }
+      // for (Widget w: widgetsAfterViewer) {
+      //   LOG.info("widget: "+w);
+      //   Ode.getInstance().getWorkColumns().add(w);
+      // }
+
       // Ode.getInstance().getWorkColumns().insert(ViewerBox.getViewerBox(), 1);
       // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 1);
 
@@ -670,11 +671,11 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
 
   private void unloadBlocksEditor() {
     // TODO(sharon): do something about form change listener?
-
+    LOG.info("called unload blocks editor");
     // Clear the palette box.
-    PaletteBox paletteBox = PaletteBox.getPaletteBox();
-    paletteBox.clear();
-    paletteBox.setVisible(true);
+    // PaletteBox paletteBox = PaletteBox.getPaletteBox();
+    // paletteBox.clear();
+    // paletteBox.setVisible(true);
 
     // it gets adjusted by default
     // Ode.getInstance().getWorkColumns().remove(Ode.getInstance().getStructureAndAssets().getWidget(0));
@@ -689,17 +690,17 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     //     Ode.getInstance().getWorkColumns().insert(w, idx);
     //   }
 
-    Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("DESIGNER");
-      Widget[] widgetsBeforeViewer = allWidgets[0];
-      Widget[] widgetsAfterViewer = allWidgets[1];
-      for (int i = 0; i < widgetsBeforeViewer.length; i++) {
-        LOG.info("widget: "+widgetsBeforeViewer[i]);
-        Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
-      }
-      for (Widget w: widgetsAfterViewer) {
-        LOG.info("widget: "+w);
-        Ode.getInstance().getWorkColumns().add(w);
-      }
+    // Widget[][] allWidgets = this.projectEditor.getWidgetsToShowInView("DESIGNER");
+    //   Widget[] widgetsBeforeViewer = allWidgets[0];
+    //   Widget[] widgetsAfterViewer = allWidgets[1];
+    //   for (int i = 0; i < widgetsBeforeViewer.length; i++) {
+    //     LOG.info("widget: "+widgetsBeforeViewer[i]);
+    //     Ode.getInstance().getWorkColumns().insert(widgetsBeforeViewer[i], i);
+    //   }
+    //   for (Widget w: widgetsAfterViewer) {
+    //     LOG.info("widget: "+w);
+    //     Ode.getInstance().getWorkColumns().add(w);
+    //   }
 
     
     // Ode.getInstance().getWorkColumns().insert(Ode.getInstance().getStructureAndAssets(), 3);
@@ -731,5 +732,9 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     items[1] = root.buildComponentsTree();
     items[2] = BlockSelectorBox.getBlockSelectorBox().getGenericComponentsTree(root);
     sourceStructureExplorer.updateTree(items, itemToSelect);
+  }
+
+  public Widget[] getWidgetsInRightOrder() {
+    return new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
   }
 }

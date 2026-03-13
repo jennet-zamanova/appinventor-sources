@@ -221,19 +221,30 @@ public class DesignToolbar extends Toolbar {
         return;
       }
     }
-    currentView = view;
+    
     Screen screen = currentProject.screens.get(newScreenName);
     ProjectEditor projectEditor = screen.designerEditor.getProjectEditor();
     currentProject.setCurrentScreen(newScreenName);
     setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, newScreenName);
     LOG.info("Setting currentScreen to " + newScreenName);
-    if (currentView == View.DESIGNER) {
+    // Shuffle columns first so the correct editor layout (Designer vs Blocks) is applied
+    // and ViewerBox (with ProjectEditor) is in the DOM. Do not call shuffleColumns from
+    // ProjectEditor.onLoad/onShow or we get a loop: add ViewerBox -> onLoad -> onShow ->
+    // shuffleColumns -> clear -> re-add ViewerBox -> onLoad again.
+    if (view == View.DESIGNER) {
+      Ode.getInstance().getWorkColumnsEditor().shuffleColumns(screen.designerEditor);
       projectEditor.selectFileEditor(screen.designerEditor);
+      // screen.designerEditor.onShow();
+
       toggleEditor(false);
     } else {  // must be View.BLOCKS
+      Ode.getInstance().getWorkColumnsEditor().shuffleColumns(screen.blocksEditor);
       projectEditor.selectFileEditor(screen.blocksEditor);
+      // screen.blocksEditor.onShow();
       toggleEditor(true);
     }
+    currentView = view;
+  
     Ode.getInstance().getTopToolbar().updateFileMenuButtons(1);
     // Inform the Blockly Panel which project/screen (aka form) we are working on
     BlocklyPanel.setCurrentForm(projectId + "_" + newScreenName);
@@ -355,6 +366,7 @@ public class DesignToolbar extends Toolbar {
    * @param  name   Name of the Screen
    */
   public void removeScreen(long projectId, String name) {
+    LOG.info("called from remove screen");
     if (!projectMap.containsKey(projectId)) {
       LOG.warning("DesignToolbar can't find project " + name + " with id " + projectId
           + " Ignoring removeScreen().");

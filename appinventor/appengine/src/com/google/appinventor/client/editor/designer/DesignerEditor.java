@@ -14,6 +14,7 @@ import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
+import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
@@ -59,6 +60,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -968,6 +970,10 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         root.setPasteTarget(container);
       }
     });
+  }
+
+  public Widget[] getWidgetsInRightOrder() {
+    return new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
   }
 
   private static native JsArrayString concat(JsArrayString first, JsArrayString second)/*-{
