@@ -35,51 +35,48 @@ public class WorkColumnsEditor extends Composite {
     @UiField
     protected DesignToolbar designToolbar; //done
     @UiField(provided = true)
-    protected PaletteBox paletteBox = PaletteBox.getPaletteBox(); //done
+    protected PaletteBox paletteBox; //done
     @UiField(provided = true)
-    protected ViewerBox viewerBox = ViewerBox.getViewerBox(); //done
+    protected ViewerBox viewerBox; //done
     @UiField(provided = true)
-    protected AssetListBox assetListBox = AssetListBox.getAssetListBox(); //done
+    protected AssetListBox assetListBox; //done
     @UiField(provided = true)
     protected SourceStructureBox sourceStructureBox;
     @UiField(provided = true)
     protected BlockSelectorBox blockSelectorBox;
     @UiField(provided = true)
-    protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
+    protected PropertiesBox propertiesBox;
 
     private boolean consoleVisible = false;
 
     // Singleton palette box instance
-    // private static final WorkColumnsEditor INSTANCE = new WorkColumnsEditor();
+    private static final WorkColumnsEditor INSTANCE = new WorkColumnsEditor();
 
     /**
      * Return the WorkColumnsEditor.
      *
      * @return  WorkColumnsEditor
      */
-    // public static WorkColumnsEditor getWorkColumnsEditor() {
-    //     return INSTANCE;
-    // }
+    public static WorkColumnsEditor getWorkColumnsEditor() {
+        return INSTANCE;
+    }
 
     public WorkColumnsEditor() {
         super();
-        LOG.info("createing work columns successfully called super");
         bindUI();
-        LOG.info("finished binding ui");
-        for (int i = 0; i < workColumns.getWidgetCount(); i++) {
-            LOG.info("widgets: " + workColumns.getWidget(i) + "/n   " + workColumns.getWidget(i).isVisible());
-        }
     }
 
     public void initializeUi() {
-        LOG.info("initializing ui in columns");
         sourceStructureBox = SourceStructureBox.getSourceStructureBox();
         blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
+        paletteBox = PaletteBox.getPaletteBox(); //done
+        viewerBox = ViewerBox.getViewerBox(); //done
+        assetListBox = AssetListBox.getAssetListBox(); //done
+        propertiesBox = PropertiesBox.getPropertiesBox();
     }
 
     public void bindUI() {
         initializeUi();
-        LOG.info("init widget call now");
         initWidget(uibinder.createAndBindUi(this));
         LOG.info("finished init");
     }
@@ -171,6 +168,7 @@ public class WorkColumnsEditor extends Composite {
     }
 
     public void setDesignerComponentsVisible(boolean visible) {
+        LOG.info(" " + paletteBox.isAttached() + paletteBox.isVisible() + " palette is: " + paletteBox);
         paletteBox.setVisible(visible);
         sourceStructureBox.setVisible(visible);
         propertiesBox.setVisible(visible);
@@ -180,9 +178,9 @@ public class WorkColumnsEditor extends Composite {
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();
         for (Widget w : widgetsToShow) {
-            // LOG.info("adding widget" +w);
             workColumns.add(w);
             w.setVisible(true);
         }
+        LOG.info("workColumns now has: " + workColumns.getWidgetCount() + workColumns.isAttached() + workColumns.isVisible());
     }
 }

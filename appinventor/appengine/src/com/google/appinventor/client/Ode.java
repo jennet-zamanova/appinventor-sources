@@ -1044,6 +1044,10 @@ public class Ode implements EntryPoint {
     style.ensureInjected();
     FlowPanel mainPanel = uiFactory.createOde(this, layout);
 
+    LOG.info("registered, try to create workcolumns");
+    workColumnsEditor = WorkColumnsEditor.getWorkColumnsEditor();
+    LOG.info("work columns in main panel: " + mainPanel.getWidgetIndex(workColumnsEditor));
+
     deckPanel.showWidget(0);
 
     // Projects tab
@@ -1057,10 +1061,6 @@ public class Ode implements EntryPoint {
 
     // Debugging Panel
     debuggingTabIndex = 3;
-
-    LOG.info("registered, try to create workcolumns");
-    workColumnsEditor = new WorkColumnsEditor();
-    LOG.info("work columns edito: " + workColumnsEditor);
 
     RootPanel.get().add(mainPanel);
 
@@ -1170,6 +1170,7 @@ public class Ode implements EntryPoint {
    * @return {@link HorizontalPanel}
    */
   public FlowPanel getWorkColumns() {
+      LOG.info("getting work columns");
       return workColumnsEditor.getWorkColumns();
   }
 
@@ -1179,7 +1180,7 @@ public class Ode implements EntryPoint {
    * @return {@link DesignToolbar}
    */
   public DesignToolbar getDesignToolbar() {
-      return workColumnsEditor.getDesignToolbar();
+    return workColumnsEditor.getDesignToolbar();
   }
 
 
