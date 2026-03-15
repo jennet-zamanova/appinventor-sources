@@ -87,6 +87,12 @@ AI.Events.WORKSPACE_VIEWPORT_MOVE = "blocks.workspace.move";
 AI.Events.FORCE_SAVE = 'blocks.save.force';
 
 /**
+ * Type identifier used for diffing two versions.
+ * @type {string}
+ */
+AI.Events.DIFF = 'blocks.diff';
+
+/**
  * Abstract class for all App Inventor events.
  * @constructor
  */

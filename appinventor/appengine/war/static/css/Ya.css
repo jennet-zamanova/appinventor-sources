@@ -887,6 +887,37 @@ div.StatusPanel {
   background-color: #d2e0a6;
 }
 
+.gwt-Tree .gwt-TreeItem-deleted, 
+.gwt-Tree .gwt-TreeItem-added, 
+.gwt-Tree .gwt-TreeItem-updated, 
+.gwt-Tree .gwt-TreeItem-moved {
+  background: none;
+}
+
+.ode-PropertiesPanel-Moved, .ode-PropertyEditor-Moved, .ode-PropertyLabel-Moved, .ode-PropertyHeader-Moved {
+  background-color: rgb(248, 255, 157);
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-deleted span {
+  background-color: #e0a6ac;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-added span {
+  background-color: #a6e0a8;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-updated span {
+  background-color: #f8f7b6;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-moved span {
+  background-color: #99d8e7;
+}
+
 .gwt-Tree-focused {
   outline: solid 2px #000000;
 }
@@ -1460,6 +1491,22 @@ select.ode-PropertyEditor[disabled] {
 
 .ode-SimpleMockComponent-selected {
   border: 2px solid #8fc202;
+}
+
+.ode-SimpleMockComponent.gwt-TreeItem-added {
+  border: 2px solid green;
+}
+
+.ode-SimpleMockComponent.gwt-TreeItem-deleted {
+  border: 2px solid red;
+}
+
+.ode-SimpleMockComponent.gwt-TreeItem-moved {
+  border: 2px solid blue;
+}
+
+.ode-SimpleMockComponent.gwt-TreeItem-updated {
+  border: 2px solid orange;
 }
 
 .ode-SimpleMockMapFeature-selected svg * {

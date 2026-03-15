@@ -55,6 +55,10 @@
 @def v-red   #ff0000;
 
 @def row-highlight  rgba(167, 36, 122, 0.21);
+@def row-deleted-highlight               #e0a6ac;
+@def row-added-highlight                 #a6e0a8;
+@def row-updated-highlight               #d2e0a6;
+@def row-moved-highlight                 #99d8e7;
 @def text-highlight rgba(167, 36, 122, 1);
 
 

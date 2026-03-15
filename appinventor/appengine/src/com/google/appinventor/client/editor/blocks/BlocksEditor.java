@@ -23,7 +23,6 @@ import com.google.appinventor.client.editor.designer.DesignerChangeListener;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.designer.DesignerRootComponent;
 import com.google.appinventor.client.editor.simple.components.MockComponent;
-import com.google.appinventor.client.editor.simple.palette.DropTargetProvider;
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
 import com.google.appinventor.client.editor.youngandroid.events.EventHelper;
 import com.google.appinventor.client.explorer.SourceStructureExplorer;
@@ -483,6 +482,14 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     }
   }
 
+  // TODO: implement diffing functionality in BlocksEditor.java
+  @Override
+  public void diff(){
+    String v1 = blocksArea.getBlocksContent();
+    String v2 = "v2.xml";
+    blocksArea.showDiff(v1, v2);
+  }
+
   private static native void set(JavaScriptObject jso, String key, String value)/*-{
     jso[key] = value;
   }-*/;
@@ -741,3 +748,4 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     return new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
   }
 }
+

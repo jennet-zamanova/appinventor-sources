@@ -60,3 +60,7 @@
 @def navigationbarLandscape              url('static/images/navigationbarLandscape.png');
 
 @def row-highlight                       rgba(255, 246, 195, 0.30);
+@def row-deleted-highlight               #e0a6ac;
+@def row-added-highlight                 #a6e0a8;
+@def row-updated-highlight               #d2e0a6;
+@def row-moved-highlight                 #99d8e7;

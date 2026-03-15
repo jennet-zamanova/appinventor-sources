@@ -617,6 +617,26 @@ body {
   background-color: row-highlight !important;
 }
 
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-deleted span {
+  background-color: row-deleted-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-added span {
+  background-color: row-added-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-updated span {
+  background-color: row-updated-highlight !important;
+}
+
+.gwt-Tree .gwt-TreeItem span:hover,
+.gwt-Tree .gwt-TreeItem-moved span {
+  background-color: row-moved-highlight !important;
+}
+
 .gwt-Tree .gwt-TreeItem span,
 .gwt-Tree .gwt-TreeItem span:hover {
   background-color: v-white;

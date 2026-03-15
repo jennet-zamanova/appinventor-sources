@@ -18,7 +18,14 @@ goog.require('AI.Blockly.SaveFile');
 goog.require('AI.Blockly.Versioning');
 goog.require('AI.Blockly.WarningHandler');
 goog.require('AI.Blockly.WarningIndicator');
+goog.require('AI.Blockly.DiffHandler');
+goog.require('AI.Blockly.DiffIndicator');
+goog.require('AI.Blockly.WorkspaceName');
 goog.require('AI.Blockly.Workspace');
+goog.require('AI.Blockly.Diff');
+goog.require('AI.Blockly.DesignerDiff');
+goog.require('AI.Blockly.Tests.Diff');
+goog.require('AI.Blockly.Tests.MoveDetection');
 
 /**
  * AI2 Blocks Drawer
@@ -200,6 +207,39 @@ Blockly.WorkspaceSvg.prototype.addWarningIndicator = function() {
     var svgWarningIndicator = this.warningIndicator_.createDom();
     this.svgGroup_.appendChild(svgWarningIndicator);
     this.warningIndicator_.init();
+  }
+};
+
+/**
+ * Add the diff handler.
+ */
+Blockly.WorkspaceSvg.prototype.addDiffHandler = function(secondaryWorkspace, ids) {
+  if (!this.diffHandler_) {
+    this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
+  }
+};
+
+/**
+ * Adds the diff indicator.
+ */
+Blockly.WorkspaceSvg.prototype.addDiffIndicator = function(secondaryWorkspace, ids) {
+  if (this.diffIndicator_ == null) {
+    if (!this.diffHandler_) {
+      this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
+    }
+    this.diffIndicator_ = new Blockly.DiffIndicator(this);
+    var svgDiffIndicator = this.diffIndicator_.createDom();
+    this.svgGroup_.appendChild(svgDiffIndicator);
+    this.diffIndicator_.init();
+  }
+};
+
+Blockly.WorkspaceSvg.prototype.addWorkspaceName = function(name) {
+  if (!this.workspaceName_) {
+    this.workspaceName_ = new Blockly.WorkspaceName(this);
+    var svgWorkspaceName = this.workspaceName_.createDom(name);
+    this.svgGroup_.appendChild(svgWorkspaceName);
+    this.workspaceName_.init();
   }
 };
 
@@ -666,6 +706,22 @@ Blockly.WorkspaceSvg.prototype.getWarningIndicator = function() {
   return this.warningIndicator_;
 };
 
+/**
+ * Get the diff indicator UI element.
+ * @returns {Blockly.DiffHandler}
+ */
+Blockly.WorkspaceSvg.prototype.getDiffHandler = function() {
+  return this.diffHandler_;
+};
+
+/**
+ * Get the diff indicator UI element.
+ * @returns {Blockly.DiffIndicator}
+ */
+Blockly.WorkspaceSvg.prototype.getDiffIndicator = function() {
+  return this.diffIndicator_;
+};
+
 //noinspection JSUnusedGlobalSymbols Called from BlocklyPanel.java
 Blockly.WorkspaceSvg.prototype.exportBlocksImageToUri = function(cb) {
   AI.Blockly.ExportBlocksImage.getUri(cb, this);
@@ -1031,3 +1087,429 @@ Blockly.WorkspaceSvg.prototype.refreshBackpack = function() {
     this.backpack_.resize();
   }
 };
+
+Blockly.WorkspaceSvg.prototype.showDiff = async function(v1, v2) {
+  await AI.Blockly.Tests.Diff.runAllTests();
+  await AI.Blockly.Tests.MoveDetection.runAllTests();
+
+  const r1 = {
+        "$Name": "Screen1",
+        "$Type": "Form",
+        "$Version": "31",
+        "ActionBar": "True",
+        "AppName": "test_01",
+        "Title": "Screen2",
+        "Uuid": "0",
+        "$Components": [
+            {
+                "$Name": "CanvasNew",
+                "$Type": "Canvas",
+                "$Version": "15",
+                "Width": "200",
+                "Uuid": "-1996284915",
+                "$Components": [
+                    {
+                        "$Name": "Ball1",
+                        "$Type": "Ball",
+                        "$Version": "8",
+                        "Uuid": "616349471",
+                        "X": "69",
+                        "Y": "80"
+                    },
+                    {
+                        "$Name": "ImageSpriteMill",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "-2021865240",
+                        "X": "13",
+                        "Y": "15"
+                    }
+                ]
+            },
+            {
+                "$Name": "anoherButton1",
+                "$Type": "Button",
+                "$Version": "7",
+                "Text": "Text for Button1",
+                "TextAlignment": "0",
+                "Uuid": "-2025594693"
+            },
+            {
+                "$Name": "TableArrangement1",
+                "$Type": "TableArrangement",
+                "$Version": "1",
+                "Columns": "5",
+                "Width": "-70",
+                "Uuid": "-1080948459",
+                "$Components": [
+                    {
+                        "$Name": "ListView1",
+                        "$Type": "ListView",
+                        "$Version": "10",
+                        "Column": "1",
+                        "Row": "1",
+                        "Uuid": "-231192367"
+                    },
+                    {
+                        "$Name": "HorizontalArrangement1",
+                        "$Type": "HorizontalArrangement",
+                        "$Version": "4",
+                        "Column": "0",
+                        "Row": "1",
+                        "Uuid": "-1249304605",
+                        "$Components": [
+                            {
+                                "$Name": "Image100",
+                                "$Type": "Image",
+                                "$Version": "6",
+                                "Uuid": "648872491"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "$Name": "Map1",
+                "$Type": "Map",
+                "$Version": "7",
+                "EnableZoom": "False",
+                "Height": "-1010",
+                "ShowScale": "True",
+                "ShowUser": "True",
+                "Uuid": "-1247958717"
+            },
+            {
+                "$Name": "TimePick",
+                "$Type": "TimePicker",
+                "$Version": "4",
+                "Left": "2",
+                "Text": "Text for TimePicker1",
+                "Top": "55",
+                "Uuid": "-2091620516"
+            },
+            {
+                "$Name": "WebViewer1",
+                "$Type": "WebViewer",
+                "$Version": "11",
+                "Left": "1",
+                "Top": "0",
+                "Uuid": "-1993953193"
+            },
+            {
+                "$Name": "Slider1",
+                "$Type": "Slider",
+                "$Version": "3",
+                "Left": "200",
+                "Top": "71",
+                "Uuid": "-1803480872"
+            },
+            {
+                "$Name": "Notifier1",
+                "$Type": "Notifier",
+                "$Version": "6",
+                "TextColor": "&HFF0000",
+                "Uuid": "1499459139"
+            }
+        ]
+    };
+
+  const r2 = {
+        "$Name": "Screen1",
+        "$Type": "Form",
+        "$Version": "31",
+        "ActionBar": "True",
+        "AppName": "test_01",
+        "Title": "Screen1",
+        "Uuid": "0",
+        "$Components": [
+            {
+                "$Name": "Canvas1",
+                "$Type": "Canvas",
+                "$Version": "15",
+                "Width": "200",
+                "Uuid": "-1996284915",
+                "$Components": [
+                    {
+                        "$Name": "Ball1",
+                        "$Type": "Ball",
+                        "$Version": "8",
+                        "Uuid": "616349471",
+                        "X": "69",
+                        "Y": "8"
+                    },
+                    {
+                        "$Name": "ImageSprite1",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "817665180",
+                        "X": "-746",
+                        "Y": "14"
+                    },
+                    {
+                        "$Name": "ImageSprite2",
+                        "$Type": "ImageSprite",
+                        "$Version": "10",
+                        "Uuid": "-2021865240",
+                        "X": "113",
+                        "Y": "15"
+                    }
+                ]
+            },
+            {
+                "$Name": "Button1",
+                "$Type": "Button",
+                "$Version": "7",
+                "FontItalic": "True",
+                "Text": "Text for Button1",
+                "TextAlignment": "0",
+                "Uuid": "-2025594693"
+            },
+            {
+                "$Name": "TextBox1",
+                "$Type": "TextBox",
+                "$Version": "14",
+                "Uuid": "-713347679"
+            },
+            {
+                "$Name": "TableArrangement1",
+                "$Type": "TableArrangement",
+                "$Version": "1",
+                "Columns": "3",
+                "Width": "-1070",
+                "Uuid": "-1080948459",
+                "$Components": [
+                    {
+                        "$Name": "Switch1",
+                        "$Type": "Switch",
+                        "$Version": "1",
+                        "Column": "1",
+                        "On": "True",
+                        "Row": "0",
+                        "Text": "Text for Switch1",
+                        "Uuid": "-807574173"
+                    },
+                    {
+                        "$Name": "HorizontalArrangement1",
+                        "$Type": "HorizontalArrangement",
+                        "$Version": "4",
+                        "Column": "0",
+                        "Row": "1",
+                        "Uuid": "-1249304605",
+                        "$Components": [
+                            {
+                                "$Name": "Image1",
+                                "$Type": "Image",
+                                "$Version": "6",
+                                "Uuid": "648872491"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "$Name": "Map1",
+                "$Type": "Map",
+                "$Version": "7",
+                "EnableZoom": "False",
+                "Height": "-1010",
+                "ShowCompass": "True",
+                "ShowScale": "True",
+                "ShowUser": "True",
+                "Uuid": "-1247958717"
+            },
+            {
+                "$Name": "AbsoluteArrangement1",
+                "$Type": "AbsoluteArrangement",
+                "$Version": "1",
+                "Height": "-2",
+                "Width": "-2",
+                "Uuid": "1911248786",
+                "$Components": [
+                    {
+                        "$Name": "TimePicker1",
+                        "$Type": "TimePicker",
+                        "$Version": "4",
+                        "Left": "2",
+                        "Text": "Text for TimePicker1",
+                        "Top": "55",
+                        "Uuid": "-2091620516"
+                    },
+                    {
+                        "$Name": "Slider1",
+                        "$Type": "Slider",
+                        "$Version": "3",
+                        "Left": "200",
+                        "Top": "71",
+                        "Uuid": "-1803480872"
+                    },
+                    {
+                        "$Name": "WebViewer1",
+                        "$Type": "WebViewer",
+                        "$Version": "11",
+                        "Left": "0",
+                        "Top": "0",
+                        "Uuid": "-1993953193"
+                    },
+                    
+                ]
+            },
+            {
+                "$Name": "Notifier1",
+                "$Type": "Notifier",
+                "$Version": "6",
+                "TextColor": "&HFFFF0000",
+                "Uuid": "1499459139"
+            }
+        ]
+    }
+
+  console.log("designer: ", await AI.Blockly.DesignerDiff.diff(r1, r2));
+
+  function createInvisibleAiWorkspaceFrom(mainWorkspace) {
+    const div = document.createElement('div');
+    div.style.display = 'none';
+    document.body.appendChild(div);
+
+    const ws = Blockly.inject(div, {
+      readOnly: true,
+      scrollbars: false,
+      sounds: false,
+      parentWorkspace: mainWorkspace,
+    });
+
+    // Copy AI-specific runtime state
+    ws.componentDb_ = mainWorkspace.componentDb_;
+    ws.getEventTypeObject = () => mainWorkspace.getEventTypeObject();
+    ws.getProcedureDatabase = () => mainWorkspace.getProcedureDatabase();
+
+    return ws;
+  }
+
+  const blocksText = await fetch("static/media/v2.xml").then(r => r.text());
+  // TODO: ask for a better way of doing this - we need a headless workspace to parse the blocks and generate the diff, 
+  // but we also need the component database and other runtime state to properly interpret the blocks and generate a meaningful diff. 
+  // Right now we're creating a hidden workspace attached to the main workspace just to reuse that state, but it feels hacky.
+  const hiddenWs = createInvisibleAiWorkspaceFrom(Blockly.getMainWorkspace());
+  const blocksContent = Blockly.utils.xml.textToDom(blocksText);
+  Blockly.Xml.domToWorkspace(blocksContent, hiddenWs);
+
+  const blocksContent1 = this.getTopBlocks();
+  const blocksContent2 = hiddenWs.getTopBlocks();
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(this.blockDB.keys()), new Set(hiddenWs.blockDB.keys()));
+  console.log(diff);
+  // const changeSteps = AI.Blockly.Diff.generateChangeSteps(diff);
+  // console.log(changeSteps);
+  // create empty workspace to hold second tree
+  // diff.removedIds.forEach(blockId => this.removeBlock(blockId));
+  // diff.newIds.forEach(block => this.addBlock(block));
+  // // moves
+  // for (const move of diff.movedIds) {
+  //   this.removeBlock(move.id, Blockly.BLOCK_MOVED_REMOVED_HUE);
+  //   this.addBlock(move, Blockly.BLOCK_MOVED_ADDED_HUE);
+  // }
+}
+
+Blockly.WorkspaceSvg.prototype.getChildIdsFromID = function(blockID) {
+  const childIDs = [];
+  const block = this.getBlockById(blockID);
+  if (block) {
+    const children = block.getChildren();
+    const next = block.getNextBlock();
+    for (const child of children) {
+      if (!next || next?.id !== child.id) {
+        childIDs.push(child.id);
+        const grandChildIDs = this.getChildIdsFromID(child.id);
+        childIDs.push(...grandChildIDs);
+      }
+    }
+  }
+  return childIDs;
+}
+
+Blockly.WorkspaceSvg.prototype.getChildIdsFromBlock = function(block) {
+  const childIDs = [];
+  if (block) {
+    const children = block.getChildren();
+    const next = block.getNextBlock();
+    for (const child of children) {
+      if (!next || next?.id !== child.id) {
+        childIDs.push(child.id);
+        const grandChildIDs = this.getChildIdsFromBlock(child);
+        childIDs.push(...grandChildIDs);
+      }
+    }
+  }
+  return childIDs;
+}
+
+Blockly.WorkspaceSvg.prototype.removeBlock = function(blockID, hue = Blockly.BLOCK_REMOVED_HUE) {
+  console.log("should change color of block: ", blockID);
+
+  const ids = this.getChildIdsFromID(blockID);
+  ids.push(blockID);
+  for (const id of ids) {
+    const block = this.getBlockById(id);
+    if (block) {
+      block.addSelect();
+      block.setColour(hue);
+      block.initSvg();
+      this.requestRender(block);
+    }
+  }
+}
+
+
+Blockly.WorkspaceSvg.prototype.addBlock = function(block, hue = Blockly.BLOCK_ADDED_HUE) {
+  console.log("should add block: ", block);
+  const newDom = Blockly.Xml.blockToDom(block.block);
+  const newBlock = Blockly.Xml.domToBlock(newDom, this);
+  if (block.newParentId && block.isNextBlock) {
+    const previousBlock = this.getBlockById(block.newParentId);
+    if (previousBlock && previousBlock.nextConnection) {
+      // TODO: done automatically?
+      // if (previousBlock.nextConnection.targetConnection) {
+      //   const nextConnection = previousBlock.nextConnection.targetConnection;
+      //   newBlock.nextConnection.connect(nextConnection);
+      // }
+      previousBlock.nextConnection.connect(newBlock.previousConnection);
+    } else {
+      console.warn("Could not connect previous/next for moved block", block.id, block.newParentId, previousBlock);
+    }
+  } else if (block.newParentId && block.inputName) {
+    console.log("as input");
+    const parentBlock = this.getBlockById(block.newParentId);
+    if (parentBlock) {
+      const input = parentBlock.getInput(block.inputName);
+      // TODO: check the assumption DO, DO0, ...
+      if (block.inputName.startsWith("DO") && input && input.connection) {
+        input.connection.connect(newBlock.previousConnection);
+      } else if (input && input.connection && newBlock.outputConnection) {
+        input.connection.connect(newBlock.outputConnection);
+      } else {
+        console.warn("Could not connect input/output for inserted block", block.id);
+      }
+    } else {
+      console.warn("Could not find parent block for inserted block", block.id);
+    }
+  } else if (block.newParentId === 'root') {
+    console.log("as root");
+  } else {
+    console.warn("could not connect to anything block ", block);
+  }
+
+
+  const ids = this.getChildIdsFromBlock(newBlock);
+  ids.push(newBlock.id);
+  for (const id of ids) {
+    const block = this.getBlockById(id);
+    if (block) {
+      block.setMovable(true);
+      block.setDeletable(true);
+      block.setEditable(true);
+      block.addSelect();
+      block.setColour(hue);
+      block.initSvg();
+      this.requestRender(block);
+    }
+  }
+}

@@ -6,6 +6,7 @@
 
 package com.google.appinventor.client.editor.simple.components;
 
+import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
 import com.google.appinventor.client.editor.simple.palette.SimplePaletteItem;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
@@ -18,9 +19,9 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Abstract superclass for all container mock components.
@@ -30,6 +31,8 @@ import java.util.Map;
 public abstract class MockContainer extends MockVisibleComponent implements DropTarget {
 
   protected final MockLayout layout;
+
+  private static final Logger LOG = Logger.getLogger(MockContainer.class.getName());
 
   // List of components within the container
   protected final List<MockComponent> children;
@@ -95,6 +98,13 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
   }
 
   protected TreeItem buildTree(int view) {
+    if (Ode.getInstance().getInDiffView()) {
+      return this.buildColoredTree(Ode.getInstance().getNewIds(), 
+                                  Ode.getInstance().getDeletedIds(), 
+                                  Ode.getInstance().getMovedIds(),
+                                  Ode.getInstance().getUpdatedIds(),
+                                  view);
+    }
     TreeItem itemNode = super.buildTree();
     //hide all containers except form if only nonvisible components are to be shown
     //in such a case, we need only the form's treeItem because all non-visible components are attached to it
@@ -109,7 +119,9 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (view == 3 && child instanceof MockVisibleComponent) {
         isVisible = false;
       }
+      LOG.info("called buildtree");
       childNode.setVisible(isVisible);
+      // childNode.setStyleName("gwt-TreeItem-deleted");
       itemNode.addItem(childNode);
     }
 
@@ -117,6 +129,67 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
 
     return itemNode;
   }
+
+  // newIds.toString(),
+  // deletedIds.toString(),
+  // movedIds.toString(),
+  // updatedIds.toString()
+
+  public TreeItem buildColoredTree(String newIds, String deletedIds, String movedIds, String updatedIds) {
+    return this.buildColoredTree(newIds, deletedIds, movedIds, updatedIds, 1);
+  }
+
+  public TreeItem buildColoredTree(String newIds, String deletedIds, String movedIds, String updatedIds, int view) {
+    TreeItem itemNode = super.buildTree();
+    //hide all containers except form if only nonvisible components are to be shown
+    //in such a case, we need only the form's treeItem because all non-visible components are attached to it
+    itemNode.setVisible(view != 3 || isForm());
+
+    // Recursively build the tree for child components
+    // LOG.info("ids: " + ids);
+    for (MockComponent child : children) {
+      TreeItem childNode = child.buildTree();
+      boolean isVisible = true;
+      if (view == 2 && child instanceof MockNonVisibleComponent) {
+        isVisible = false;
+      } else if (view == 3 && child instanceof MockVisibleComponent) {
+        isVisible = false;
+      }
+      LOG.info("called build colored tree");
+      childNode.setVisible(isVisible);
+      
+      LOG.info("child uuid: " + child.getUuid());
+      if (newIds.contains(child.getUuid())) {
+        childNode.addStyleName("gwt-TreeItem-added");
+        child.color("gwt-TreeItem-added");
+      } else if (deletedIds.contains(child.getUuid())) {
+        childNode.addStyleName("gwt-TreeItem-deleted");
+        child.color("gwt-TreeItem-deleted");
+      } else if (movedIds.contains(child.getUuid())) {
+        childNode.addStyleName("gwt-TreeItem-moved");
+        child.color("gwt-TreeItem-moved");
+      } else if (updatedIds.contains(child.getUuid())) {
+        childNode.addStyleName("gwt-TreeItem-updated");
+        child.color("gwt-TreeItem-updated");
+      } else {
+        LOG.info("did not change");
+      }
+      // childNode.setStyleName("gwt-TreeItem-deleted");
+      itemNode.addItem(childNode);
+    }
+
+    itemNode.setState(expanded);
+
+    return itemNode;
+  }
+
+  // public void colorTree() {
+  //   LOG.info("coloring tree in container");
+  //   for (MockComponent child : children) {
+  //     LOG.info("coloring child node in container" + child);
+  //     child.color();
+  //   }
+  // }
 
   @Override
   public void collectTypesAndIcons(Map<String, String> typesAndIcons) {
