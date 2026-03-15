@@ -236,6 +236,7 @@ public class Ode implements EntryPoint {
   @UiField protected StatusPanel statusPanel;
   @UiField protected ProjectToolbar projectToolbar;
   @UiField (provided = true) protected ProjectListBox projectListbox;
+  // @UiField (provided = true) protected WorkColumnsEditor workColumnsEditor;
   @UiField protected WorkColumnsEditor workColumnsEditor;
 
 
@@ -1040,13 +1041,9 @@ public class Ode implements EntryPoint {
         style = Resources.INSTANCE.styleclassicLight();
       }
     }
-
     style.ensureInjected();
     FlowPanel mainPanel = uiFactory.createOde(this, layout);
-
-    LOG.info("registered, try to create workcolumns");
-    workColumnsEditor = WorkColumnsEditor.getWorkColumnsEditor();
-    LOG.info("work columns in main panel: " + mainPanel.getWidgetIndex(workColumnsEditor));
+    getTopToolbar().updateFileMenuButtons(0);    
 
     deckPanel.showWidget(0);
 

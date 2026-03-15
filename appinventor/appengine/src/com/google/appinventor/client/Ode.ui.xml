@@ -23,7 +23,7 @@
           <ex:ProjectToolbar width="100%" ui:field="projectToolbar" />
           <box:ProjectListBox width="100%" ui:field="projectListbox" />
         </g:FlowPanel>
-        <w:WorkColumnsEditor styleName="ode-ProjectEditor" ui:field="workColumnsEditor"/>
+        <w:WorkColumnsEditor ui:field="workColumnsEditor"/>
         <g:FlowPanel width="100%">
           <box:AdminUserListBox />
         </g:FlowPanel>

@@ -45,23 +45,51 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
   @UiField(provided = true)
   protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
 
+    // Singleton palette box instance
+    // private static final WorkColumnsEditorNeo INSTANCE = new WorkColumnsEditorNeo();
+
+    /**
+     * Return the WorkColumnsEditor.
+     *
+     * @return  WorkColumnsEditor
+     */
+    // public static WorkColumnsEditorNeo getWorkColumnsEditor() {
+    //     return INSTANCE;
+    // }
+
+    public WorkColumnsEditorNeo() {
+        // LOG.info("creating work columns!");
+        // initializeUi();
+        // bindUI();
+    }
+
   // private boolean consoleVisible = false;
 
   @Override
   public void bindUI() {
     WorkColumnsEditorUiBinderNeo uibinder = GWT.create(WorkColumnsEditorUiBinderNeo.class);
+    paletteBox = PaletteBox.getPaletteBox();
+    viewerBox = ViewerBox.getViewerBox();
+    assetListBox = AssetListBox.getAssetListBox();
+    sourceStructureBox = SourceStructureBox.getSourceStructureBox();
+    blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
+    propertiesBox = PropertiesBox.getPropertiesBox();
     initWidget(uibinder.createAndBindUi(this));
+    super.sourceStructureBox = sourceStructureBox;
+    super.blockSelectorBox = blockSelectorBox;
+    initializeUi();
+  }
+
+  @Override
+  public void initializeUi() {
     super.workColumns = workColumns;
     super.structureAndAssets = structureAndAssets;
+    super.consolePanel = consolePanel;
     super.designToolbar = designToolbar;
     super.paletteBox = paletteBox;
     super.viewerBox = viewerBox;
     super.assetListBox = assetListBox;
-    sourceStructureBox = SourceStructureBox.getSourceStructureBox();
-    blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
-    super.sourceStructureBox = sourceStructureBox;
-    super.blockSelectorBox = blockSelectorBox;
     super.propertiesBox = propertiesBox;
-    super.consolePanel = consolePanel;
+    
   }
 }

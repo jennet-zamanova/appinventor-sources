@@ -171,7 +171,7 @@ public class DesignToolbar extends Toolbar {
 
     // Gray out the Designer button and enable the blocks button
     toggleEditor(false);
-    Ode.getInstance().getTopToolbar().updateFileMenuButtons(0);
+    // Ode.getInstance().getTopToolbar().updateFileMenuButtons(0);
     toggleView();
   }
 

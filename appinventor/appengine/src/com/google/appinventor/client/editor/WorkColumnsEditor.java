@@ -50,19 +50,20 @@ public class WorkColumnsEditor extends Composite {
     private boolean consoleVisible = false;
 
     // Singleton palette box instance
-    private static final WorkColumnsEditor INSTANCE = new WorkColumnsEditor();
+    // private static final WorkColumnsEditor INSTANCE = new WorkColumnsEditor();
 
     /**
      * Return the WorkColumnsEditor.
      *
      * @return  WorkColumnsEditor
      */
-    public static WorkColumnsEditor getWorkColumnsEditor() {
-        return INSTANCE;
-    }
+    // public static WorkColumnsEditor getWorkColumnsEditor() {
+    //     return INSTANCE;
+    // }
 
     public WorkColumnsEditor() {
-        super();
+        LOG.info("creating work columns!");
+        initializeUi();
         bindUI();
     }
 
@@ -76,7 +77,7 @@ public class WorkColumnsEditor extends Composite {
     }
 
     public void bindUI() {
-        initializeUi();
+        
         initWidget(uibinder.createAndBindUi(this));
         LOG.info("finished init");
     }
