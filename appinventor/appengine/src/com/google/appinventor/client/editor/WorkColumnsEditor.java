@@ -2,6 +2,10 @@ package com.google.appinventor.client.editor;
 
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
+import com.google.appinventor.client.boxes.DiffAssetListBox;
+import com.google.appinventor.client.boxes.DiffPropertiesBox;
+import com.google.appinventor.client.boxes.DiffSourceStructureBox;
+import com.google.appinventor.client.boxes.DiffViewerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
@@ -33,19 +37,33 @@ public class WorkColumnsEditor extends Composite {
     protected ConsolePanel consolePanel; //done
 
     @UiField
-    protected DesignToolbar designToolbar; //done
+    protected DesignToolbar designToolbar; //done, done
     @UiField(provided = true)
-    protected PaletteBox paletteBox; //done
+    protected PaletteBox paletteBox; //done, do not show palette in diff mode
     @UiField(provided = true)
-    protected ViewerBox viewerBox; //done
+    protected ViewerBox viewerBox; //done, update show function
     @UiField(provided = true)
-    protected AssetListBox assetListBox; //done
+    protected AssetListBox assetListBox; //done, done
     @UiField(provided = true)
-    protected SourceStructureBox sourceStructureBox;
+    protected SourceStructureBox sourceStructureBox; // maybe
     @UiField(provided = true)
-    protected BlockSelectorBox blockSelectorBox;
+    protected BlockSelectorBox blockSelectorBox; // do not show in diff mode
     @UiField(provided = true)
-    protected PropertiesBox propertiesBox;
+    protected PropertiesBox propertiesBox; //done, done
+
+    @UiField
+    protected FlowPanel diffWorkColumns;  //done
+    @UiField
+    protected FlowPanel diffStructureAndAssets; //done
+
+    @UiField(provided = true)
+    protected DiffViewerBox diffViewerBox; //done, update show function
+    @UiField(provided = true)
+    protected DiffAssetListBox diffAssetListBox; //done, done
+    @UiField(provided = true)
+    protected DiffSourceStructureBox diffSourceStructureBox; // maybe
+    @UiField(provided = true)
+    protected DiffPropertiesBox diffPropertiesBox; //done, done
 
     private boolean consoleVisible = false;
 
@@ -74,6 +92,11 @@ public class WorkColumnsEditor extends Composite {
         viewerBox = ViewerBox.getViewerBox(); //done
         assetListBox = AssetListBox.getAssetListBox(); //done
         propertiesBox = PropertiesBox.getPropertiesBox();
+
+        diffSourceStructureBox = DiffSourceStructureBox.getSourceStructureBox();
+        diffViewerBox = DiffViewerBox.getViewerBox(); //done
+        diffAssetListBox = DiffAssetListBox.getAssetListBox(); //done
+        diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
     }
 
     public void bindUI() {
@@ -92,13 +115,22 @@ public class WorkColumnsEditor extends Composite {
     }
 
     /**
+     * Returns the diff structureAndAssets panel.
+     *
+     * @return {@link VerticalPanel}
+     */
+    public FlowPanel getDiffStructureAndAssets() {
+        return diffStructureAndAssets;
+    }
+
+    /**
      * Returns the workColumns panel.
      *
      * @return {@link HorizontalPanel}
      */
-    public FlowPanel getWorkColumns() {
-        return workColumns;
-    }
+    // public FlowPanel getWorkColumns() {
+    //     return workColumns;
+    // }
 
     /**
      * Returns the palette box.
@@ -116,6 +148,15 @@ public class WorkColumnsEditor extends Composite {
      */
     public ViewerBox getViewerBox() {
         return viewerBox;
+    }
+
+    /**
+     * Returns the diff viewer box.
+     *
+     * @return {@link ViewerBox}
+     */
+    public DiffViewerBox getDiffViewerBox() {
+        return diffViewerBox;
     }
 
     /**
@@ -143,6 +184,15 @@ public class WorkColumnsEditor extends Composite {
      */
     public SourceStructureBox getSourceStructureBox() {
         return sourceStructureBox;
+    }
+
+    /**
+     * Returns the structure box.
+     *
+     * @return {@link DiffSourceStructureBox}
+     */
+    public DiffSourceStructureBox getDiffSourceStructureBox() {
+        return diffSourceStructureBox;
     }
 
     /**

@@ -8,6 +8,10 @@ package com.google.appinventor.client.style.neo;
 import com.google.appinventor.client.editor.WorkColumnsEditor;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
+import com.google.appinventor.client.boxes.DiffAssetListBox;
+import com.google.appinventor.client.boxes.DiffPropertiesBox;
+import com.google.appinventor.client.boxes.DiffSourceStructureBox;
+import com.google.appinventor.client.boxes.DiffViewerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
@@ -45,6 +49,20 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
   @UiField(provided = true)
   protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
 
+  @UiField
+  protected FlowPanel diffWorkColumns;  //done
+  @UiField
+  protected FlowPanel diffStructureAndAssets; //done
+
+  @UiField(provided = true)
+  protected DiffViewerBox diffViewerBox; //done, update show function
+  @UiField(provided = true)
+  protected DiffAssetListBox diffAssetListBox; //done, done
+  @UiField(provided = true)
+  protected DiffSourceStructureBox diffSourceStructureBox; // maybe
+  @UiField(provided = true)
+  protected DiffPropertiesBox diffPropertiesBox; //done, done
+
     // Singleton palette box instance
     // private static final WorkColumnsEditorNeo INSTANCE = new WorkColumnsEditorNeo();
 
@@ -74,8 +92,15 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
     sourceStructureBox = SourceStructureBox.getSourceStructureBox();
     blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
     propertiesBox = PropertiesBox.getPropertiesBox();
+
+    diffSourceStructureBox = DiffSourceStructureBox.getSourceStructureBox();
+    diffViewerBox = DiffViewerBox.getViewerBox(); //done
+    diffAssetListBox = DiffAssetListBox.getAssetListBox(); //done
+    diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
+
     initWidget(uibinder.createAndBindUi(this));
     super.sourceStructureBox = sourceStructureBox;
+    super.diffSourceStructureBox = diffSourceStructureBox;
     super.blockSelectorBox = blockSelectorBox;
     initializeUi();
   }
@@ -90,6 +115,12 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
     super.viewerBox = viewerBox;
     super.assetListBox = assetListBox;
     super.propertiesBox = propertiesBox;
+
+    super.diffWorkColumns = diffWorkColumns;
+    super.diffStructureAndAssets = diffStructureAndAssets;
+    super.diffViewerBox = diffViewerBox;
+    super.diffAssetListBox = diffAssetListBox;
+    super.diffPropertiesBox = diffPropertiesBox;
     
   }
 }

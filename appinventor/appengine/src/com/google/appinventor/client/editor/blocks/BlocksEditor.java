@@ -735,6 +735,9 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
   }
 
   public Widget[] getWidgetsInRightOrder() {
+    if (Ode.getInstance().isInDiffView()) {
+      return new Widget[]{ViewerBox.getViewerBox()}; 
+    }
     return new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
   }
 }

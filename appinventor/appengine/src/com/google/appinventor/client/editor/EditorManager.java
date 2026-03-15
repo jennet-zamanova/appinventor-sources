@@ -18,6 +18,7 @@ import com.google.appinventor.client.settings.project.ProjectSettings;
 import com.google.appinventor.shared.rpc.BlocksTruncatedException;
 import com.google.appinventor.shared.rpc.project.FileDescriptorWithContent;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
@@ -116,6 +117,36 @@ public final class EditorManager {
         
         // Tell the DesignToolbar about this project
         Ode.getInstance().getDesignToolbar().addProject(projectId, projectRootNode.getName());
+
+        // Prepare the project before Loading into the editor.
+        // Components are prepared before the project is actually loaded.
+        // Load the project into the editor. The actual loading is asynchronous.
+        projectEditor.processProject();
+      }
+    }
+    return projectEditor;
+  }
+
+  /**
+   * Opens the diff project editor for the given project.
+   * If there is an editor already open for the project, it will be returned.
+   * Otherwise, it will create an appropriate editor for the project.
+   *
+   * @param projectRootNode  the root node of the project to open
+   * @return  project editor for the given project
+   */
+  public ProjectEditor openDiffProject(ProjectRootNode projectRootNode) {
+    long projectId = projectRootNode.getProjectId();
+    ProjectEditor projectEditor = openProjectEditors.get(projectId);
+    if (projectEditor == null) {
+      // No open editor for this project yet.
+      // Use the ProjectEditorRegistry to get the factory and create the project editor.
+      ProjectEditorFactory factory = Ode.getProjectEditorRegistry().get(projectRootNode);
+      if (factory != null) {
+        projectEditor = factory.createProjectEditor(projectRootNode);
+
+        // Add the editor to the openProjectEditors map.
+        openProjectEditors.put(projectId, projectEditor);
 
         // Prepare the project before Loading into the editor.
         // Components are prepared before the project is actually loaded.

@@ -1,0 +1,60 @@
+// -*- mode: java; c-basic-offset: 2; -*-
+// Copyright 2009-2011 Google, All Rights reserved
+// Copyright 2011-2012 MIT, All rights reserved
+// Released under the Apache License, Version 2.0
+// http://www.apache.org/licenses/LICENSE-2.0
+
+package com.google.appinventor.client.boxes;
+
+import static com.google.appinventor.client.Ode.MESSAGES;
+
+import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.widgets.boxes.Box;
+import com.google.appinventor.shared.rpc.project.ProjectRootNode;
+import java.util.logging.Logger;
+
+/**
+ * Implementation for a box that can hold multiple viewers (including editors).
+ *
+ */
+public class DiffViewerBox extends Box {
+  private static final Logger LOG = Logger.getLogger(DiffViewerBox.class.getName());
+
+  // Singleton viewer box instance
+  private static final DiffViewerBox INSTANCE = new DiffViewerBox();
+
+  /**
+   * Return the singleton viewer box.
+   *
+   * @return  viewer box
+   */
+  public static DiffViewerBox getViewerBox() {
+    return INSTANCE;
+  }
+
+  /**
+   * Creates new empty viewer box.
+   */
+  private DiffViewerBox() {
+    super(MESSAGES.viewerBoxCaption(),
+        600,    // height
+        false,  // minimizable
+        false); // removable
+    addStyleName("DiffViewerBox");
+  }
+
+  /**
+   * Shows the content associated with the given project in the viewer.
+   *
+   * @param projectRootNode  the root node of the project to show in the viewer
+   */
+  //  TODO(ZAMANOVA)
+  public ProjectEditor show(ProjectRootNode projectRootNode) {
+    ProjectEditor projectEditor = Ode.getInstance().getEditorManager().openDiffProject(projectRootNode);
+    LOG.info("ViewerBox: switching the content in the viewer box");
+    setContent(projectEditor);
+    // Ode.getInstance().switchToProjectEditor();
+    return projectEditor;
+  }
+}

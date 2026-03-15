@@ -11,6 +11,9 @@ import static com.google.appinventor.client.editor.simple.components.MockCompone
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.DiffPropertiesBox;
+import com.google.appinventor.client.boxes.DiffSourceStructureBox;
+import com.google.appinventor.client.boxes.DiffViewerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
@@ -248,6 +251,12 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     updatePropertiesPanel(root.getSelectedComponents(), true);
     propertiesBox.setVisible(true);
 
+    if (Ode.getInstance().isInDiffView()) {
+      DiffPropertiesBox diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
+      diffPropertiesBox.setContent(designProperties);
+      diffPropertiesBox.setVisible(true);
+    }
+
     Ode.getInstance().showComponentDesigner();
   }
 
@@ -270,6 +279,12 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
     propertiesBox.clear();
     propertiesBox.setVisible(false);
+
+    if (Ode.getInstance().isInDiffView()) {
+      DiffPropertiesBox diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
+      diffPropertiesBox.clear();
+      diffPropertiesBox.setVisible(false);
+    }
 
     Ode.getInstance().hideComponentDesigner();
   }
@@ -362,6 +377,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       // Select the item in the source structure explorer.
       sourceStructureExplorer.selectItem(component.getSourceStructureExplorerItem());
       SourceStructureBox.getSourceStructureBox().show(root);
+      DiffSourceStructureBox.getSourceStructureBox().show(root);
 
       // Show the component properties in the properties panel.
       updatePropertiesPanel(root.getSelectedComponents(), selected);
@@ -973,6 +989,9 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   }
 
   public Widget[] getWidgetsInRightOrder() {
+    if (Ode.getInstance().isInDiffView()) {
+      return new Widget[]{ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox(), DiffViewerBox.getViewerBox(), Ode.getInstance().getDiffStructureAndAssets(), DiffPropertiesBox.getPropertiesBox()};
+    }
     return new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
   }
 

@@ -9,16 +9,26 @@
   <ui:with field="messages" type="com.google.appinventor.client.OdeMessages" />
   <g:FlowPanel styleName="ode-ProjectEditor">
     <ed:DesignToolbar ui:field="designToolbar" />
-    <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
-      <box:PaletteBox width="240px" ui:field="paletteBox"/>
-      <box:ViewerBox ui:field="viewerBox" />
-      <g:FlowPanel ui:field="structureAndAssets">
-        <box:SourceStructureBox ui:field="sourceStructureBox" />
-        <box:BlockSelectorBox ui:field="blockSelectorBox"/>
-        <box:AssetListBox  ui:field="assetListBox" />
+    <g:FlowPanel styleName="ode-WorkColumns" >
+      <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns">
+        <box:PaletteBox width="240px" ui:field="paletteBox"/>
+        <box:ViewerBox ui:field="viewerBox" />
+        <g:FlowPanel ui:field="structureAndAssets">
+          <box:SourceStructureBox ui:field="sourceStructureBox" />
+          <box:BlockSelectorBox ui:field="blockSelectorBox"/>
+          <box:AssetListBox  ui:field="assetListBox" />
+        </g:FlowPanel>
+        <box:PropertiesBox ui:field="propertiesBox" width="222px" />
+        <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
       </g:FlowPanel>
-      <box:PropertiesBox ui:field="propertiesBox" width="222px" />
-      <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
+      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns">
+        <box:DiffViewerBox ui:field="diffViewerBox" />
+        <g:FlowPanel ui:field="diffStructureAndAssets">
+          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" />
+          <box:DiffAssetListBox  ui:field="diffAssetListBox" />
+        </g:FlowPanel>
+        <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
+      </g:FlowPanel>
     </g:FlowPanel>
   </g:FlowPanel>
 </ui:UiBinder>

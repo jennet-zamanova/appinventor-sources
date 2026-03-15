@@ -246,6 +246,8 @@ public class Ode implements EntryPoint {
   // Is the tutorial toolbar currently displayed?
   private boolean tutorialVisible = false;
 
+  private boolean inDiffView = true;
+
   
   private boolean isDeckPanelAnimating = false;
 
@@ -641,6 +643,7 @@ public class Ode implements EntryPoint {
       // asynchronously, and loaded into file editors.
       LOG.info("trying to open project" + projectRootNode);
       workColumnsEditor.getViewerBox().show(projectRootNode);
+      workColumnsEditor.getDiffViewerBox().show(projectRootNode);
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
       // will get called at the appropriate time.
@@ -752,7 +755,8 @@ public class Ode implements EntryPoint {
             // off we go, no returning
           }
           user = result.getUser();
-          isReadOnly = user.isReadOnly();
+          // isReadOnly = user.isReadOnly();
+          isReadOnly = true;
           registerIosExtensions(config.getIosExtensions());
           return resolve(null);
         })
@@ -1162,14 +1166,23 @@ public class Ode implements EntryPoint {
   }
 
   /**
+   * Returns the structureAndAssets panel.
+   *
+   * @return {@link VerticalPanel}
+   */
+    public FlowPanel getDiffStructureAndAssets() {
+      return workColumnsEditor.getDiffStructureAndAssets();
+  }
+
+  /**
    * Returns the workColumns panel.
    *
    * @return {@link HorizontalPanel}
    */
-  public FlowPanel getWorkColumns() {
-      LOG.info("getting work columns");
-      return workColumnsEditor.getWorkColumns();
-  }
+  // public FlowPanel getWorkColumns() {
+  //     LOG.info("getting work columns");
+  //     return workColumnsEditor.getWorkColumns();
+  // }
 
   /**
    * Returns the design tool bar.
@@ -1259,6 +1272,7 @@ public class Ode implements EntryPoint {
     LOG.info("Ode: Setting current file editor to " + currentFileEditor.getFileId());
     if (currentFileEditor instanceof YaFormEditor) {
       workColumnsEditor.getSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
+      workColumnsEditor.getDiffSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
     }
     switchToProjectEditor();
     if (!windowClosing) {
@@ -2525,6 +2539,10 @@ public class Ode implements EntryPoint {
 
   public boolean isTutorialVisible() {
     return tutorialVisible;
+  }
+
+  public boolean isInDiffView() {
+    return inDiffView;
   }
 
   public boolean isConsoleVisible() {

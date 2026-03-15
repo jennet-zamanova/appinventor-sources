@@ -13,19 +13,32 @@
   <ui:with field="messages" type="com.google.appinventor.client.OdeMessages" />
   <g:FlowPanel styleName="ode-ProjectEditor">
     <neo:DesignToolbarNeo ui:field="designToolbar" />
-    <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns" >
-      <box:PaletteBox ui:field="paletteBox" styleName="ode-Designer-LeftColumn" />
-      <box:ViewerBox ui:field="viewerBox" />
-      <g:FlowPanel ui:field="structureAndAssets" styleName="ode-Designer-RightColumns">
-        <box:SourceStructureBox ui:field="sourceStructureBox"  />
-        <box:BlockSelectorBox ui:field="blockSelectorBox"/>
-        <g:FlowPanel>
-          <g:Label text="{messages.assetListBoxCaption}" styleName="ode-AssetsTitle" />
-          <box:AssetListBox  ui:field="assetListBox" />
+    <g:FlowPanel styleName="ode-WorkColumns" >
+      <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns" >
+        <box:PaletteBox ui:field="paletteBox" styleName="ode-Designer-LeftColumn" />
+        <box:ViewerBox ui:field="viewerBox" />
+        <g:FlowPanel ui:field="structureAndAssets" styleName="ode-Designer-RightColumns">
+          <box:SourceStructureBox ui:field="sourceStructureBox"  />
+          <box:BlockSelectorBox ui:field="blockSelectorBox"/>
+          <g:FlowPanel>
+            <g:Label text="{messages.assetListBoxCaption}" styleName="ode-AssetsTitle" />
+            <box:AssetListBox  ui:field="assetListBox" />
+          </g:FlowPanel>
         </g:FlowPanel>
+        <box:PropertiesBox ui:field="propertiesBox"  styleName="ode-Designer-RightColumns" />
+        <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
       </g:FlowPanel>
-      <box:PropertiesBox ui:field="propertiesBox"  styleName="ode-Designer-RightColumns" />
-      <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
+      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns">
+        <box:DiffViewerBox ui:field="diffViewerBox" />
+        <g:FlowPanel ui:field="diffStructureAndAssets" styleName="ode-Designer-RightColumns">
+          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" />
+          <g:FlowPanel>
+            <g:Label text="{messages.assetListBoxCaption}" styleName="ode-AssetsTitle" />
+            <box:DiffAssetListBox  ui:field="diffAssetListBox" />
+          </g:FlowPanel>
+        </g:FlowPanel>
+        <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
+      </g:FlowPanel>
     </g:FlowPanel>
   </g:FlowPanel>
 </ui:UiBinder>
