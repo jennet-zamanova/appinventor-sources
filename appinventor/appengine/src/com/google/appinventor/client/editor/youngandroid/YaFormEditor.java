@@ -9,7 +9,9 @@ package com.google.appinventor.client.editor.youngandroid;
 import com.google.appinventor.client.ErrorReporter;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
+import com.google.appinventor.client.boxes.DiffPropertiesBox;
 import com.google.appinventor.client.boxes.PaletteBox;
+import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.simple.ComponentNotFoundException;
@@ -43,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -430,7 +433,11 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
   }
 
   public void refreshCurrentPropertiesPanel() {
-    updatePropertiesPanel(root.getSelectedComponents(), true);
+    PropertiesBox.getPropertiesBox().load(this, root.getSelectedComponents(), true);
+  }
+
+  public void refreshCurrentDiffPropertiesPanel() {
+    DiffPropertiesBox.getPropertiesBox().updateDiffPropertiesPanel(this, root.getSelectedComponents(), true);
   }
 
   @Override

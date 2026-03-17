@@ -98,7 +98,7 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
   }
 
   protected TreeItem buildTree(int view) {
-    if (Ode.getInstance().getInDiffView()) {
+    if (Ode.getInstance().isInDiffView()) {
       return this.buildColoredTree(Ode.getInstance().getNewIds(), 
                                   Ode.getInstance().getDeletedIds(), 
                                   Ode.getInstance().getMovedIds(),

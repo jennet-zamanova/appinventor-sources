@@ -21,11 +21,11 @@
         <box:PropertiesBox ui:field="propertiesBox" width="222px" />
         <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
       </g:FlowPanel>
-      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns">
+      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns" visible="false">
         <box:DiffViewerBox ui:field="diffViewerBox" />
         <g:FlowPanel ui:field="diffStructureAndAssets">
-          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" />
-          <box:DiffAssetListBox  ui:field="diffAssetListBox" />
+          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" styleName="ode-diff"/>
+          <box:DiffAssetListBox  ui:field="diffAssetListBox" visible="false"/>
         </g:FlowPanel>
         <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
       </g:FlowPanel>

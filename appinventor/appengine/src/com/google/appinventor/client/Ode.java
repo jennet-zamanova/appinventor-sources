@@ -71,6 +71,7 @@ import com.google.appinventor.shared.rpc.project.FileNode;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.rpc.project.ProjectService;
 import com.google.appinventor.shared.rpc.project.ProjectServiceAsync;
+import com.google.appinventor.shared.rpc.project.UserProject;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidSourceNode;
 import com.google.appinventor.shared.rpc.tokenauth.TokenAuthService;
@@ -208,7 +209,6 @@ public class Ode implements EntryPoint {
   public static final int USERADMIN = 2;
   public static final int TRASHCAN = 3;
   public static int currentView = PROJECTS;
-  public static boolean isInDiffView = false;
 
   // diff info
   private String newIds;
@@ -257,7 +257,7 @@ public class Ode implements EntryPoint {
   // Is the tutorial toolbar currently displayed?
   private boolean tutorialVisible = false;
 
-  private boolean inDiffView = true;
+  private boolean inDiffView = false;
 
   
   private boolean isDeckPanelAnimating = false;
@@ -654,7 +654,17 @@ public class Ode implements EntryPoint {
       // asynchronously, and loaded into file editors.
       LOG.info("trying to open project" + projectRootNode);
       workColumnsEditor.getViewerBox().show(projectRootNode);
-      workColumnsEditor.getDiffViewerBox().show(projectRootNode);
+      if (isInDiffView()) {
+        UserProject fakeUserProject = new UserProject(0, "diff", YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, System.currentTimeMillis(), false);
+        LOG.warning("user project" + fakeUserProject);
+        Project fakeProject = projectManager.createProject(fakeUserProject);
+        LOG.warning("fake project" + fakeProject);
+        ProjectRootNode fakeNode = fakeProject.getRootNode();
+        LOG.warning("fake ndoe" + fakeNode);
+        YaProjectEditor fakeEditor = new YaProjectEditor(fakeNode, uiFactory);
+        LOG.warning("fake editor" + fakeEditor);
+        workColumnsEditor.getDiffViewerBox().show(fakeEditor);
+      }
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
       // will get called at the appropriate time.
@@ -1283,7 +1293,9 @@ public class Ode implements EntryPoint {
     LOG.info("Ode: Setting current file editor to " + currentFileEditor.getFileId());
     if (currentFileEditor instanceof YaFormEditor) {
       workColumnsEditor.getSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
-      workColumnsEditor.getDiffSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
+      if (inDiffView) {
+        workColumnsEditor.getDiffSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
+      }
     }
     switchToProjectEditor();
     if (!windowClosing) {
@@ -2652,10 +2664,6 @@ public class Ode implements EntryPoint {
     }
   }
 
-  public boolean getInDiffView() {
-    return isInDiffView;
-  }
-
   public String getNewIds() {
     return this.newIds;
   }
@@ -2680,8 +2688,8 @@ public class Ode implements EntryPoint {
     return this.modifiedIds;
   }
 
-  public void setInDiffView(boolean inDiffView) {
-    isInDiffView = inDiffView;
+  public void setInDiffView(boolean isInDiffView) {
+    inDiffView = isInDiffView;
   }
 
   public void setNewIds(String ids) {
@@ -2709,8 +2717,8 @@ public class Ode implements EntryPoint {
   }
 
   public void showDiff() {
-    isInDiffView = true;
-    if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS
+    inDiffView = true;
+    if (workColumnsEditor.getDesignToolbar().getCurrentView() == DesignToolbar.View.BLOCKS
         // currentFileEditor may be null when switching projects
         && currentFileEditor != null) {
       currentFileEditor.diff();

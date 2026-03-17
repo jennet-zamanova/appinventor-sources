@@ -50,8 +50,7 @@ public class DiffViewerBox extends Box {
    * @param projectRootNode  the root node of the project to show in the viewer
    */
   //  TODO(ZAMANOVA)
-  public ProjectEditor show(ProjectRootNode projectRootNode) {
-    ProjectEditor projectEditor = Ode.getInstance().getEditorManager().openDiffProject(projectRootNode);
+  public ProjectEditor show(ProjectEditor projectEditor) {
     LOG.info("ViewerBox: switching the content in the viewer box");
     setContent(projectEditor);
     // Ode.getInstance().switchToProjectEditor();

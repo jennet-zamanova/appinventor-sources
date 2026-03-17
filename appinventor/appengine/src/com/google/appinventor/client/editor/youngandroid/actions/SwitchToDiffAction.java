@@ -113,6 +113,7 @@ public class SwitchToDiffAction implements Command {
                                               null);
 
                 // Ode.getInstance().toggleDiffView();
+                Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
                 return;
               }
               

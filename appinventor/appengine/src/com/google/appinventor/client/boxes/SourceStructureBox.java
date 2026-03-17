@@ -13,10 +13,12 @@ import com.google.appinventor.client.explorer.SourceStructureExplorer;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.gwt.user.client.ui.DockPanel;
 
+import java.util.logging.Logger;
 /**
  * Box implementation for source structure explorer.
  */
 public class SourceStructureBox extends Box implements ISourceStructureBox {
+  private static final Logger LOG = Logger.getLogger(SourceStructureBox.class.getName());
   // Singleton source structure explorer box instance
   private static final SourceStructureBox INSTANCE = new SourceStructureBox();
   // Singleton source structure explorer child instance
@@ -60,6 +62,7 @@ public class SourceStructureBox extends Box implements ISourceStructureBox {
    * @param root current form
    */
   public void show(DesignerRootComponent root) {
+    LOG.warning("called show on ssb");
     getSourceStructureExplorer().updateTree(root.buildComponentsTree(),
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
     getSourceStructureBox().setVisible(true);

@@ -1,5 +1,6 @@
 package com.google.appinventor.client.editor;
 
+import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.DiffAssetListBox;
@@ -12,6 +13,7 @@ import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
+import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -93,9 +95,10 @@ public class WorkColumnsEditor extends Composite {
         assetListBox = AssetListBox.getAssetListBox(); //done
         propertiesBox = PropertiesBox.getPropertiesBox();
 
-        diffSourceStructureBox = DiffSourceStructureBox.getSourceStructureBox();
+        
         diffViewerBox = DiffViewerBox.getViewerBox(); //done
         diffAssetListBox = DiffAssetListBox.getAssetListBox(); //done
+        diffSourceStructureBox = DiffSourceStructureBox.getSourceStructureBox();
         diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
     }
 
@@ -229,9 +232,20 @@ public class WorkColumnsEditor extends Composite {
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();
         for (Widget w : widgetsToShow) {
+            LOG.info("widget is: " + w);
             workColumns.add(w);
             w.setVisible(true);
         }
         LOG.info("workColumns now has: " + workColumns.getWidgetCount() + workColumns.isAttached() + workColumns.isVisible());
+
+        if (designToolbar.getCurrentView() == DesignToolbar.View.DESIGNER && fileEditor instanceof YaFormEditor) {
+            YaFormEditor yaEditor = (YaFormEditor) fileEditor;
+            yaEditor.refreshCurrentPropertiesPanel();
+            sourceStructureBox.show(yaEditor.getForm());
+            if (Ode.getInstance().isInDiffView()) {
+                (yaEditor).refreshCurrentDiffPropertiesPanel();
+                diffSourceStructureBox.show(yaEditor.getForm());
+            }
+        }
     }
 }

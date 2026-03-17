@@ -157,6 +157,11 @@ public final class ProjectManager {
     return project;
   }
 
+  public Project createProject(UserProject projectInfo) {
+    Project project = new Project(projectInfo);
+    return project;
+  }
+
   /**
    * Removes the project from trash permanently.
    *

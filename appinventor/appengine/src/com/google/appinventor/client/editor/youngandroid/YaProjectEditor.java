@@ -16,6 +16,7 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.UiStyleFactory;
 import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.editor.EditorManager;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
