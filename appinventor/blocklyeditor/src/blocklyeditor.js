@@ -1318,9 +1318,9 @@ function openSecondaryWorkspace(file) {
   
   const blocksContent1 = mainWs.getTopBlocks();
   const blocksContent2 = secondaryWs.getTopBlocks();
-  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, new Set(mainWs.blockDB.keys()), new Set(secondaryWs.blockDB.keys()));
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, mainWs.blockDB, secondaryWs.blockDB);
   console.log("diff output is", diff);
-  const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds]);
+  const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds, ...diff.modifiedIDs]);
   console.log("ids: ", ids);
   colorBlocks(mainWs, secondaryWs, diff);
   mainWs.addDiffHandler(secondaryWs, ids);
@@ -1332,8 +1332,8 @@ function openSecondaryWorkspace(file) {
 
 
 function colorBlocks(mainWorkspace, secondaryWorkspace, diff) {
-  colorMovedBlocks(mainWorkspace, diff.movedIds);
-  colorMovedBlocks(secondaryWorkspace, diff.movedIds);
+  colorMovedBlocks(mainWorkspace, diff.movedIds.union(diff.modifiedIDs));
+  colorMovedBlocks(secondaryWorkspace, diff.movedIds.union(diff.modifiedIDs));
 
   colorAddedBlocks(secondaryWorkspace, diff.newIds);
   colorDeletedBlocks(mainWorkspace, diff.removedIds);

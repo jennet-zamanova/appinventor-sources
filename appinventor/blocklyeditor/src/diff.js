@@ -7,12 +7,21 @@ goog.require('AI.Blockly.Util');
 goog.require('AI.Blockly.Util.xml');
 goog.require('zhangShasha');
 
+const POSSIBLE_FIELD_NAMES = ['NAME', 'PROCNAME', 'VAR', 'TIMEUNIT', 'TEXT', 'COLOR', 'BOOL', 'OP', 'SCREEN', 
+                            'ASSET', 'PROVIDERMODEL', 'PROVIDER', 'COMPONENT_SELECTOR', 'NUM', 'PROP', 
+                            'COMPONENT_TYPE_SELECTOR', 'KEY', 'VALUE', 'OPTION'];
+
 // TODO when getting children need right order
 // if moved to an empty spot wont recognize (in mutations)
+
+// tests will fail because changed input type
 AI.Blockly.Diff = class {
 
-    static diff(blocksContent1, blocksContent2, ids1, ids2) {
+    static diff(blocksContent1, blocksContent2, db1, db2) {
         
+        const ids1 = new Set(db1.keys());
+        const ids2 = new Set(db2.keys());
+
         const removedIds = new Set();
         for (const id of ids1) {
             if (!ids2.has(id)) {
@@ -33,9 +42,17 @@ AI.Blockly.Diff = class {
         const tree2 = AI.Blockly.Diff.makeArray(blocksContent2, newIds);
         const movedIds = AI.Blockly.Diff.movedIds(tree1, tree2);
 
+        console.log("movedIds: ", movedIds, tree1);
+
+        const map1 = AI.Blockly.Diff.buildEditablePropertiesMap(db1, removedIds.union(movedIds));
+        const map2 = AI.Blockly.Diff.buildEditablePropertiesMap(db2, newIds.union(movedIds));
+        const modifiedIDs = AI.Blockly.Diff.findModifiedPropIds(map1, map2);
+
+        console.log("modifiedIDs: ", modifiedIDs);
+
         const unchangedIds = new Set();
         for (const id of ids1) {
-            if (!movedIds.has(id) && !removedIds.has(id)) {
+            if (!movedIds.has(id) && !removedIds.has(id) && !modifiedIDs.has(id)) {
                 unchangedIds.add(id);
             }
         }
@@ -49,7 +66,60 @@ AI.Blockly.Diff = class {
             newIdsInfo: insertInfo,
             removedIds: removedIds,
             movedIdsInfo: moveInfo,
+            modifiedIDs: modifiedIDs,
         }; 
+    }
+
+    static findModifiedPropIds(map1, map2) {
+        const modifiedIDs = new Set();
+        
+        for (const [nodeId, props1] of map1) {
+            const props2 = map2.get(nodeId)
+            // attributes in props1
+            for (const [key, value] of Object.entries(props1)) {
+                if (value !== props2[key]) {
+                    modifiedIDs.add(nodeId);
+                }
+            }
+            // attributes in props2
+            for (const [key, value] of Object.entries(props2)) {
+                if (value !== props1[key]) {
+                    modifiedIDs.add(nodeId);
+                }
+            }
+        }
+        return modifiedIDs;
+    }
+
+    // instanceName, getFields(), getFieldValue(name), fieldVar_.value_
+    static buildEditablePropertiesMap(db, ignoreIDs = new Set()) {
+        const map = new Map();
+        for (const [nodeId, node] of db) {
+            if (!ignoreIDs.has(nodeId)) {
+                const attributesMap = {}
+                const instanceName = node.instanceName
+                if (instanceName) {
+                    attributesMap.instanceName = instanceName
+                }
+                if (node.getFieldValue) {
+                    // why getFields does not work? https://developers.google.com/blockly/reference/js/blockly.block_class.getfields_1_method.md
+                    for (const fieldName of POSSIBLE_FIELD_NAMES) {
+                        if (node.getFieldValue(fieldName)) {
+                            attributesMap[fieldName] = node.getFieldValue(fieldName)
+                        }
+                    }
+                    // vars, not sure whether needed
+                    let i = 0
+                    while (node.getFieldValue("VAR"+i)) {
+                        attributesMap["VAR"+i] = node.getFieldValue("VAR"+i)
+                        i += 1
+                    }
+                }
+                
+                map.set(nodeId, attributesMap);
+            }
+        }
+        return map;
     }
 
     static makeArray(roots, idsToIgnore = new Set()) {

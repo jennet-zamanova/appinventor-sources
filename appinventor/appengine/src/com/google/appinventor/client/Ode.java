@@ -776,8 +776,7 @@ public class Ode implements EntryPoint {
             // off we go, no returning
           }
           user = result.getUser();
-          // isReadOnly = user.isReadOnly();
-          isReadOnly = true;
+          isReadOnly = user.isReadOnly();
           registerIosExtensions(config.getIosExtensions());
           return resolve(null);
         })
