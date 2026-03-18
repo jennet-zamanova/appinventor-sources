@@ -18,6 +18,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
 
@@ -238,6 +239,8 @@ public class WorkColumnsEditor extends Composite {
         }
         LOG.info("workColumns now has: " + workColumns.getWidgetCount() + workColumns.isAttached() + workColumns.isVisible());
 
+        Ode.getInstance().setCurrentFileEditor(fileEditor);
+
         if (designToolbar.getCurrentView() == DesignToolbar.View.DESIGNER && fileEditor instanceof YaFormEditor) {
             YaFormEditor yaEditor = (YaFormEditor) fileEditor;
             yaEditor.refreshCurrentPropertiesPanel();
@@ -245,6 +248,9 @@ public class WorkColumnsEditor extends Composite {
             if (Ode.getInstance().isInDiffView()) {
                 (yaEditor).refreshCurrentDiffPropertiesPanel();
                 diffSourceStructureBox.show(yaEditor.getForm());
+                DiffProjectEditor projectEditor = new DiffProjectEditor(Ode.getInstance().getUiStyleFactory());
+                // load project???
+                diffViewerBox.show(projectEditor);
             }
         }
     }

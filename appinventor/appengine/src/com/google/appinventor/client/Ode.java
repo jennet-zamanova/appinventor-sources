@@ -20,6 +20,7 @@ import com.google.appinventor.client.boxes.ProjectListBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.DiffProjectEditor;
 import com.google.appinventor.client.editor.EditorManager;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
@@ -654,14 +655,14 @@ public class Ode implements EntryPoint {
       // asynchronously, and loaded into file editors.
       LOG.info("trying to open project" + projectRootNode);
       workColumnsEditor.getViewerBox().show(projectRootNode);
-      if (isInDiffView()) {
-        UserProject fakeUserProject = new UserProject(0, "diff", YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, System.currentTimeMillis(), false);
-        LOG.warning("user project" + fakeUserProject);
-        Project fakeProject = projectManager.createProject(fakeUserProject);
-        LOG.warning("fake project" + fakeProject);
-        ProjectRootNode fakeNode = fakeProject.getRootNode();
-        LOG.warning("fake ndoe" + fakeNode);
-        YaProjectEditor fakeEditor = new YaProjectEditor(fakeNode, uiFactory);
+      if (true) {
+        // UserProject fakeUserProject = new UserProject(0, "diff", YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, System.currentTimeMillis(), false);
+        // LOG.warning("user project" + fakeUserProject);
+        // DiffProjectEditor fakeProject = projectManager.createProject(fakeUserProject);
+        // LOG.warning("fake project" + fakeProject);
+        // ProjectRootNode fakeNode = fakeProject.getRootNode();
+        // LOG.warning("fake ndoe" + fakeNode);
+        DiffProjectEditor fakeEditor = new DiffProjectEditor(uiFactory);
         LOG.warning("fake editor" + fakeEditor);
         workColumnsEditor.getDiffViewerBox().show(fakeEditor);
       }
@@ -1174,6 +1175,10 @@ public class Ode implements EntryPoint {
    */
   public WorkColumnsEditor getWorkColumnsEditor() {
     return workColumnsEditor;
+  }
+
+  public UiStyleFactory getUiStyleFactory() {
+    return uiFactory;
   }
 
   /**

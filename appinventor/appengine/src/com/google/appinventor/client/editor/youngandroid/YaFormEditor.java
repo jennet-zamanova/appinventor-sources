@@ -433,11 +433,11 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
   }
 
   public void refreshCurrentPropertiesPanel() {
-    PropertiesBox.getPropertiesBox().load(this, root.getSelectedComponents(), true);
+    updatePropertiesPanel(root.getSelectedComponents(), true);
   }
 
   public void refreshCurrentDiffPropertiesPanel() {
-    DiffPropertiesBox.getPropertiesBox().updateDiffPropertiesPanel(this, root.getSelectedComponents(), true);
+    updateDiffPropertiesPanel(root.getSelectedComponents(), true);
   }
 
   @Override

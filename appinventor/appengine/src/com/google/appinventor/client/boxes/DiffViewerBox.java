@@ -9,6 +9,7 @@ package com.google.appinventor.client.boxes;
 import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
@@ -50,9 +51,10 @@ public class DiffViewerBox extends Box {
    * @param projectRootNode  the root node of the project to show in the viewer
    */
   //  TODO(ZAMANOVA)
-  public ProjectEditor show(ProjectEditor projectEditor) {
-    LOG.info("ViewerBox: switching the content in the viewer box");
-    setContent(projectEditor);
+  public IProjectEditor show(IProjectEditor projectEditor) {
+    LOG.info("DiffViewerBox: switching the content in the viewer box");
+    setContent(projectEditor.asWidget());
+    projectEditor.asWidget().addStyleName("diff-editor");
     // Ode.getInstance().switchToProjectEditor();
     return projectEditor;
   }

@@ -12,10 +12,10 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.DiffPropertiesBox;
-import com.google.appinventor.client.boxes.DiffSourceStructureBox;
 import com.google.appinventor.client.boxes.DiffViewerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
+import com.google.appinventor.client.boxes.PropertiesBoxSupplier;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.ProjectEditor;
@@ -38,6 +38,7 @@ import com.google.appinventor.client.editor.youngandroid.YaProjectEditor;
 import com.google.appinventor.client.explorer.SourceStructureExplorer;
 import com.google.appinventor.client.properties.json.ClientJsonParser;
 import com.google.appinventor.client.tracking.Tracking;
+import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.client.widgets.dnd.DropTarget;
 import com.google.appinventor.client.widgets.properties.EditableProperties;
 import com.google.appinventor.client.widgets.properties.EditableProperty;
@@ -66,7 +67,6 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -74,6 +74,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * DesignerEditor is an ancestor of all designer editors in App Inventor.
@@ -118,10 +119,9 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   // References to other panels that we need to control.
   private final SourceStructureExplorer sourceStructureExplorer;
 
-  // private final PropertiesPanel designProperties;
-  // private final PropertiesPanel diffDesignProperties;
+  private final PropertiesPanel designProperties;
 
-  // private EditableProperties selectedProperties = null;
+  private EditableProperties selectedProperties = null;
   private List<MockComponent> selectedComponents = new ArrayList<MockComponent>();
   private DropTargetProvider dropTargetProvider = new DropTargetProvider() {
     @Override
@@ -179,11 +179,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     componentsPanel.setSize("100%", "100%");
 
     // Create designProperties, which will be used as the content of the PropertiesBox.
-    // designProperties = new PropertiesPanel();
-    // designProperties.setSize("100%", "100%");
-
-    // diffDesignProperties = new PropertiesPanel();
-    // diffDesignProperties.setSize("100%", "100%");
+    designProperties = new PropertiesPanel();
+    designProperties.setSize("100%", "100%");
 
     root = null;
 
@@ -218,13 +215,13 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     }
   }
 
-  // public PropertiesPanel getPropertiesPanel() {
-  //   return designProperties;
-  // }
+  public PropertiesPanel getPropertiesPanel() {
+    return designProperties;
+  }
 
-  // public EditableProperties getProperties() {
-  //   return selectedProperties;
-  // }
+  public EditableProperties getProperties() {
+    return selectedProperties;
+  }
 
   public String getComponentInstanceTypeName(String instanceName) {
     return getComponents().get(instanceName).getType();
@@ -252,19 +249,10 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     assetListBox.setVisible(true);
 
     // Set the properties box's content.
-    // PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
-    // propertiesBox.setContent(designProperties);
-    // propertiesBox.updatePropertiesPanel(this, root.getSelectedComponents(), true);
-    // propertiesBox.setVisible(true);
-
-    PropertiesBox.getPropertiesBox().load(this, root.getSelectedComponents());
-
-    if (Ode.getInstance().isInDiffView()) {
-      // propertiesBox.updateDiffPropertiesPanel(this, root.getSelectedComponents(), true);
-      // propertiesBox.setVisible(true);
-      LOG.info("loading designer diff props");
-      DiffPropertiesBox.getPropertiesBox().load(this, root.getSelectedComponents());
-    } 
+    Box propertiesBox = PropertiesBoxSupplier.getPropertiesBox();
+    propertiesBox.setContent(designProperties);
+    updatePropertiesPanel(root.getSelectedComponents(), true);
+    propertiesBox.setVisible(true);
 
     Ode.getInstance().showComponentDesigner();
   }
@@ -285,15 +273,9 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     SourceStructureBox.getSourceStructureBox().setVisible(false);
 
     // Clear and hide the properties box.
-    PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
+    Box propertiesBox = PropertiesBoxSupplier.getPropertiesBox();
     propertiesBox.clear();
     propertiesBox.setVisible(false);
-
-    if (Ode.getInstance().isInDiffView()) {
-      DiffPropertiesBox diffPropertiesBox = DiffPropertiesBox.getPropertiesBox();
-      diffPropertiesBox.clear();
-      diffPropertiesBox.setVisible(false);
-    }
 
     Ode.getInstance().hideComponentDesigner();
   }
@@ -306,7 +288,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       listener.onComponentTypeAdded(componentTypes);
     }
     //Update the Properties Panel
-    PropertiesBox.getPropertiesBox().updatePropertiesPanel(this, root.getSelectedComponents(), true);
+    updatePropertiesPanel(root.getSelectedComponents(), true);
     SourceStructureBox.getSourceStructureBox().show(root);
   }
 
@@ -362,7 +344,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   @Override
   public void onComponentAdded(MockComponent component) {
     if (loadComplete) {
-      // selectedProperties = component.getProperties();
+      selectedProperties = component.getProperties();
       onStructureChange();
     } else {
       LOG.severe("onComponentAdded called when loadComplete is false");
@@ -373,7 +355,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   public void onComponentRenamed(MockComponent component, String oldName) {
     if (loadComplete) {
       onStructureChange();
-      PropertiesBox.getPropertiesBox().updatePropertiesPanel(this, root.getSelectedComponents(), true);
+      updatePropertiesPanel(root.getSelectedComponents(), true);
     } else {
       LOG.severe("onComponentRenamed called when loadComplete is false");
     }
@@ -387,16 +369,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       sourceStructureExplorer.selectItem(component.getSourceStructureExplorerItem());
       SourceStructureBox.getSourceStructureBox().show(root);
 
-      // TODO: what is root???
-      if (Ode.getInstance().isInDiffView()) {
-        DiffSourceStructureBox.getSourceStructureBox().show(root);
-        PropertiesBox.getPropertiesBox().updateDiffPropertiesPanel(this, root.getSelectedComponents(), selected);
-        DiffPropertiesBox.getPropertiesBox().updateDiffPropertiesPanel(this, root.getSelectedComponents(), selected);
-      } else {
-        // Show the component properties in the properties panel.
-        PropertiesBox.getPropertiesBox().updatePropertiesPanel(this, root.getSelectedComponents(), selected);
-      }
-      
+      // Show the component properties in the properties panel.
+      updatePropertiesPanel(root.getSelectedComponents(), selected);
     } else {
       LOG.severe("onComponentSelectionChange called when loadComplete is false");
     }
@@ -440,11 +414,10 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
 
   @Override
   public void refreshPropertiesPanel() {
-    PropertiesBox.getPropertiesBox().refreshPropertiesPanel();
-    // designProperties.clear();
-    // if (selectedProperties != null) {
-    //   designProperties.setProperties(selectedProperties);
-    // }
+    designProperties.clear();
+    if (selectedProperties != null) {
+      designProperties.setProperties(selectedProperties);
+    }
   }
 
   // PropertyChangeListener implementation
@@ -522,214 +495,212 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   /*
    * Show the given component's properties in the properties panel.
    */
-  // protected void updatePropertiesPanel(List<MockComponent> components, boolean selected) {
-  //   LOG.warning("called update properties panel");
-  //   // if (Ode.getInstance().isInDiffView()) {
-  //   //   updateDiffPropertiesPanel(components, selected);
-  //   //   return;
-  //   // }
-  //   if (components == null || components.size() == 0) {
-  //     throw new IllegalArgumentException("components must be a list of at least 1");
-  //   }
-  //   if (selectedProperties != null) {
-  //     selectedProperties.removePropertyChangeListener(this);
-  //   }
-  //   if (components.size() == 1) {
-  //     selectedProperties = components.get(0).getProperties();
-  //   } else {
-  //     EditableProperties newProperties = new EditableProperties(true);
-  //     Map<String, EditableProperty> propertyMaps = new HashMap<>();
-  //     boolean first = true;
-  //     for (MockComponent component : components) {
-  //       Set<String> properties = new HashSet<>();
-  //       for (EditableProperty property : component.getProperties()) {
-  //         String propertyName = property.getName();
-  //         // Ignore UUID and NAME properties (can't be edited and always unique)
-  //         if ("Uuid".equals(propertyName) || "Name".equals(propertyName)) {
-  //           continue;
-  //         }
-  //         if (first) {
-  //           propertyMaps.put(propertyName + ":" + property.getType(), property);
-  //         } else {
-  //           properties.add(propertyName + ":" + property.getType());
-  //         }
-  //       }
-  //       if (properties.size() > 0) {
-  //         propertyMaps.keySet().retainAll(properties);
-  //       }
-  //       first = false;
-  //     }
-  //     for (EditableProperty property : propertyMaps.values()) {
-  //       String name = property.getName();
-  //       newProperties.addProperty(
-  //           name,
-  //           property.getDefaultValue(),
-  //           property.getCaption(),
-  //           property.getCategory(),
-  //           property.getDescription(),
-  //           PropertiesUtil.createPropertyEditor(property.getEditorType(),
-  //               property.getDefaultValue(), this, property.getEditorArgs()),
-  //           property.getType(),
-  //           property.getEditorType(),
-  //           property.getEditorArgs()
-  //       );
+  protected void updatePropertiesPanel(List<MockComponent> components, boolean selected) {
+    if (Ode.getInstance().isInDiffView()) {
+      updateDiffPropertiesPanel(components, selected);
+      return;
+    }
+    if (components == null || components.size() == 0) {
+      throw new IllegalArgumentException("components must be a list of at least 1");
+    }
+    if (selectedProperties != null) {
+      selectedProperties.removePropertyChangeListener(this);
+    }
+    if (components.size() == 1) {
+      selectedProperties = components.get(0).getProperties();
+    } else {
+      EditableProperties newProperties = new EditableProperties(true);
+      Map<String, EditableProperty> propertyMaps = new HashMap<>();
+      boolean first = true;
+      for (MockComponent component : components) {
+        Set<String> properties = new HashSet<>();
+        for (EditableProperty property : component.getProperties()) {
+          String propertyName = property.getName();
+          // Ignore UUID and NAME properties (can't be edited and always unique)
+          if ("Uuid".equals(propertyName) || "Name".equals(propertyName)) {
+            continue;
+          }
+          if (first) {
+            propertyMaps.put(propertyName + ":" + property.getType(), property);
+          } else {
+            properties.add(propertyName + ":" + property.getType());
+          }
+        }
+        if (properties.size() > 0) {
+          propertyMaps.keySet().retainAll(properties);
+        }
+        first = false;
+      }
+      for (EditableProperty property : propertyMaps.values()) {
+        String name = property.getName();
+        newProperties.addProperty(
+            name,
+            property.getDefaultValue(),
+            property.getCaption(),
+            property.getCategory(),
+            property.getDescription(),
+            PropertiesUtil.createPropertyEditor(property.getEditorType(),
+                property.getDefaultValue(), this, property.getEditorArgs()),
+            property.getType(),
+            property.getEditorType(),
+            property.getEditorArgs()
+        );
 
-  //       // Determine if all components have the same value and apply it
-  //       String sharedValue = components.get(0).getPropertyValue(name);
-  //       boolean collision = false;
-  //       for (MockComponent component : components) {
-  //         String propValue = component.getPropertyValue(name);
-  //         if (!sharedValue.equals(propValue)) {
-  //           sharedValue = "";
-  //           collision = true;
-  //           break;
-  //         }
-  //       }
-  //       newProperties.getProperty(name).getEditor().setMultipleValues(collision);
-  //       newProperties.getProperty(name).getEditor().setMultiselectMode(true);
-  //       newProperties.getProperty(name).setValue(sharedValue);
-  //     }
-  //     selectedProperties = newProperties;
-  //   }
-  //   if (selected) {
-  //     selectedProperties.addPropertyChangeListener(this);
-  //   }
-  //   Iterator<EditableProperty> iterator = selectedProperties.iterator();
-  //   while (iterator.hasNext()) {
-  //     EditableProperty property = iterator.next();
-  //     if (property.getName().equals("SlotEditorUsed")) {
-  //       property.getEditor().refresh();
-  //     }
-  //   }
-  //   designProperties.setProperties(selectedProperties);
-  //   if (components.size() > 1) {
-  //     // TODO: Localize
-  //     designProperties.setPropertiesCaption(components.size() + " components selected");
-  //   } else {
-  //     // need to update the caption after the setProperties call, since
-  //     // setProperties clears the caption!
-  //     designProperties.setPropertiesCaption(components.get(0).getName());
-  //   }
-  // }
+        // Determine if all components have the same value and apply it
+        String sharedValue = components.get(0).getPropertyValue(name);
+        boolean collision = false;
+        for (MockComponent component : components) {
+          String propValue = component.getPropertyValue(name);
+          if (!sharedValue.equals(propValue)) {
+            sharedValue = "";
+            collision = true;
+            break;
+          }
+        }
+        newProperties.getProperty(name).getEditor().setMultipleValues(collision);
+        newProperties.getProperty(name).getEditor().setMultiselectMode(true);
+        newProperties.getProperty(name).setValue(sharedValue);
+      }
+      selectedProperties = newProperties;
+    }
+    if (selected) {
+      selectedProperties.addPropertyChangeListener(this);
+    }
+    Iterator<EditableProperty> iterator = selectedProperties.iterator();
+    while (iterator.hasNext()) {
+      EditableProperty property = iterator.next();
+      if (property.getName().equals("SlotEditorUsed")) {
+        property.getEditor().refresh();
+      }
+    }
+    designProperties.setProperties(selectedProperties);
+    if (components.size() > 1) {
+      // TODO: Localize
+      designProperties.setPropertiesCaption(components.size() + " components selected");
+    } else {
+      // need to update the caption after the setProperties call, since
+      // setProperties clears the caption!
+      designProperties.setPropertiesCaption(components.get(0).getName());
+    }
+    PropertiesBoxSupplier.getPropertiesBox().setContent(designProperties);
+  }
 
-  // // if in diff view
-  // protected void updateDiffPropertiesPanel(List<MockComponent> components, boolean selected) {
-  //   LOG.warning("called update diff properties panel" + components);
-  //   String allUpdatedIds = Ode.getInstance().getUpdatedIds();
-  //   List<MockComponent> filteredComponents = components.stream()
-  //                                         .filter(c -> allUpdatedIds.contains(c.getUuid()))
-  //                                         .collect(Collectors.toList());
-  //   // if (filteredComponents == null || filteredComponents.size() == 0) {
-  //   LOG.warning("got filtered components" + filteredComponents + "from components: " + components);
-  //   //   return;
-  //   // }
-  //   if (selectedProperties != null) {
-  //     selectedProperties.removePropertyChangeListener(this);
-  //   }
-  //   if (filteredComponents.size() == 1) {
-  //     selectedProperties = filteredComponents.get(0).getProperties();
-  //     if (Ode.getInstance().getModifiedAttributes().containsKey(filteredComponents.get(0).getUuid())) {
-  //       List<String> keptProperties = Ode.getInstance().getModifiedAttributes().get(filteredComponents.get(0).getUuid());
-  //       Iterator<EditableProperty> iterator = selectedProperties.iterator();
-  //       while (iterator.hasNext()) {
-  //         EditableProperty property = iterator.next();
-  //         if (!keptProperties.contains(property.getName()) && !"Name".equals(property.getName()) && !"Uuid".equals(property.getName())) {
-  //           selectedProperties.removeProperty(property.getName());
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     EditableProperties newProperties = new EditableProperties(true);
-  //     Map<String, EditableProperty> propertyMaps = new HashMap<>();
-  //     boolean first = true;
-  //     HashMap<String, List<String>> componentToAttributeMap = Ode.getInstance().getModifiedAttributes();
-  //     for (MockComponent component : filteredComponents) {
-  //       Set<String> properties = new HashSet<>();
-  //       List<String> attributes = new ArrayList<>();
-  //       if (componentToAttributeMap.containsKey(component.getUuid())) {
-  //         attributes = componentToAttributeMap.get(component.getUuid());
-  //       } 
-  //       for (EditableProperty property : component.getProperties()) {
-  //         String propertyName = property.getName();
-  //         LOG.warning("prop: " + propertyName + "available properties: " + attributes);
-  //         // Ignore UUID and NAME properties (can't be edited and always unique)
-  //         if ("Uuid".equals(propertyName) || "Name".equals(propertyName) || !attributes.contains(propertyName)) {
-  //           continue;
-  //         }
-  //         if (first) {
-  //           propertyMaps.put(propertyName + ":" + property.getType(), property);
-  //         } else {
-  //           properties.add(propertyName + ":" + property.getType());
-  //         }
-  //       }
-  //       if (properties.size() > 0) {
-  //         propertyMaps.keySet().retainAll(properties);
-  //       }
-  //       first = false;
-  //     }
-  //     for (EditableProperty property : propertyMaps.values()) {
-  //       PropertyEditor editor = property.getEditor();
-  //       editor.addStyleName("ode-Property-Moved");
-  //       LOG.info("editor: " + editor + "editor name" + editor.getStyleName());
-  //       String name = property.getName();
-  //       newProperties.addProperty(
-  //           name,
-  //           property.getDefaultValue(),
-  //           property.getCaption(),
-  //           property.getCategory(),
-  //           property.getDescription(),
-  //           PropertiesUtil.createPropertyEditor(property.getEditorType(),
-  //               property.getDefaultValue(), this, property.getEditorArgs()),
-  //           property.getType(),
-  //           property.getEditorType(),
-  //           property.getEditorArgs()
-  //       );
+  protected void updateDiffPropertiesPanel(List<MockComponent> components, boolean selected) {
+    LOG.warning("called update diff properties panel" + components);
+    String allUpdatedIds = Ode.getInstance().getUpdatedIds();
+    List<MockComponent> filteredComponents = components.stream()
+                                          .filter(c -> allUpdatedIds.contains(c.getUuid()))
+                                          .collect(Collectors.toList());
+    // if (filteredComponents == null || filteredComponents.size() == 0) {
+    LOG.warning("got filtered components" + filteredComponents + "from components: " + components);
+    //   return;
+    // }
+    if (selectedProperties != null) {
+      selectedProperties.removePropertyChangeListener(this);
+    }
+    if (filteredComponents.size() == 1) {
+      selectedProperties = filteredComponents.get(0).getProperties();
+      if (Ode.getInstance().getModifiedAttributes().containsKey(filteredComponents.get(0).getUuid())) {
+        List<String> keptProperties = Ode.getInstance().getModifiedAttributes().get(filteredComponents.get(0).getUuid());
+        Iterator<EditableProperty> iterator = selectedProperties.iterator();
+        while (iterator.hasNext()) {
+          EditableProperty property = iterator.next();
+          if (!keptProperties.contains(property.getName()) && !"Name".equals(property.getName()) && !"Uuid".equals(property.getName())) {
+            selectedProperties.removeProperty(property.getName());
+          }
+        }
+      }
+    } else {
+      EditableProperties newProperties = new EditableProperties(true);
+      Map<String, EditableProperty> propertyMaps = new HashMap<>();
+      boolean first = true;
+      HashMap<String, List<String>> componentToAttributeMap = Ode.getInstance().getModifiedAttributes();
+      for (MockComponent component : filteredComponents) {
+        Set<String> properties = new HashSet<>();
+        List<String> attributes = new ArrayList<>();
+        if (componentToAttributeMap.containsKey(component.getUuid())) {
+          attributes = componentToAttributeMap.get(component.getUuid());
+        } 
+        for (EditableProperty property : component.getProperties()) {
+          String propertyName = property.getName();
+          LOG.warning("prop: " + propertyName + "available properties: " + attributes);
+          // Ignore UUID and NAME properties (can't be edited and always unique)
+          if ("Uuid".equals(propertyName) || "Name".equals(propertyName) || !attributes.contains(propertyName)) {
+            continue;
+          }
+          if (first) {
+            propertyMaps.put(propertyName + ":" + property.getType(), property);
+          } else {
+            properties.add(propertyName + ":" + property.getType());
+          }
+        }
+        if (properties.size() > 0) {
+          propertyMaps.keySet().retainAll(properties);
+        }
+        first = false;
+      }
+      for (EditableProperty property : propertyMaps.values()) {
+        PropertyEditor editor = property.getEditor();
+        editor.addStyleName("ode-Property-Moved");
+        LOG.info("editor: " + editor + "editor name" + editor.getStyleName());
+        String name = property.getName();
+        newProperties.addProperty(
+            name,
+            property.getDefaultValue(),
+            property.getCaption(),
+            property.getCategory(),
+            property.getDescription(),
+            PropertiesUtil.createPropertyEditor(property.getEditorType(),
+                property.getDefaultValue(), this, property.getEditorArgs()),
+            property.getType(),
+            property.getEditorType(),
+            property.getEditorArgs()
+        );
 
-  //       // Determine if all components have the same value and apply it
-  //       String sharedValue = filteredComponents.get(0).getPropertyValue(name);
-  //       boolean collision = false;
-  //       for (MockComponent component : filteredComponents) {
-  //         String propValue = component.getPropertyValue(name);
-  //         if (!sharedValue.equals(propValue)) {
-  //           sharedValue = "";
-  //           collision = true;
-  //           break;
-  //         }
-  //       }
-  //       newProperties.getProperty(name).getEditor().setMultipleValues(collision);
-  //       newProperties.getProperty(name).getEditor().setMultiselectMode(true);
-  //       newProperties.getProperty(name).setValue(sharedValue);
-  //     }
-  //     selectedProperties = newProperties;
-  //   }
-  //   LOG.info("left the loops");
-  //   if (selected) {
-  //     selectedProperties.addPropertyChangeListener(this);
-  //   }
-  //   Iterator<EditableProperty> iterator = selectedProperties.iterator();
-  //   while (iterator.hasNext()) {
-  //     EditableProperty property = iterator.next();
-  //     if (property.getName().equals("SlotEditorUsed")) {
-  //       property.getEditor().refresh();
-  //     }
-  //   }
-  //   LOG.info("setting designer properties");
-  //   diffDesignProperties.setDiffProperties(selectedProperties);
-  //   if (filteredComponents.size() == 1) {
+        // Determine if all components have the same value and apply it
+        String sharedValue = filteredComponents.get(0).getPropertyValue(name);
+        boolean collision = false;
+        for (MockComponent component : filteredComponents) {
+          String propValue = component.getPropertyValue(name);
+          if (!sharedValue.equals(propValue)) {
+            sharedValue = "";
+            collision = true;
+            break;
+          }
+        }
+        newProperties.getProperty(name).getEditor().setMultipleValues(collision);
+        newProperties.getProperty(name).getEditor().setMultiselectMode(true);
+        newProperties.getProperty(name).setValue(sharedValue);
+      }
+      selectedProperties = newProperties;
+    }
+    LOG.info("left the loops");
+    if (selected) {
+      selectedProperties.addPropertyChangeListener(this);
+    }
+    Iterator<EditableProperty> iterator = selectedProperties.iterator();
+    while (iterator.hasNext()) {
+      EditableProperty property = iterator.next();
+      if (property.getName().equals("SlotEditorUsed")) {
+        property.getEditor().refresh();
+      }
+    }
+    LOG.info("setting designer properties");
+    designProperties.setDiffProperties(selectedProperties);
+    if (filteredComponents.size() == 1) {
       
-  //     // need to update the caption after the setProperties call, since
-  //     // setProperties clears the caption!
-  //     diffDesignProperties.setPropertiesCaption(filteredComponents.get(0).getName());
-  //     diffDesignProperties.addStyleName("ode-PropertiesPanel-Moved");
+      // need to update the caption after the setProperties call, since
+      // setProperties clears the caption!
+      designProperties.setPropertiesCaption(filteredComponents.get(0).getName());
+      designProperties.addStyleName("ode-PropertiesPanel-Moved");
       
-  //   } else {
-  //     // TODO: Localize
-  //     diffDesignProperties.setPropertiesCaption("no properties changed for this component");
+    } else {
+      // TODO: Localize
+      designProperties.setPropertiesCaption("no properties changed for this component");
 
-  //   }
-
-  // }
-
+    }
+    PropertiesBoxSupplier.getPropertiesBox().setContent(designProperties);
+  }
 
   private void populateComponentsMap(MockComponent component, Map<String, MockComponent> map) {
     EditableProperties properties = component.getProperties();
@@ -927,7 +898,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_T && !palettePanel.isTextboxFocused()) {
       SourceStructureBox.getSourceStructureBox().getSourceStructureExplorer().getTree().setFocus(true);
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_P && !palettePanel.isTextboxFocused()) {
-      PropertiesBox.getPropertiesBox().getElement().getElementsByTagName("a").getItem(0).focus();
+      PropertiesBoxSupplier.getPropertiesBox().getElement().getElementsByTagName("a").getItem(0).focus();
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_M && !palettePanel.isTextboxFocused()) {
       AssetListBox.getAssetListBox().getAssetList().getTree().setFocus(true);
     }

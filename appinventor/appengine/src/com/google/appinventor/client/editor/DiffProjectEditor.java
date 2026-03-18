@@ -13,11 +13,16 @@ import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.simple.components.MockFusionTablesControl;
+import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.settings.Settings;
 import com.google.appinventor.client.settings.project.ProjectSettings;
+import com.google.appinventor.shared.rpc.project.ProjectNode;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.rpc.project.SourceNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidComponentsFolder;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
 import com.google.appinventor.shared.settings.SettingsConstants;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,13 +49,10 @@ import java.util.logging.Logger;
  *
  * @author lizlooney@google.com (Liz Looney)
  */
-public abstract class ProjectEditor extends Composite implements IProjectEditor {
-  private static final Logger LOG = Logger.getLogger(ProjectEditor.class.getName());
+public class DiffProjectEditor extends Composite implements IProjectEditor {
+  private static final Logger LOG = Logger.getLogger(DiffProjectEditor.class.getName());
 
-  protected final ProjectRootNode projectRootNode;
   protected final UiStyleFactory uiFactory;
-  protected final long projectId;
-  protected final Project project;
 
   // Invariants: openFileEditors, fileIds, and deckPanel contain corresponding
   // elements, i.e., if a FileEditor is in openFileEditors, its fileid should be
@@ -60,7 +62,7 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
   private final Map<String, FileEditor> openFileEditors;
   private final Map<String, Map<String, FileEditor>> editorsByType;
   protected final List<String> fileIds;
-  private final HashMap<String,String> locationHashMap = new HashMap<String,String>();
+  // private final HashMap<String,String> locationHashMap = new HashMap<String,String>();
   private final DeckPanel deckPanel;
   private FileEditor selectedFileEditor;
   private final TreeMap<String, Boolean> screenHashMap = new TreeMap<String, Boolean>();
@@ -70,11 +72,8 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    *
    * @param projectRootNode  the project root node
    */
-  public ProjectEditor(ProjectRootNode projectRootNode, UiStyleFactory uiFactory) {
-    this.projectRootNode = projectRootNode;
+  public DiffProjectEditor(UiStyleFactory uiFactory) {
     this.uiFactory = uiFactory;
-    projectId = projectRootNode.getProjectId();
-    project = Ode.getInstance().getProjectManager().getProject(projectId);
 
     openFileEditors = Maps.newHashMap();
     fileIds = new ArrayList<String>();
@@ -94,11 +93,54 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * Calls the loadProject() after prepareProject() is fully executed.
    * Currently, prepareProject loads all external components associated with project.
    */
-  public abstract void processProject();
+  public void processProject() {
+    // resetExternalComponents();
+    resetProjectWarnings();
+    // loadExternalComponents()
+    //     .then(this::loadProject);
+  }
 
   @Override
   public Widget asWidget() {
     return this;
+  }
+
+  // HOW???
+  // private void resetExternalComponents() {
+  //   COMPONENT_DATABASE.addComponentDatabaseListener(this);
+  //   try {
+  //     COMPONENT_DATABASE.resetDatabase();
+  //   } catch (JSONException e) {
+  //     // thrown if any of the component/extension descriptions are not valid JSON
+  //     // ErrorReporter.reportError(Ode.MESSAGES.componentDatabaseCorrupt(project.getProjectName()));
+  //   }
+  //   externalComponents.clear();
+  //   extensionsInNode.clear();
+  //   extensionToNodeName.clear();
+  // }
+
+  // private Promise<Object> loadExternalComponents() {
+  //   //Get the list of all ComponentNodes to be Added
+  //   List<ProjectNode> componentNodes = new ArrayList<>();
+  //   YoungAndroidComponentsFolder componentsFolder =
+  //       ((YoungAndroidProjectNode) project.getRootNode()).getComponentsFolder();
+  //   for (ProjectNode node : componentsFolder.getChildren()) {
+  //     // Find all components that are json files.
+  //     final String nodeName = node.getName();
+  //     if (nodeName.endsWith(".json") && StringUtils.countMatches(node.getFileId(), "/") == 3) {
+  //       componentNodes.add(node);
+  //     }
+  //   }
+
+  //   // Create a promise that resolves once all components have been added
+  //   return Promise.allOf(componentNodes
+  //       .stream()
+  //       .map(this::importExtension)
+  //       .toArray(Promise[]::new));
+  // }
+
+  private void resetProjectWarnings() {
+    MockFusionTablesControl.resetWarning();
   }
 
   /**
@@ -107,7 +149,9 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * the onShow method of the selected file editor to be called and for updating 
    * any other UI elements related to showing the project editor.
    */
-  protected abstract void onShow();
+  protected void onShow() {
+    // AssetListBox.getAssetListBox().getAssetList().refreshAssetList(projectId);
+  }
 
   /**
    * Called when the ProjectEditor widget is about to be unloaded. Subclasses
@@ -115,19 +159,22 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * method of the selected file editor to be called and for updating any 
    * other UI elements related to hiding the project editor.
    */
-  protected abstract void onHide();
+  protected void onHide() {
+    AssetListBox.getAssetListBox().getAssetList().refreshAssetList(0);
+
+    FileEditor selectedFileEditor = getSelectedFileEditor();
+    if (selectedFileEditor != null) {
+      selectedFileEditor.onHide();
+    }
+  }
 
   public UiStyleFactory getUiFactory() {
     return uiFactory;
   }
 
+    // TODO: how to manage chekboxes!??
   public final void setScreenCheckboxState(String screen, Boolean isChecked) {
     screenHashMap.put(screen, isChecked);
-    changeProjectSettingsProperty(
-        SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-        SettingsConstants.YOUNG_ANDROID_SETTINGS_SCREEN_CHECKBOX_STATE_MAP,
-        getScreenCheckboxMapString()
-    );
   }
 
   public final Boolean getScreenCheckboxState(String screen) {
@@ -264,20 +311,6 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
     return Collections.unmodifiableCollection(openFileEditors.values());
   }
 
-  // public final Widget[][] getWidgetsToShowInView(String view) {
-  //   Widget[][] widgetsToShow = new Widget[][]{}; 
-  //   if (view == "DESIGNER") {
-  //     widgetsToShow[0] = new Widget[]{PaletteBox.getPaletteBox()};
-  //     // widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
-  //     widgetsToShow[1] = new Widget[]{Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
-  //   } else if (view == "BLOCKS") {
-  //     widgetsToShow[0] = new Widget[]{Ode.getInstance().getStructureAndAssets()};
-  //     widgetsToShow[1] = new Widget[]{};
-  //     // widgetsToShow = new Widget[]{Ode.getInstance().getStructureAndAssets(), ViewerBox.getViewerBox()};
-  //   }
-  //   return widgetsToShow;
-  // }
-
   /**
    * Returns the currently selected file editor
    */
@@ -318,9 +351,7 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * @return the property value
    */
   public final String getProjectSettingsProperty(String category, String name) {
-    ProjectSettings projectSettings = project.getSettings();
-    Settings settings = projectSettings.getSettings(category);
-    return settings.getPropertyValue(name);
+    return "";
   }
 
   /**
@@ -331,64 +362,20 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * @param newValue  new property value
    */
   public final void changeProjectSettingsProperty(String category, String name, String newValue) {
-    ProjectSettings projectSettings = project.getSettings();
-    Settings settings = projectSettings.getSettings(category);
-    String currentValue = settings.getPropertyValue(name);
-    if (!newValue.equals(currentValue)) {
-      LOG.info("ProjectEditor: changeProjectSettingsProperty: " + name + " " + currentValue +
-                 " => " + newValue);
-      settings.changePropertyValue(name, newValue);
-      // Deal with the Tutorial Panel
-      Ode ode = Ode.getInstance();
-      if (name.equals("TutorialURL")) {
-        ode.setTutorialURL(newValue);
-      }
-      ode.getEditorManager().scheduleAutoSave(projectSettings);
-    }
+    return;
   }
 
   /**
-   * Keep track of components that require the
-   * "android.permission.ACCESS_FINE_LOCATION" (and related
-   * permissions). This code is in particular for use of the WebViewer
-   * component. The WebViewer exports the Javascript location
-   * API. However it cannot be used by an app with location
-   * permissions. Each WebViewer has a "UsesLocation" property which
-   * is only available from the designer. Each WebViewer then
-   * registers its value here. Each time this hashtable is updated we
-   * recompute whether or not location permission is needed based on a
-   * logical OR of all of the WebViewer components registered. Note:
-   * Even if no WebViewer component requires location permission, other
-   * components, such as the LocationSensor may require it. That is
-   * handled via the @UsesPermissions mechanism and is independent of
-   * this code.
    *
    * @param componentName The name of the component registering location permission
    * @param newValue either "True" or "False" indicating whether permission is need.
    */
   public final void recordLocationSetting(String componentName, String newValue) {
-    LOG.info("ProjectEditor: recordLocationSetting(" + componentName + "," + newValue + ")");
-    locationHashMap.put(componentName, newValue);
-    recomputeLocationPermission();
-  }
-
-  private void recomputeLocationPermission() {
-    String usesLocation = "False";
-    for (String c : locationHashMap.values()) {
-      LOG.info("ProjectEditor:recomputeLocationPermission: " + c);
-      if (c.equals("True")) {
-        usesLocation = "True";
-        break;
-      }
-    }
-    changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS, SettingsConstants.YOUNG_ANDROID_SETTINGS_USES_LOCATION,
-      usesLocation);
+    return;
   }
 
   public void clearLocation(String componentName) {
-    LOG.info("ProjectEditor:clearLocation: clearing " + componentName);
-    locationHashMap.remove(componentName);
-    recomputeLocationPermission();
+    return;
   }
 
   /**
@@ -412,14 +399,14 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
     // already-opened project is re-opened.
     // This is different from the ProjectEditor method loadProject, which is called to load the
     // project just after the editor is created.
-    LOG.info("ProjectEditor: got onLoad for project " + projectId);
+    // LOG.info("ProjectEditor: got onLoad for project " + projectId);
     super.onLoad();
-    String tutorialURL = getProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-                                                    SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL);
-    if (!tutorialURL.isEmpty()) {
-      Ode ode = Ode.getInstance();
-      ode.setTutorialURL(tutorialURL);
-    }
+    // String tutorialURL = getProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+    //                                                 SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL);
+    // if (!tutorialURL.isEmpty()) {
+    //   Ode ode = Ode.getInstance();
+    //   ode.setTutorialURL(tutorialURL);
+    // }
 
     onShow();
   }
@@ -427,10 +414,10 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
   @Override
   protected void onUnload() {
     // onUnload is called immediately before a widget becomes detached from the browser's document.
-    Ode ode = Ode.getInstance();
-    ode.setTutorialVisible(false, true);
-    ode.getDesignToolbar().setTutorialToggleVisible(false);
-    LOG.info("ProjectEditor: got onUnload for project " + projectId);
+    // Ode ode = Ode.getInstance();
+    // ode.setTutorialVisible(false, true);
+    // ode.getDesignToolbar().setTutorialToggleVisible(false);
+    // LOG.info("ProjectEditor: got onUnload for project " + projectId);
     super.onUnload();
     onHide();
   }
