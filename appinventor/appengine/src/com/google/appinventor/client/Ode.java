@@ -20,7 +20,6 @@ import com.google.appinventor.client.boxes.ProjectListBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
-import com.google.appinventor.client.editor.DiffProjectEditor;
 import com.google.appinventor.client.editor.EditorManager;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
@@ -29,6 +28,7 @@ import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.simple.palette.DropTargetProvider;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.TutorialPanel;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.editor.youngandroid.YaProjectEditor;
@@ -99,6 +99,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
@@ -130,6 +131,7 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -260,6 +262,11 @@ public class Ode implements EntryPoint {
 
   private boolean inDiffView = false;
 
+  private YoungAndroidProjectNode diffRoot;
+
+  private DiffProjectEditor diffProjectEditor;
+
+  private Map<String, ArrayBuffer> diffContents = new HashMap<>();
   
   private boolean isDeckPanelAnimating = false;
 
@@ -655,7 +662,7 @@ public class Ode implements EntryPoint {
       // asynchronously, and loaded into file editors.
       LOG.info("trying to open project" + projectRootNode);
       workColumnsEditor.getViewerBox().show(projectRootNode);
-      if (true) {
+      if (isInDiffView()) {
         // UserProject fakeUserProject = new UserProject(0, "diff", YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, System.currentTimeMillis(), false);
         // LOG.warning("user project" + fakeUserProject);
         // DiffProjectEditor fakeProject = projectManager.createProject(fakeUserProject);
@@ -1181,6 +1188,31 @@ public class Ode implements EntryPoint {
     return uiFactory;
   }
 
+  public YoungAndroidProjectNode getDiffRoot() {
+    return diffRoot;
+  }
+
+  public void setDiffRoot(YoungAndroidProjectNode root) {
+    diffRoot = root;
+  }
+
+  public DiffProjectEditor getDiffProjectEditor() {
+    return diffProjectEditor;
+  }
+
+  public void setDiffProjectEditor(DiffProjectEditor editor) {
+    diffProjectEditor = editor;
+  }
+
+  public Map<String, ArrayBuffer> getDiffContents() {
+    return diffContents;
+  }
+
+  public void setDiffContents(Map<String, ArrayBuffer> content) {
+    diffContents = content;
+  }
+
+
   /**
    * Returns the structureAndAssets panel.
    *
@@ -1296,9 +1328,11 @@ public class Ode implements EntryPoint {
     }
     LOG.info("Ode: Setting current file editor to " + currentFileEditor.getFileId());
     if (currentFileEditor instanceof YaFormEditor) {
-      workColumnsEditor.getSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
+      YaFormEditor yaEditor = (YaFormEditor) currentFileEditor;
+      workColumnsEditor.getSourceStructureBox().show(yaEditor.getForm());
       if (inDiffView) {
-        workColumnsEditor.getDiffSourceStructureBox().show(((YaFormEditor) currentFileEditor).getForm());
+        YaFormEditor yaDiffEditor = (YaFormEditor) getDiffProjectEditor().getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
+        workColumnsEditor.getDiffSourceStructureBox().show(yaDiffEditor.getForm());
       }
     }
     switchToProjectEditor();

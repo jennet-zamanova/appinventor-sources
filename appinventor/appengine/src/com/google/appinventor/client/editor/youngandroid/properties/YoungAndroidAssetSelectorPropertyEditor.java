@@ -10,6 +10,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.project.ProjectChangeListener;
@@ -46,15 +47,21 @@ public final class YoungAndroidAssetSelectorPropertyEditor extends AdditionalCho
 
   private final YoungAndroidAssetsFolder assetsFolder;
 
+  // TODO (zamanova)
   /**
    * Creates a new property editor for selecting a Young Android asset.
    *
    * @param editor the editor that this property editor belongs to
    */
   public YoungAndroidAssetSelectorPropertyEditor(final DesignerEditor editor) {
-    Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
-    assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
-    project.addProjectChangeListener(this);
+    if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+      assetsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot()).getAssetsFolder();
+    } else {
+      Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+      assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+      project.addProjectChangeListener(this);
+    }
+    
 
     VerticalPanel selectorPanel = new VerticalPanel();
     assetsList = new ListBox();

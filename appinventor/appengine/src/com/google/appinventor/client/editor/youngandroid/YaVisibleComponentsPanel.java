@@ -4,6 +4,7 @@
 package com.google.appinventor.client.editor.youngandroid;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.simple.SimpleNonVisibleComponentsPanel;
 import com.google.appinventor.client.editor.simple.SimpleVisibleComponentsPanel;
@@ -35,7 +36,7 @@ public class YaVisibleComponentsPanel extends SimpleVisibleComponentsPanel<MockF
   @UiField(provided = true) protected ListBox listboxPhoneTablet; // A ListBox for Phone/Tablet/Monitor preview sizes
   @UiField(provided = true) protected ListBox listboxPhonePreview; // A ListBox for Holo/Material/iOS preview styles
   protected final String[] drop_lst_phone_preview = { "Android Material", "Android Holo", "iOS" };
-  protected final ProjectEditor projectEditor;
+  protected final IProjectEditor projectEditor;
   @UiField protected CheckBox HiddenComponentsCheckbox;
 
   /**
@@ -44,7 +45,7 @@ public class YaVisibleComponentsPanel extends SimpleVisibleComponentsPanel<MockF
    * @param projectEditor
    * @param nonVisibleComponentsPanel corresponding panel for non-visible
    */
-  public YaVisibleComponentsPanel(final ProjectEditor projectEditor,
+  public YaVisibleComponentsPanel(final IProjectEditor projectEditor,
       SimpleNonVisibleComponentsPanel<MockForm> nonVisibleComponentsPanel) {
     super(nonVisibleComponentsPanel);
 

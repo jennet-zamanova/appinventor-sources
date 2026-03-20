@@ -155,10 +155,10 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (view == 3 && child instanceof MockVisibleComponent) {
         isVisible = false;
       }
-      LOG.info("called build colored tree");
+      // LOG.info("called build colored tree");
       childNode.setVisible(isVisible);
       
-      LOG.info("child uuid: " + child.getUuid());
+      // LOG.info("child uuid: " + child.getUuid());
       if (newIds.contains(child.getUuid())) {
         childNode.addStyleName("gwt-TreeItem-added");
         child.color("gwt-TreeItem-added");

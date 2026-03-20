@@ -5,6 +5,7 @@
 
 package com.google.appinventor.client;
 
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaNonVisibleComponentsPanel;
 import com.google.appinventor.client.editor.youngandroid.YaVisibleComponentsPanel;
@@ -54,7 +55,7 @@ public class UiStyleFactory {
   }
 
   public YaVisibleComponentsPanel createSimpleVisibleComponentsPanel
-      (ProjectEditor editor, YaNonVisibleComponentsPanel nonVisPanel) {
+      (IProjectEditor editor, YaNonVisibleComponentsPanel nonVisPanel) {
     return new YaVisibleComponentsPanel(editor, nonVisPanel);
   }
 }

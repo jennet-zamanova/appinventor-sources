@@ -7,6 +7,7 @@ package com.google.appinventor.client.editor.youngandroid.properties;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.explorer.project.ProjectChangeListener;
 import com.google.appinventor.client.widgets.properties.AdditionalChoicePropertyEditor;
@@ -40,9 +41,16 @@ public class YoungAndroidGeoJSONPropertyEditor extends AdditionalChoicePropertyE
   private final YoungAndroidAssetsFolder assetsFolder;
 
   public YoungAndroidGeoJSONPropertyEditor(final DesignerEditor<?, ?, ?, ?, ?> editor) {
-    Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
-    assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
-    project.addProjectChangeListener(this);
+    // Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+    // assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+    // project.addProjectChangeListener(this);
+    if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+      assetsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot()).getAssetsFolder();
+    } else {
+      Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+      assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+      project.addProjectChangeListener(this);
+    }
 
     VerticalPanel selectorPanel = new VerticalPanel();
     assetsList = new ListBox();

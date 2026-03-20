@@ -9,8 +9,10 @@ package com.google.appinventor.client.boxes;
 import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import java.util.logging.Logger;
@@ -52,9 +54,15 @@ public class DiffViewerBox extends Box {
    */
   //  TODO(ZAMANOVA)
   public IProjectEditor show(IProjectEditor projectEditor) {
-    LOG.info("DiffViewerBox: switching the content in the viewer box");
+    // SOMETHING FAILS WHEN THIS LINE IS RUN
     setContent(projectEditor.asWidget());
-    projectEditor.asWidget().addStyleName("diff-editor");
+    ((DiffProjectEditor) projectEditor).addStyleName("diff-editor");
+    FileEditor toShow = ((DiffProjectEditor) projectEditor).getFileEditor(Ode.getInstance().getCurrentFileEditor().getFileId());
+    if (toShow != null) {
+      ((DiffProjectEditor) projectEditor).selectFileEditor(toShow);
+    } else {
+      LOG.warning("did not find fileedtior!!!!");
+    }
     // Ode.getInstance().switchToProjectEditor();
     return projectEditor;
   }

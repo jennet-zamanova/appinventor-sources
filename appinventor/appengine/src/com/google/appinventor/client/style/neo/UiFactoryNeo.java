@@ -6,6 +6,7 @@
 package com.google.appinventor.client.style.neo;
 
 import com.google.appinventor.client.UiStyleFactory;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaNonVisibleComponentsPanel;
 import com.google.appinventor.client.editor.youngandroid.YaVisibleComponentsPanel;
@@ -37,7 +38,7 @@ public class UiFactoryNeo extends UiStyleFactory {
 
   @Override
   public YaVisibleComponentsPanel createSimpleVisibleComponentsPanel
-      (ProjectEditor editor, YaNonVisibleComponentsPanel nonVisPanel) {
+      (IProjectEditor editor, YaNonVisibleComponentsPanel nonVisPanel) {
     return new YaVisibleComponentsPanelNeo(editor, nonVisPanel);
   }
 }

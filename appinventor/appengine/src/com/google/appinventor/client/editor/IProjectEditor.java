@@ -7,6 +7,8 @@
 package com.google.appinventor.client.editor;
 
 import com.google.appinventor.client.UiStyleFactory;
+import com.google.appinventor.client.editor.blocks.BlocksEditor;
+import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -35,6 +37,8 @@ public interface IProjectEditor {
   void changeProjectSettingsProperty(String category, String name, String newValue);
   void recordLocationSetting(String componentName, String newValue);
   void clearLocation(String componentName);
+  BlocksEditor<?, ?> getBlocksFileEditor(String formName);
+  DesignerEditor<?, ?, ?, ?, ?> getFormFileEditor(String formName);
 
   void onSave(String fileId);
   // void onLoad();

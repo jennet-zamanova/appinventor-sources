@@ -17,13 +17,14 @@ import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.FileEditor;
-import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocklyPanel.BlocklyWorkspaceChangeListener;
 import com.google.appinventor.client.editor.designer.DesignerChangeListener;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.designer.DesignerRootComponent;
 import com.google.appinventor.client.editor.simple.components.MockComponent;
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.events.EventHelper;
 import com.google.appinventor.client.explorer.SourceStructureExplorer;
 import com.google.appinventor.client.explorer.SourceStructureExplorerItem;
@@ -106,21 +107,19 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
   // static methods that are called from the Javascript Blockly world.
   private static Map<String, BlocksEditor<?, ?>> formToBlocksEditor = new HashMap<String, BlocksEditor<?, ?>>();
 
-  // private final ProjectEditor projectEditor;
   /**
    * Creates a {@code FileEditor} instance.
    *
    * @param projectEditor the project editor that contains this file editor
    * @param blocksNode      FileNode associated with this file editor
    */
-  public BlocksEditor(ProjectEditor projectEditor, S blocksNode, int systemVersion,
+  public BlocksEditor(IProjectEditor projectEditor, S blocksNode, int systemVersion,
                       BlocksLanguage language, BlocksCodeGenerationTarget target,
                       ComponentDatabaseInterface componentDatabase) {
     super(projectEditor, blocksNode);
     this.blocksNode = blocksNode;
     this.language = language;
     this.componentDatabase = componentDatabase;
-    // this.projectEditor = projectEditor;
     entityName = blocksNode.getProjectId() + "_" + blocksNode.getEntityName();
     blocksArea = new BlocklyPanel(entityName, target);
     blocksArea.setLanguageVersion(systemVersion, language.getVersion());
@@ -273,6 +272,19 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     Ode.getInstance().getProjectService().load2(projectId, fileId, callback);
   }
 
+  public void loadDiffBlocks(String designerJson, String blkFileContent) {
+    // todo(zamanova): something gives error here
+    try {
+      blocksArea.loadBlocksContent(designerJson, blkFileContent, false);
+      blocksArea.addChangeListener(BlocksEditor.this);
+    } catch(LoadBlocksException e) {
+      setDamaged(true);
+      ErrorReporter.reportError(MESSAGES.blocksNotSaved(entityName));
+    }
+    loadComplete = true;
+    selectedDrawer = null;
+  }
+
   @Override
   public String getTabText() {
     return MESSAGES.blocksEditorTabName(blocksNode.getEntityName());
@@ -357,7 +369,7 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
   // BlocklyWorkspaceChangeListener implementation
   @Override
   public void onWorkspaceChange(BlocklyPanel panel, JavaScriptObject event) {
-    if (!EventHelper.isTransient(event)) {
+    if (!EventHelper.isTransient(event) && !(projectEditor instanceof DiffProjectEditor)) {
       Ode.getInstance().getEditorManager().scheduleAutoSave(this);
     }
   }

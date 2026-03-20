@@ -10,6 +10,7 @@ import static com.google.appinventor.common.constants.YoungAndroidStructureConst
 import static com.google.appinventor.common.constants.YoungAndroidStructureConstants.YAIL_FILE_EXTENSION;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.blocks.BlocksCategory;
 import com.google.appinventor.client.editor.blocks.BlocksCodeGenerationException;
@@ -29,6 +30,7 @@ import com.google.appinventor.client.widgets.dnd.DropTarget;
 import com.google.appinventor.components.common.YaVersion;
 import com.google.appinventor.shared.rpc.project.FileDescriptorWithContent;
 import com.google.appinventor.shared.rpc.project.ProjectNode;
+import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetsFolder;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidBlocksNode;
@@ -43,6 +45,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -70,14 +73,20 @@ public final class YaBlocksEditor extends BlocksEditor<YoungAndroidBlocksNode, Y
   // The project associated with this blocks editor.
   private Project project;
 
-  YaBlocksEditor(YaProjectEditor projectEditor, YoungAndroidBlocksNode blocksNode) {
+  YaBlocksEditor(IProjectEditor projectEditor, YoungAndroidBlocksNode blocksNode) {
     super(projectEditor, blocksNode, YaVersion.YOUNG_ANDROID_VERSION, YAIL,
         BlocksCodeGenerationTarget.YAIL,
         SimpleComponentDatabase.getInstance(blocksNode.getProjectId()));
 
-    project = Ode.getInstance().getProjectManager().getProject(blocksNode.getProjectId());
-    project.addProjectChangeListener(this);
-    onProjectLoaded(project);
+        // TODO(ZAMANOVA): MORE PROJECT
+    if (projectEditor instanceof DiffProjectEditor) {
+      project = Ode.getInstance().getProjectManager().getProject(blocksNode.getProjectId());
+      onProjectLoaded(Ode.getInstance().getDiffRoot());
+    } else {
+      project = Ode.getInstance().getProjectManager().getProject(blocksNode.getProjectId());
+      project.addProjectChangeListener(this);
+      onProjectLoaded(project);
+    }
   }
 
   // FileEditor methods
@@ -219,8 +228,7 @@ public final class YaBlocksEditor extends BlocksEditor<YoungAndroidBlocksNode, Y
   }
 
   public MockForm getForm() {
-    YaProjectEditor yaProjectEditor = (YaProjectEditor) projectEditor;
-    YaFormEditor myFormEditor = (YaFormEditor) yaProjectEditor.getFormFileEditor(blocksNode.getFormName());
+    YaFormEditor myFormEditor = (YaFormEditor) projectEditor.getFormFileEditor(blocksNode.getFormName());
     if (myFormEditor != null) {
       return myFormEditor.getForm();
     } else {
@@ -265,6 +273,19 @@ public final class YaBlocksEditor extends BlocksEditor<YoungAndroidBlocksNode, Y
       }
     }
     YoungAndroidAssetsFolder assetsFolder = ((YoungAndroidProjectNode) project.getRootNode())
+        .getAssetsFolder();
+    for (ProjectNode node : assetsFolder.getChildren()) {
+      blocksArea.addAsset(((YoungAndroidAssetNode) node).getName());
+    }
+  }
+
+  private void onProjectLoaded(ProjectRootNode projectRootNode) {
+    for (ProjectNode node : projectRootNode.getAllSourceNodes()) {
+      if (node instanceof YoungAndroidFormNode) {
+        blocksArea.addScreen(((YoungAndroidSourceNode) node).getFormName());
+      }
+    }
+    YoungAndroidAssetsFolder assetsFolder = ((YoungAndroidProjectNode) projectRootNode)
         .getAssetsFolder();
     for (ProjectNode node : assetsFolder.getChildren()) {
       blocksArea.addAsset(((YoungAndroidAssetNode) node).getName());

@@ -9,6 +9,7 @@ package com.google.appinventor.client.editor.youngandroid;
 import com.google.appinventor.client.ErrorReporter;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.FileEditor;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.youngandroid.actions.SwitchScreenAction;
@@ -225,7 +226,7 @@ public class DesignToolbar extends Toolbar {
     }
     
     Screen screen = currentProject.screens.get(newScreenName);
-    ProjectEditor projectEditor = screen.designerEditor.getProjectEditor();
+    IProjectEditor projectEditor = screen.designerEditor.getProjectEditor();
     currentProject.setCurrentScreen(newScreenName);
     setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, newScreenName);
     LOG.info("Setting currentScreen to " + newScreenName);

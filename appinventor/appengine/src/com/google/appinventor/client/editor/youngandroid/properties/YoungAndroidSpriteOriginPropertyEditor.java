@@ -7,6 +7,7 @@ package com.google.appinventor.client.editor.youngandroid.properties;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.widgets.properties.PropertyEditor;
 import com.google.appinventor.client.wizards.MarkOriginWizard;
@@ -36,6 +37,15 @@ public class YoungAndroidSpriteOriginPropertyEditor extends PropertyEditor {
    * @return  asset node found or {@code null}
    */
   protected ProjectNode getAssetNode(String name) {
+    if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+      HasAssetsFolder<YoungAndroidAssetsFolder> hasAssetsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot());
+      for (ProjectNode asset : hasAssetsFolder.getAssetsFolder().getChildren()) {
+        if (asset.getName().equals(name)) {
+          return asset;
+        }
+      }
+      return null;
+    } 
     Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
     if (project != null) {
       HasAssetsFolder<YoungAndroidAssetsFolder> hasAssetsFolder =

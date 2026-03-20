@@ -903,9 +903,9 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   }
 
   public void color(String colorClass) {
-    LOG.info("coloring item");
+    // LOG.info("coloring item");
     this.addStyleName(colorClass);
-    LOG.info("style is now: " + this.getStyleName());
+    // LOG.info("style is now: " + this.getStyleName());
   }
 
   /**

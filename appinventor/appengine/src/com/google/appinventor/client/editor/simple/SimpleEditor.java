@@ -8,6 +8,7 @@ package com.google.appinventor.client.editor.simple;
 
 import com.google.appinventor.client.editor.simple.components.i18n.ComponentTranslationTable;
 import com.google.appinventor.client.editor.FileEditor;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.simple.components.MockComponent;
 import com.google.appinventor.client.editor.simple.palette.AbstractPalettePanel;
@@ -31,7 +32,7 @@ import java.util.Set;
  */
 public abstract class SimpleEditor extends FileEditor {
 
-  protected SimpleEditor(ProjectEditor projectEditor, FileNode fileNode) {
+  protected SimpleEditor(IProjectEditor projectEditor, FileNode fileNode) {
     super(projectEditor, fileNode);
   }
 

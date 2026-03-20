@@ -25,7 +25,7 @@ public abstract class FileEditor extends Composite {
   private static final Logger LOG = Logger.getLogger(FileEditor.class.getName());
 
   // The project editor that contains this file editor.
-  protected final ProjectEditor projectEditor;
+  protected final IProjectEditor projectEditor;
 
   // FileNode associated with this file editor
   protected final FileNode fileNode;
@@ -38,7 +38,7 @@ public abstract class FileEditor extends Composite {
    * @param projectEditor  the project editor that contains this file editor
    * @param fileNode  FileNode associated with this file editor
    */
-  public FileEditor(ProjectEditor projectEditor, FileNode fileNode) {
+  public FileEditor(IProjectEditor projectEditor, FileNode fileNode) {
     this.projectEditor = projectEditor;
     this.fileNode = fileNode;
   }
@@ -48,7 +48,7 @@ public abstract class FileEditor extends Composite {
    *
    * @return  project editor associated with this file editor
    */
-  public final ProjectEditor getProjectEditor() {
+  public final IProjectEditor getProjectEditor() {
     return projectEditor;
   }
 

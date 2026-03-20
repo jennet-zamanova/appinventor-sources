@@ -6,6 +6,7 @@
 package com.google.appinventor.client.style.neo;
 
 import com.google.appinventor.client.components.Icon;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.simple.SimpleNonVisibleComponentsPanel;
 import com.google.appinventor.client.editor.simple.components.MockForm;
@@ -28,7 +29,7 @@ public class YaVisibleComponentsPanelNeo extends YaVisibleComponentsPanel {
   @UiField Icon size_icon;
   @UiField CheckBox HiddenComponentsCheckbox;
 
-  public YaVisibleComponentsPanelNeo(final ProjectEditor projectEditor,
+  public YaVisibleComponentsPanelNeo(final IProjectEditor projectEditor,
       SimpleNonVisibleComponentsPanel<MockForm> nonVisibleComponentsPanel) {
     super(projectEditor, nonVisibleComponentsPanel);
   }

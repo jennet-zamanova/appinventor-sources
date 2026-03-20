@@ -10,7 +10,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.Ode;
 
 import com.google.appinventor.client.editor.simple.SimpleEditor;
-
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 
 import com.google.appinventor.client.widgets.properties.PropertyEditor;
@@ -162,8 +162,15 @@ public class YoungAndroidListViewAddDataPropertyEditor extends PropertyEditor {
     }
 
     Column<JSONObject, String> createImageSelectionDropDown(final String columnKey) {
-      Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
-      YoungAndroidAssetsFolder assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+      // Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+      // YoungAndroidAssetsFolder assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+      YoungAndroidAssetsFolder assetsFolder;
+      if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+        assetsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot()).getAssetsFolder();
+      } else {
+        Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+        assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+      }
       List<String> choices = new ArrayList<String>();
       choices.add(0, "None");
       if (assetsFolder != null) {

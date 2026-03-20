@@ -87,9 +87,9 @@ public final class YaDiffFormEditor extends DesignerEditor<YoungAndroidFormNode,
    * @param projectEditor the project editor that contains this file editor
    * @param formNode the YoungAndroidFormNode associated with this YaFormEditor
    */
-  YaDiffFormEditor(ProjectEditor projectEditor) {
-    // super(projectEditor, formNode, SimpleComponentDatabase.getInstance(formNode.getProjectId()),
-    //     projectEditor.getUiFactory().createSimpleVisibleComponentsPanel(projectEditor, new YaNonVisibleComponentsPanel()));
+  YaDiffFormEditor(ProjectEditor projectEditor, YoungAndroidFormNode formNode) {
+    super(projectEditor, formNode, SimpleComponentDatabase.getInstance(formNode.getProjectId()),
+        projectEditor.getUiFactory().createSimpleVisibleComponentsPanel(projectEditor, new YaNonVisibleComponentsPanel()));
   }
 
   public boolean shouldDisplayHiddenComponents() {
@@ -163,7 +163,7 @@ public final class YaDiffFormEditor extends DesignerEditor<YoungAndroidFormNode,
   }
 
   @Override
-  protected void onFileLoaded(String content) {
+  public void onFileLoaded(String content) {
     JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
         content, JSON_PARSER);
     try {
@@ -195,13 +195,16 @@ public final class YaDiffFormEditor extends DesignerEditor<YoungAndroidFormNode,
     root.addDesignerChangeListener(this);
     // Also have the blocks editor listen to changes. Do this here instead
     // of in the blocks editor so that we don't risk it missing any updates.
-    root.addDesignerChangeListener(((YaProjectEditor) projectEditor)
-        .getBlocksFileEditor(root.getName()));
+    root.addDesignerChangeListener(projectEditor.getBlocksFileEditor(root.getName()));
   }
 
   @Override
   public AbstractPalettePanel.Filter getPaletteFilter() {
     return paletteFilter;
+  }
+
+  public void setPreUpgradeJsonString (String json) {
+    preUpgradeJsonString = json;
   }
 
   protected void upgradeFile(FileContentHolder fileContentHolder,

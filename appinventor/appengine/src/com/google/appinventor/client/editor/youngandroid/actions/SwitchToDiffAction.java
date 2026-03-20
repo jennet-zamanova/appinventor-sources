@@ -10,6 +10,7 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.json.JsObject;
 import com.google.appinventor.client.properties.json.ClientJsonParser;
@@ -130,6 +131,7 @@ public class SwitchToDiffAction implements Command {
     };
     new DiffFileUploadWizard(callback).show();
   }
+
 
   public static native JavaScriptObject openDesignerDiff(String designer1, String designer2) /*-{
     return $wnd.openDesignerDiff(JSON.parse(designer1), JSON.parse(designer2));

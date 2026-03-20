@@ -13,6 +13,7 @@ import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -233,7 +234,6 @@ public class WorkColumnsEditor extends Composite {
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();
         for (Widget w : widgetsToShow) {
-            LOG.info("widget is: " + w);
             workColumns.add(w);
             w.setVisible(true);
         }
@@ -246,9 +246,10 @@ public class WorkColumnsEditor extends Composite {
             yaEditor.refreshCurrentPropertiesPanel();
             sourceStructureBox.show(yaEditor.getForm());
             if (Ode.getInstance().isInDiffView()) {
-                (yaEditor).refreshCurrentDiffPropertiesPanel();
-                diffSourceStructureBox.show(yaEditor.getForm());
-                DiffProjectEditor projectEditor = new DiffProjectEditor(Ode.getInstance().getUiStyleFactory());
+                DiffProjectEditor projectEditor = Ode.getInstance().getDiffProjectEditor();
+                YaFormEditor yaDiffEditor = (YaFormEditor) projectEditor.getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
+                yaDiffEditor.refreshCurrentPropertiesPanel();
+                diffSourceStructureBox.show(yaDiffEditor.getForm());
                 // load project???
                 diffViewerBox.show(projectEditor);
             }

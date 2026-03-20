@@ -12,6 +12,7 @@ import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.DiffPropertiesBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.simple.ComponentNotFoundException;
@@ -95,7 +96,7 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
    * @param projectEditor the project editor that contains this file editor
    * @param formNode the YoungAndroidFormNode associated with this YaFormEditor
    */
-  YaFormEditor(ProjectEditor projectEditor, YoungAndroidFormNode formNode) {
+  YaFormEditor(IProjectEditor projectEditor, YoungAndroidFormNode formNode) {
     super(projectEditor, formNode, SimpleComponentDatabase.getInstance(formNode.getProjectId()),
         projectEditor.getUiFactory().createSimpleVisibleComponentsPanel(projectEditor, new YaNonVisibleComponentsPanel()));
 
@@ -199,6 +200,10 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
 
   public String getComponentInstanceTypeName(String instanceName) {
     return getComponents().get(instanceName).getType();
+  }
+
+  public void setPreUpgradeJsonString (String json) {
+    preUpgradeJsonString = json;
   }
 
   // private methods
@@ -313,7 +318,7 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
   }
 
   @Override
-  protected void onFileLoaded(String content) {
+  public void onFileLoaded(String content) {
     JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
         content, JSON_PARSER);
     try {
@@ -345,8 +350,7 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
     root.addDesignerChangeListener(this);
     // Also have the blocks editor listen to changes. Do this here instead
     // of in the blocks editor so that we don't risk it missing any updates.
-    root.addDesignerChangeListener(((YaProjectEditor) projectEditor)
-        .getBlocksFileEditor(root.getName()));
+    root.addDesignerChangeListener(projectEditor.getBlocksFileEditor(root.getName()));
   }
 
   /**
@@ -434,10 +438,6 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
 
   public void refreshCurrentPropertiesPanel() {
     updatePropertiesPanel(root.getSelectedComponents(), true);
-  }
-
-  public void refreshCurrentDiffPropertiesPanel() {
-    updateDiffPropertiesPanel(root.getSelectedComponents(), true);
   }
 
   @Override

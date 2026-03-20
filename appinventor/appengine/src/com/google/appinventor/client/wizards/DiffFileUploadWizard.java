@@ -20,9 +20,29 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.dom.client.Element;
+import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
+// import com.google.appinventor.client.explorer.project.Project;
+import com.google.appinventor.shared.rpc.project.Project;
 import com.google.appinventor.client.jzip.JSZip;
 import com.google.appinventor.client.jzip.LoadOptions;
+import com.google.appinventor.client.jzip.Type;
 import com.google.appinventor.client.utils.Promise;
+import com.google.appinventor.shared.rpc.project.ProjectNode;
+import com.google.appinventor.shared.rpc.project.UserProject;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetsFolder;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidBlocksNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidComponentNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidComponentsFolder;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidFormNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidPackageNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidSourceFolderNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidSourceNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidYailNode;
+import com.google.appinventor.shared.storage.StorageUtil;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,8 +119,16 @@ public class DiffFileUploadWizard {
 
   private void handleProjectUpload(FileUpload upload) {
 
-    getFileBase64(upload.getElement())
-        .then(zipBase64 -> getFileConents(zipBase64))
+    Promise<String> uploadedContent = getFileBase64(upload.getElement());
+    uploadedContent.then(zipBase64 -> newProjectFromExternalTemplate("$diff", zipBase64))
+                  .then(root -> {
+                    Ode.getInstance().setDiffRoot(root); 
+                    DiffProjectEditor projectEditor = new DiffProjectEditor(Ode.getInstance().getUiStyleFactory());
+                    Ode.getInstance().setDiffProjectEditor(projectEditor);
+                    projectEditor.processProject();
+                    return null;
+                  });
+    uploadedContent.then(zipBase64 -> getFileConents(zipBase64))
         .then(response -> {
           LOG.info("response" + response.toString().length());
           this.fileContentCallback.onContent(response);
@@ -110,7 +138,78 @@ public class DiffFileUploadWizard {
           this.fileContentCallback.onError("Failed to upload file: " + error.toString());
           return null;
         });
+    
   }
+
+  public Promise<YoungAndroidProjectNode> newProjectFromExternalTemplate(String projectName, String zipData) {
+    // UserProject project = new UserProject(projectName.hashCode(), projectName, "YoungAndroid", System.currentTimeMillis(), System.currentTimeMillis(), false);
+    // projects.put(projectName, project);
+    long hash = projectName.hashCode();
+    UserProject diffProject = new UserProject(projectName.hashCode(), projectName, "YoungAndroid", System.currentTimeMillis(), System.currentTimeMillis(), false);
+    Project pr = new Project(projectName);
+    YoungAndroidProjectNode root = new YoungAndroidProjectNode(projectName, hash);
+    ProjectNode assetsNode = new YoungAndroidAssetsFolder("assets");
+    ProjectNode sourcesNode = new YoungAndroidSourceFolderNode("src");
+    ProjectNode compsNode = new YoungAndroidComponentsFolder("assets/external_comps");
+    root.addChild(assetsNode);
+    root.addChild(sourcesNode);
+    root.addChild(compsNode);
+    // projectData.put(hash, root);
+
+    // Process the zip data
+    final JSZip zip = new JSZip();
+    final Map<String, ArrayBuffer> contents = new HashMap<>();
+    return zip.loadAsync(zipData, LoadOptions.create(true))
+        .then0(() -> {
+          final Map<String, ProjectNode> packagesMap = new HashMap<>();
+          final List<Promise> promises = new ArrayList<>();
+          zip.forEach((name, zipObject) -> {
+            promises.add(zipObject.get(Type.ARRAY_BUFFER).then((buffer) -> {
+              contents.put("$diff:" + name, buffer);
+              return Promise.resolve(buffer);
+            }));
+            if (name.startsWith("assets/")) {
+              if (name.startsWith("assets/external_comps/")) {
+                // This is a file in the external components directory
+                compsNode.addChild(new YoungAndroidComponentNode(StorageUtil.basename(name), name));
+              } else {
+                // This is a file in the assets directory
+                assetsNode.addChild(new YoungAndroidAssetNode(StorageUtil.basename(name), name));
+              }
+            } else if (name.startsWith("src/")) {
+              YoungAndroidSourceNode sourceNode = null;
+              if (name.endsWith(".scm")) {
+                sourceNode = new YoungAndroidFormNode(name);
+              } else if (name.endsWith(".bky")) {
+                sourceNode = new YoungAndroidBlocksNode(name);
+              } else if (name.endsWith(".yail")) {
+                sourceNode = new YoungAndroidYailNode(name);
+              }
+              if (sourceNode != null) {
+                String packageName = StorageUtil.getPackageName(sourceNode.getQualifiedName());
+                ProjectNode packageNode = packagesMap.get(packageName);
+                if (packageNode == null) {
+                  packageNode = new YoungAndroidPackageNode(packageName, packageNameToPath(packageName));
+                  packagesMap.put(packageName, packageNode);
+                  sourcesNode.addChild(packageNode);
+                }
+                packageNode.addChild(sourceNode);
+              }
+            }
+          });
+          Promise<?>[] promisesArray = promises.toArray(new Promise[0]);
+          return Promise.allOf(promisesArray).then0(() -> {
+            Ode.getInstance().setDiffContents(contents);
+            return Promise.resolve(root);
+          });
+        });
+  }
+
+  private static String packageNameToPath(String packageName) {
+    return "src/" + packageName.replace('.', '/');
+  }
+
+
 
   public Promise<Map<String, String>> getFileConents(String zipData) {
 

@@ -11,13 +11,15 @@ import static com.google.appinventor.client.editor.simple.components.MockCompone
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.boxes.AssetListBox;
+import com.google.appinventor.client.boxes.BoxSupplier;
 import com.google.appinventor.client.boxes.DiffPropertiesBox;
+import com.google.appinventor.client.boxes.DiffSourceStructureBox;
 import com.google.appinventor.client.boxes.DiffViewerBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
-import com.google.appinventor.client.boxes.PropertiesBoxSupplier;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
@@ -32,6 +34,7 @@ import com.google.appinventor.client.editor.simple.components.utils.PropertiesUt
 import com.google.appinventor.client.editor.simple.palette.AbstractPalettePanel;
 import com.google.appinventor.client.editor.simple.palette.DropTargetProvider;
 import com.google.appinventor.client.editor.simple.palette.SimplePalettePanel;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaBlocksEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.editor.youngandroid.YaProjectEditor;
@@ -155,7 +158,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   protected final W visibleComponentsPanel;
   protected final SimpleNonVisibleComponentsPanel<T> nonVisibleComponentsPanel;
 
-  public DesignerEditor(ProjectEditor projectEditor, S sourceNode,
+  public DesignerEditor(IProjectEditor projectEditor, S sourceNode,
                         V componentDatabase,
                         W visibleComponentsPanel) {
     super(projectEditor, sourceNode);
@@ -164,8 +167,13 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     this.componentDatabase = componentDatabase;
 
     // Get reference to the source structure explorer
-    sourceStructureExplorer =
+    if (projectEditor instanceof DiffProjectEditor) {
+      sourceStructureExplorer =
+        DiffSourceStructureBox.getSourceStructureBox().getSourceStructureExplorer();
+    } else {
+      sourceStructureExplorer =
         SourceStructureBox.getSourceStructureBox().getSourceStructureExplorer();
+    }
 
     // Create UI elements for the designer panels.
     this.visibleComponentsPanel = visibleComponentsPanel;
@@ -203,6 +211,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   protected abstract void upgradeFile(FileContentHolder fileContentHolder,
                                       final Command afterUpgradeCompleted);
 
+  public abstract void setPreUpgradeJsonString (String json); 
+
   public T getRoot() {
     return root;
   }
@@ -228,8 +238,9 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   }
 
   protected void onStructureChange() {
-    Ode.getInstance().getEditorManager().scheduleAutoSave(this);
-
+    if (!(projectEditor instanceof DiffProjectEditor)) {
+      Ode.getInstance().getEditorManager().scheduleAutoSave(this);
+    }
     // Update source structure panel
     sourceStructureExplorer.updateTree(root.buildComponentsTree(),
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
@@ -249,7 +260,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     assetListBox.setVisible(true);
 
     // Set the properties box's content.
-    Box propertiesBox = PropertiesBoxSupplier.getPropertiesBox();
+    Box propertiesBox = BoxSupplier.getPropertiesBox(projectEditor);
+    // LOG.info("got properties box: "+ propertiesBox);
     propertiesBox.setContent(designProperties);
     updatePropertiesPanel(root.getSelectedComponents(), true);
     propertiesBox.setVisible(true);
@@ -273,7 +285,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     SourceStructureBox.getSourceStructureBox().setVisible(false);
 
     // Clear and hide the properties box.
-    Box propertiesBox = PropertiesBoxSupplier.getPropertiesBox();
+    Box propertiesBox = BoxSupplier.getPropertiesBox(projectEditor);
+    // LOG.info("got properties box: "+ propertiesBox);
     propertiesBox.clear();
     propertiesBox.setVisible(false);
 
@@ -322,7 +335,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   public void onComponentPropertyChanged(MockComponent component, String propertyName, String propertyValue) {
     if (loadComplete) {
       // If the property isn't actually persisted to the .scm file, we don't need to do anything.
-      if (component.isPropertyPersisted(propertyName)) {
+      if (component.isPropertyPersisted(propertyName) && !(projectEditor instanceof DiffProjectEditor)) {
         Ode.getInstance().getEditorManager().scheduleAutoSave(this);
       }
     } else {
@@ -367,7 +380,16 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       // TODO: SMRL Not sure this class should keep a pointer to source structure
       // Select the item in the source structure explorer.
       sourceStructureExplorer.selectItem(component.getSourceStructureExplorerItem());
-      SourceStructureBox.getSourceStructureBox().show(root);
+      // TODO: make supplier for structurebox manage typing properly
+      // Box sourceStructureBox = BoxSupplier.getSourceStructureBox(projectEditor).show(root);
+      if (projectEditor instanceof DiffProjectEditor) {
+        DiffSourceStructureBox.getSourceStructureBox().show(root);
+      } else {
+        SourceStructureBox.getSourceStructureBox().show(root);
+      }
+      // TODO(ZAMANOVA): how to show for diff as well?
+      // YaFormEditor yaDiffEditor = (YaFormEditor) getDiffProjectEditor().getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
+      // workColumnsEditor.getDiffSourceStructureBox().show(yaDiffEditor.getForm());
 
       // Show the component properties in the properties panel.
       updatePropertiesPanel(root.getSelectedComponents(), selected);
@@ -488,7 +510,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   }
 
   public BlocksEditor<?, ?> getBlocksEditor() {
-    return ((YaProjectEditor) projectEditor).getBlocksFileEditor(sourceNode.getEntityName());
+    return projectEditor.getBlocksFileEditor(sourceNode.getEntityName());
   }
 
   // private implementation
@@ -496,6 +518,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
    * Show the given component's properties in the properties panel.
    */
   protected void updatePropertiesPanel(List<MockComponent> components, boolean selected) {
+    LOG.warning("projectedtior type: " + (projectEditor instanceof ProjectEditor) + (projectEditor instanceof DiffProjectEditor));
     if (Ode.getInstance().isInDiffView()) {
       updateDiffPropertiesPanel(components, selected);
       return;
@@ -582,7 +605,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       // setProperties clears the caption!
       designProperties.setPropertiesCaption(components.get(0).getName());
     }
-    PropertiesBoxSupplier.getPropertiesBox().setContent(designProperties);
+    BoxSupplier.getPropertiesBox(projectEditor).setContent(designProperties);
+    // LOG.info("got properties box: "+ PropertiesBoxSupplier.getPropertiesBox(projectEditor));
   }
 
   protected void updateDiffPropertiesPanel(List<MockComponent> components, boolean selected) {
@@ -592,7 +616,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
                                           .filter(c -> allUpdatedIds.contains(c.getUuid()))
                                           .collect(Collectors.toList());
     // if (filteredComponents == null || filteredComponents.size() == 0) {
-    LOG.warning("got filtered components" + filteredComponents + "from components: " + components);
+    // LOG.warning("got filtered components" + filteredComponents + "from components: " + components);
     //   return;
     // }
     if (selectedProperties != null) {
@@ -685,7 +709,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         property.getEditor().refresh();
       }
     }
-    LOG.info("setting designer properties");
+    // LOG.info("setting diff designer properties" + projectEditor);
     designProperties.setDiffProperties(selectedProperties);
     if (filteredComponents.size() == 1) {
       
@@ -699,7 +723,8 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       designProperties.setPropertiesCaption("no properties changed for this component");
 
     }
-    PropertiesBoxSupplier.getPropertiesBox().setContent(designProperties);
+    // LOG.info("got properties box: "+ projectEditor);
+    BoxSupplier.getPropertiesBox(projectEditor).setContent(designProperties);
   }
 
   private void populateComponentsMap(MockComponent component, Map<String, MockComponent> map) {
@@ -711,7 +736,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     }
   }
 
-  protected void onFileLoaded(String content) {
+  public void onFileLoaded(String content) {
     // Set loadCompleted to true.
     // From now on, all change events will be taken seriously.
     loadComplete = true;
@@ -898,7 +923,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_T && !palettePanel.isTextboxFocused()) {
       SourceStructureBox.getSourceStructureBox().getSourceStructureExplorer().getTree().setFocus(true);
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_P && !palettePanel.isTextboxFocused()) {
-      PropertiesBoxSupplier.getPropertiesBox().getElement().getElementsByTagName("a").getItem(0).focus();
+      BoxSupplier.getPropertiesBox(projectEditor).getElement().getElementsByTagName("a").getItem(0).focus();
     } else if (event.getNativeKeyCode() == KeyCodes.KEY_M && !palettePanel.isTextboxFocused()) {
       AssetListBox.getAssetListBox().getAssetList().getTree().setFocus(true);
     }
