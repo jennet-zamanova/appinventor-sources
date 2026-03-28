@@ -85,7 +85,6 @@ public class DiffFileUploadWizard {
    * Creates a new project upload wizard.
    */
   public DiffFileUploadWizard(FileContentCallback callback) {
-    LOG.warning("Create DiffFileUploadWizard");
     // Initialize UI
     uibinder.createAndBindUi(this);
     upload.setName("Upload AIA Archive");
@@ -105,7 +104,6 @@ public class DiffFileUploadWizard {
   @UiHandler("okButton")
   void executeUpload(ClickEvent e) {
     String filename = upload.getFilename();
-    LOG.info("upload: " + upload + upload.getElement() + upload.getElement());
     if (filename.endsWith(PROJECT_ARCHIVE_EXTENSION)) {
 
       this.handleProjectUpload(upload);
@@ -130,7 +128,6 @@ public class DiffFileUploadWizard {
                   });
     uploadedContent.then(zipBase64 -> getFileConents(zipBase64))
         .then(response -> {
-          LOG.info("response" + response.toString().length());
           this.fileContentCallback.onContent(response);
           return null;
         })

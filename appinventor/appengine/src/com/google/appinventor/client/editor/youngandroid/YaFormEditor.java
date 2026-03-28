@@ -14,6 +14,7 @@ import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.simple.ComponentNotFoundException;
 import com.google.appinventor.client.editor.simple.SimpleComponentDatabase;
@@ -39,6 +40,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -350,7 +354,21 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
     root.addDesignerChangeListener(this);
     // Also have the blocks editor listen to changes. Do this here instead
     // of in the blocks editor so that we don't risk it missing any updates.
-    root.addDesignerChangeListener(projectEditor.getBlocksFileEditor(root.getName()));
+    // TODO: blocks editor not there yet, so need to wait till it gets loaded
+    final RepeatingCommand pendingBlocksLoader = new RepeatingCommand() {
+      @Override
+      public boolean execute() {
+        BlocksEditor <?,?> editor = projectEditor.getBlocksFileEditor(root.getName());
+        if (editor != null) {
+            root.addDesignerChangeListener(projectEditor.getBlocksFileEditor(root.getName()));
+            return false;
+        } else {
+            return true;
+        }
+      }
+    };
+
+    Scheduler.get().scheduleFixedDelay(pendingBlocksLoader, 1);
   }
 
   /**

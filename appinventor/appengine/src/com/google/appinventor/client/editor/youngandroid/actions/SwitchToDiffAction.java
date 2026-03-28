@@ -46,16 +46,19 @@ public class SwitchToDiffAction implements Command {
     FileContentCallback callback = new FileContentCallback() {
       @Override
       public void onContent(Map<String, String> files) {
+        Ode.getInstance().setDiffFileContents(files);
         if (toolbar.getCurrentView() == DesignToolbar.View.BLOCKS) {
-          for (String fileName : files.keySet()) {
-            if (fileName.endsWith("Screen1.bky")) {
-              String content = files.get(fileName);
-              // parse it, save it, display it raw — whatever you want
-              SwitchToDiffAction.openSecondaryWorkspace(content);
-              LOG.info("file got from upload: " + content.length());
-              return;
-            }
-          }
+          // for (String fileName : files.keySet()) {
+          //   if (fileName.endsWith("Screen1.bky")) {
+          //     String content = files.get(fileName);
+          //     // parse it, save it, display it raw — whatever you want
+          //     SwitchToDiffAction.openSecondaryWorkspace(content);
+          //     // LOG.info("file got from upload: " + content.length());
+          //     return;
+          //   }
+          // }
+          Ode.getInstance().setInDiffView(true);
+          Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
           LOG.warning("did not find screen 1 blocks!!");
         } else if (toolbar.getCurrentView() == DesignToolbar.View.DESIGNER) {
           for (String fileName : files.keySet()) {
@@ -63,42 +66,29 @@ public class SwitchToDiffAction implements Command {
               String content = files.get(fileName);
               // parse it, save it, display it raw — whatever you want
               // SwitchToDiffAction.openSecondaryWorkspace(content);
-              LOG.info("screen file got from upload: " + content);
               JSONObject j = YoungAndroidSourceAnalyzer.parseSourceFile(content, new ClientJsonParser());
-              LOG.info("output is: " + j.toString() + j.toJson() + j);
               FileEditor currentFileEditor = Ode.getInstance().getCurrentFileEditor();
               if (currentFileEditor instanceof YaFormEditor) {
                 String screen1 = currentFileEditor.getRawFileContent();
                 JSONObject j1 = YoungAndroidSourceAnalyzer.parseSourceFile(screen1, new ClientJsonParser());
-                LOG.info("screen1: " + j1);
                 JavaScriptObject out = SwitchToDiffAction.openDesignerDiff(j1.toJson(), j.toJson());
-                LOG.info("result" + out);
                 DiffResult diffResult = out.cast();
                 String newIds = diffResult.getNewIds().toString();
                 String deletedIds = diffResult.getRemovedIds().toString();
                 String movedIds = diffResult.getMovedIds().toString();
                 String modifiedIds = diffResult.getUpdatedIds().toString();
                 UpdateMap updateInfo = diffResult.getUpdatedIdsInfo();
-                LOG.info("new " + newIds);
-                LOG.info("deleted " + deletedIds);
-                LOG.info("moved " + movedIds);
-                LOG.info("updated " + modifiedIds);
-                LOG.info("updated info " + updateInfo);
-                LOG.info("updateInfo get key " + updateInfo.getKeys());
                 JsArrayString keys = updateInfo.getKeys();
-                LOG.info("try to color components tree");
                 HashMap<String, List<String>> idToAttribute = new HashMap<>();
                 for (int i = 0; i < keys.length(); i++) {
                     String key = keys.get(i);
                     JsArrayString attributes = updateInfo.getModifiedAttributes(key);
-                    LOG.info("attributes: " + attributes);
                     List<String> attributesList = new ArrayList<>();
                     for (int t = 0; t < attributes.length(); t++) {
                       attributesList.add(attributes.get(t));
                     }
                     idToAttribute.put(key, attributesList);
                 }
-                LOG.info("idToAttribute: " + idToAttribute);
                 // ((YaFormEditor) currentFileEditor).getForm().colorTree();
                 Ode.getInstance().setInDiffView(true);
                 Ode.getInstance().setNewIds(newIds);
@@ -107,13 +97,11 @@ public class SwitchToDiffAction implements Command {
                 Ode.getInstance().setModifiedIds(modifiedIds);
                 Ode.getInstance().setUpdatedIds(newIds + ", " + deletedIds + ", " + movedIds + ", " + modifiedIds);
                 Ode.getInstance().setModifiedAttributes(idToAttribute);
-                SourceStructureBox.getSourceStructureBox()
-                                  .getSourceStructureExplorer()
-                                  .updateTree(((YaFormEditor) currentFileEditor).getForm()
-                                                                                .buildComponentsTree(),
-                                              null);
-
-                // Ode.getInstance().toggleDiffView();
+                // SourceStructureBox.getSourceStructureBox()
+                //                   .getSourceStructureExplorer()
+                //                   .updateTree(((YaFormEditor) currentFileEditor).getForm()
+                //                                                                 .buildComponentsTree(),
+                //                               null);
                 Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
                 return;
               }

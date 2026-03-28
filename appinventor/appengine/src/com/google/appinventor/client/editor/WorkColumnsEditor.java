@@ -14,6 +14,7 @@ import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
+import com.google.appinventor.client.editor.youngandroid.YaBlocksEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class WorkColumnsEditor extends Composite {
@@ -224,7 +226,6 @@ public class WorkColumnsEditor extends Composite {
     }
 
     public void setDesignerComponentsVisible(boolean visible) {
-        LOG.info(" " + paletteBox.isAttached() + paletteBox.isVisible() + " palette is: " + paletteBox);
         paletteBox.setVisible(visible);
         sourceStructureBox.setVisible(visible);
         propertiesBox.setVisible(visible);
@@ -237,7 +238,6 @@ public class WorkColumnsEditor extends Composite {
             workColumns.add(w);
             w.setVisible(true);
         }
-        LOG.info("workColumns now has: " + workColumns.getWidgetCount() + workColumns.isAttached() + workColumns.isVisible());
 
         Ode.getInstance().setCurrentFileEditor(fileEditor);
 
@@ -253,6 +253,21 @@ public class WorkColumnsEditor extends Composite {
                 // load project???
                 diffViewerBox.show(projectEditor);
             }
+        } else if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS && Ode.getInstance().isInDiffView() && fileEditor instanceof YaBlocksEditor) {
+            YaBlocksEditor yaEditor = (YaBlocksEditor) fileEditor;
+            Map<String, String> files = Ode.getInstance().getDiffFileContents();
+            for (String fileName : files.keySet()) {
+                if (fileName.endsWith(yaEditor.getEntityName() + ".bky")) {
+                  String content = files.get(fileName);
+                  // parse it, save it, display it raw — whatever you want
+                  WorkColumnsEditor.openSecondaryWorkspace(content);
+                  return;
+                }
+              }
         }
     }
+
+    public static native void openSecondaryWorkspace(String file) /*-{
+        $wnd.openSecondaryWorkspace(file);
+    }-*/;
 }

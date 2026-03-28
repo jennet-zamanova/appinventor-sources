@@ -179,7 +179,6 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
     openFileEditors.put(fileId, fileEditor);
     fileIds.add(beforeIndex, fileId);
     deckPanel.insert(fileEditor, beforeIndex);
-    LOG.info("Inserted file editor for " + fileEditor.getFileId() + " at pos " + beforeIndex);
   }
 
   protected final void addFileEditorByType(FileEditor fileEditor) {

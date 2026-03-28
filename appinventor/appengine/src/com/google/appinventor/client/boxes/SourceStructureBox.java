@@ -62,7 +62,6 @@ public class SourceStructureBox extends Box implements ISourceStructureBox {
    * @param root current form
    */
   public void show(DesignerRootComponent root) {
-    LOG.warning("called show on ssb");
     getSourceStructureExplorer().updateTree(root.buildComponentsTree(),
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
     getSourceStructureBox().setVisible(true);

@@ -1224,8 +1224,9 @@ function openDesignerDiff(designer1, designer2) {
 
 function openSecondaryWorkspace(file) {
   // TODO: really hacky - need to change!!!
-  console.log("called! ");
-  if (document.getElementById('secondary-workspace')) return;
+  if (document.getElementById('secondary-workspace')) {
+    document.getElementById('secondary-workspace').remove();
+  }
 
   var svgParent = document.querySelector('svg.blocklySvg');
   if (!svgParent) {
@@ -1264,12 +1265,15 @@ function openSecondaryWorkspace(file) {
   var secondaryWs = Blockly.inject(secondaryDiv, {
     readOnly: true,
     scrollbars: true,
-    zoom: { controls: true, wheel: true, startScale: 0.8 },
+    zoom: { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
     parentWorkspace: mainWs,
   });
 
   // Force resize AFTER DOM has updated
   setTimeout(function() {
+    container.style.display = 'flex';
+    container.style.flexDirection = 'row';
+    container.style.overflow = 'hidden';
     Blockly.svgResize(mainWs);
     Blockly.svgResize(secondaryWs);
   }, 100);
@@ -1321,13 +1325,14 @@ function openSecondaryWorkspace(file) {
   const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, mainWs.blockDB, secondaryWs.blockDB);
   console.log("diff output is", diff);
   const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds, ...diff.modifiedIDs]);
-  console.log("ids: ", ids);
   colorBlocks(mainWs, secondaryWs, diff);
   mainWs.addDiffHandler(secondaryWs, ids);
   mainWs.addDiffIndicator(secondaryWs, ids);
   mainWs.getDiffIndicator().updateDiffCount();
+  mainWs.scrollCenter();
   mainWs.addWorkspaceName("Original");
   secondaryWs.addWorkspaceName("Uploaded");
+  secondaryWs.scrollCenter();
 }
 
 

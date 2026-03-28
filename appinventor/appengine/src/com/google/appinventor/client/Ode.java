@@ -267,6 +267,8 @@ public class Ode implements EntryPoint {
   private DiffProjectEditor diffProjectEditor;
 
   private Map<String, ArrayBuffer> diffContents = new HashMap<>();
+
+  private Map<String, String> diffFileContents = new HashMap<>();
   
   private boolean isDeckPanelAnimating = false;
 
@@ -438,6 +440,7 @@ public class Ode implements EntryPoint {
     // screenShotMaybe() so build the runnable now
     hideChaff();
     hideTutorials();
+    inDiffView = false;
     Runnable next = new Runnable() {
         @Override
         public void run() {
@@ -596,6 +599,7 @@ public class Ode implements EntryPoint {
    * Opens the user's last project, if the information is known.
    */
   private void openPreviousProject() {
+    inDiffView = false;
     if (userSettings == null) {
       LOG.warning("Ignoring openPreviousProject() since userSettings is null");
       return;
@@ -660,15 +664,8 @@ public class Ode implements EntryPoint {
       // The project nodes have been loaded. Tell the viewer to open
       // the project. This will cause the projects source files to be fetched
       // asynchronously, and loaded into file editors.
-      LOG.info("trying to open project" + projectRootNode);
       workColumnsEditor.getViewerBox().show(projectRootNode);
       if (isInDiffView()) {
-        // UserProject fakeUserProject = new UserProject(0, "diff", YoungAndroidProjectNode.YOUNG_ANDROID_PROJECT_TYPE, System.currentTimeMillis(), false);
-        // LOG.warning("user project" + fakeUserProject);
-        // DiffProjectEditor fakeProject = projectManager.createProject(fakeUserProject);
-        // LOG.warning("fake project" + fakeProject);
-        // ProjectRootNode fakeNode = fakeProject.getRootNode();
-        // LOG.warning("fake ndoe" + fakeNode);
         DiffProjectEditor fakeEditor = new DiffProjectEditor(uiFactory);
         LOG.warning("fake editor" + fakeEditor);
         workColumnsEditor.getDiffViewerBox().show(fakeEditor);
@@ -1006,7 +1003,6 @@ public class Ode implements EntryPoint {
    * Initializes all UI elements.
    */
   private Promise<Object> initializeUi(Object result) {
-    LOG.info("try to initialize ui!");
     EDITORS.register(YoungAndroidProjectNode.class, node -> new YaProjectEditor(node, uiFactory));
     
     // workColumnsEditor.initializeUi();
@@ -1212,6 +1208,14 @@ public class Ode implements EntryPoint {
     diffContents = content;
   }
 
+  // TODO: temporary
+  public Map<String, String> getDiffFileContents() {
+    return diffFileContents;
+  }
+
+  public void setDiffFileContents(Map<String, String> content) {
+    diffFileContents = content;
+  }
 
   /**
    * Returns the structureAndAssets panel.
@@ -1230,16 +1234,6 @@ public class Ode implements EntryPoint {
     public FlowPanel getDiffStructureAndAssets() {
       return workColumnsEditor.getDiffStructureAndAssets();
   }
-
-  /**
-   * Returns the workColumns panel.
-   *
-   * @return {@link HorizontalPanel}
-   */
-  // public FlowPanel getWorkColumns() {
-  //     LOG.info("getting work columns");
-  //     return workColumnsEditor.getWorkColumns();
-  // }
 
   /**
    * Returns the design tool bar.
@@ -1326,14 +1320,9 @@ public class Ode implements EntryPoint {
       LOG.info("Setting current file editor to null");
       return;
     }
-    LOG.info("Ode: Setting current file editor to " + currentFileEditor.getFileId());
     if (currentFileEditor instanceof YaFormEditor) {
       YaFormEditor yaEditor = (YaFormEditor) currentFileEditor;
       workColumnsEditor.getSourceStructureBox().show(yaEditor.getForm());
-      if (inDiffView) {
-        YaFormEditor yaDiffEditor = (YaFormEditor) getDiffProjectEditor().getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
-        workColumnsEditor.getDiffSourceStructureBox().show(yaDiffEditor.getForm());
-      }
     }
     switchToProjectEditor();
     if (!windowClosing) {

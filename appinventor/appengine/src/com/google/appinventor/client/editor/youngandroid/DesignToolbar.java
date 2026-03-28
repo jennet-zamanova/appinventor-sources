@@ -229,11 +229,15 @@ public class DesignToolbar extends Toolbar {
     IProjectEditor projectEditor = screen.designerEditor.getProjectEditor();
     currentProject.setCurrentScreen(newScreenName);
     setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, newScreenName);
-    LOG.info("Setting currentScreen to " + newScreenName);
     // Shuffle columns first so the correct editor layout (Designer vs Blocks) is applied
     // and ViewerBox (with ProjectEditor) is in the DOM. Do not call shuffleColumns from
     // ProjectEditor.onLoad/onShow or we get a loop: add ViewerBox -> onLoad -> onShow ->
     // shuffleColumns -> clear -> re-add ViewerBox -> onLoad again.
+    currentView = view;
+    // Inform the Blockly Panel which project/screen (aka form) we are working on 
+    // otherwise in diffview the wrong workspace is used
+    BlocklyPanel.setCurrentForm(projectId + "_" + newScreenName);
+    screen.blocksEditor.makeActiveWorkspace();
     if (view == View.DESIGNER) {
       Ode.getInstance().getWorkColumnsEditor().shuffleColumns(screen.designerEditor);
       projectEditor.selectFileEditor(screen.designerEditor);
@@ -246,12 +250,9 @@ public class DesignToolbar extends Toolbar {
       // screen.blocksEditor.onShow();
       toggleEditor(true);
     }
-    currentView = view;
   
     Ode.getInstance().getTopToolbar().updateFileMenuButtons(1);
-    // Inform the Blockly Panel which project/screen (aka form) we are working on
-    BlocklyPanel.setCurrentForm(projectId + "_" + newScreenName);
-    screen.blocksEditor.makeActiveWorkspace();
+    
     projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
         SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED, newScreenName);
   }

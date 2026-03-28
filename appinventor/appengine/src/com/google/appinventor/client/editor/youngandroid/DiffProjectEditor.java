@@ -60,7 +60,6 @@ import java.util.logging.Logger;
 
 import com.google.appinventor.client.jzip.TextDecoder;
 import com.google.appinventor.client.properties.json.ClientJsonParser;
-import com.google.gwt.core.client.Scheduler;
 
 /**
  * Abstract superclass for all project editors.
@@ -142,13 +141,9 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * Currently, prepareProject loads all external components associated with project.
    */
   public void processProject() {
-    LOG.info("processing uploaded project");
     // resetExternalComponents();
     resetProjectWarnings();
-    // loadExternalComponents()
-    //     .then(this::loadProject);
     loadProject();
-    LOG.info("finished loading");
   }
 
   @Override
@@ -159,10 +154,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   private void loadProject() {
     // add form editors first, then blocks editors because the blocks editors
     // need access to their corresponding form editors to set up properly
-    LOG.info("loading project" + Ode.getInstance().getDiffRoot());
     for (ProjectNode source : Ode.getInstance().getDiffRoot().getAllSourceNodes()) {
       if (source instanceof YoungAndroidFormNode) {
-        LOG.info("entitynames in diff: " + ((YoungAndroidFormNode) source).getFormName());
         addDesigner(((YoungAndroidFormNode) source).getFormName(),
             new YaFormEditor(this, (YoungAndroidFormNode) source));
       }
@@ -217,49 +210,28 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
       editorMap.put(entityName, editors);
     }
     addFileEditorByType(newDesigner);
-    // if (!isLastOpened(entityName) && !screen1FormLoaded) {
-    //   // Defer loading other screens until Screen1 is loaded. Otherwise we can end up in an
-    //   // inconsistent state during project upgrades with Screen1-only properties.
-    //   Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-    //     @Override
-    //     public boolean execute() {
-    //       if (screen1FormLoaded) {
-    //         newDesigner.loadFile(afterLoadCommand);
-    //         return false;
-    //       } else {
-    //         return true;
-    //       }
-    //     }
-    //   }, 100);
-    // } else {
-      // final long projectId = "$diff".hashCode();
-      final String fileId = newDesigner.getFileId();
-      LOG.info("designer fileid: " + fileId);
-      // where does the setting actually happen??
-      String contents = load2(fileId);
-      // upgrade
-      JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
-        contents, new ClientJsonParser());
-      newDesigner.setPreUpgradeJsonString(propertiesObject.toJson());
-      // final FileContentHolder fileContentHolder = new FileContentHolder(contents);
-      int pos = Collections.binarySearch(fileIds, newDesigner.getFileId(),
-            getFileIdComparator());
-        if (pos < 0) {
-          pos = -pos - 1;
-        }
-        insertFileEditor(newDesigner, pos);
-        if (isLastOpened(entityName)) {
-          screen1FormLoaded = true;
-          if (readyToShowScreen1()) {
-            LOG.info("YaProjectEditor.addFormEditor.loadFile.execute: switching to screen "
-                + entityName + " for project " + newDesigner.getProjectId());
-            // switchToForm(entityName, newDesigner.getProjectId());
-          }
-        }
-        newDesigner.onFileLoaded(contents);
-        LOG.info("designer fileid: " +newDesigner.getFileId());
-        // loadBlocksEditor(entityName);
-    // }
+    // final long projectId = "$diff".hashCode();
+    final String fileId = newDesigner.getFileId();
+    // where does the setting actually happen??
+    String contents = load2(fileId);
+    // upgrade
+    JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
+      contents, new ClientJsonParser());
+    newDesigner.setPreUpgradeJsonString(propertiesObject.toJson());
+    // final FileContentHolder fileContentHolder = new FileContentHolder(contents);
+    int pos = Collections.binarySearch(fileIds, newDesigner.getFileId(), getFileIdComparator());
+    if (pos < 0) {
+      pos = -pos - 1;
+    }
+    insertFileEditor(newDesigner, pos);
+    if (isLastOpened(entityName)) {
+      screen1FormLoaded = true;
+      if (readyToShowScreen1()) {
+        LOG.info("YaProjectEditor.addFormEditor.loadFile.execute: switching to screen "
+            + entityName + " for project " + newDesigner.getProjectId());
+      }
+    }
+      newDesigner.onFileLoaded(contents);
   }
 
   private String load2(String fileId) {
@@ -301,8 +273,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
       if (readyToShowScreen1()) {
         LOG.info("YaProjectEditor.addBlocksEditor.loadFile.execute: switching to screen "
             + formName + " for project " + editor.getProjectId());
-        Ode.getInstance().getDesignToolbar().switchToScreen(editor.getProjectId(),
-            formName, DesignToolbar.View.DESIGNER);
+        // Ode.getInstance().getDesignToolbar().switchToScreen(editor.getProjectId(),
+        //     formName, DesignToolbar.View.DESIGNER);
       }
     }
   }
@@ -320,6 +292,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     String blkFileContent = load2(fileId);
     String designerJson = editorMap.get(formName).formEditor.getJson();
     newBlocksEditor.loadDiffBlocks(designerJson, blkFileContent);
+    addBlocksEditor(newBlocksEditor);
   }
 
   private boolean isLastOpened(String formName) {
@@ -501,7 +474,6 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     openFileEditors.put(fileId, fileEditor);
     fileIds.add(beforeIndex, fileId);
     deckPanel.insert(fileEditor, beforeIndex);
-    LOG.info("Inserted file editor for " + fileEditor.getFileId() + " at pos " + beforeIndex);
   }
 
   protected final void addFileEditorByType(FileEditor fileEditor) {
@@ -528,7 +500,6 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * @param fileEditor  file editor to select
    */
   public final void selectFileEditor(FileEditor fileEditor) {
-    LOG.info("select file edtor");
     int index = deckPanel.getWidgetIndex(fileEditor);
     if (index == -1) {
       if (fileEditor != null) {
@@ -552,16 +523,17 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     // in file editor add getcolumns function
     // call here and readd to workcolumns
     // then call onshow
-    selectedFileEditor.onShow();
+    // TOOD: this messes selected file editor so just removed
+    // selectedFileEditor.onShow();
   }
 
   /*
   * Returns the BlocksEditor for the given form name in this project
   */
   public BlocksEditor<?, ?> getBlocksFileEditor(String formName) {
-    if (editorMap.containsKey(formName)) {
+    if (editorMap.containsKey(formName) && loadedBlocksEditors.contains(formName)) {
       return editorMap.get(formName).blocksEditor;
-    }
+    } 
     return null;
   }
 

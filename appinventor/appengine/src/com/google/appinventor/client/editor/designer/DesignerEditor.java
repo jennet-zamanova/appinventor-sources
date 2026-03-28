@@ -251,9 +251,11 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     // TODO: SMRL Refactor links to source structure
     sourceStructureExplorer.updateTree(root.buildComponentsTree(),
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
-    SourceStructureBox.getSourceStructureBox().setVisible(true);
 
-    // todo: why palette not updated?
+    SourceStructureBox.getSourceStructureBox().setVisible(true);
+    if (projectEditor instanceof DiffProjectEditor) {
+      DiffSourceStructureBox.getSourceStructureBox().setVisible(true);
+    }
 
     // Show the assets box.
     AssetListBox assetListBox = AssetListBox.getAssetListBox();
@@ -261,7 +263,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
 
     // Set the properties box's content.
     Box propertiesBox = BoxSupplier.getPropertiesBox(projectEditor);
-    // LOG.info("got properties box: "+ propertiesBox);
     propertiesBox.setContent(designProperties);
     updatePropertiesPanel(root.getSelectedComponents(), true);
     propertiesBox.setVisible(true);
@@ -283,10 +284,12 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     // Clear and hide the source structure explorer.
     sourceStructureExplorer.clearTree();
     SourceStructureBox.getSourceStructureBox().setVisible(false);
+    if (projectEditor instanceof DiffProjectEditor) {
+      DiffSourceStructureBox.getSourceStructureBox().setVisible(false);
+    }
 
     // Clear and hide the properties box.
     Box propertiesBox = BoxSupplier.getPropertiesBox(projectEditor);
-    // LOG.info("got properties box: "+ propertiesBox);
     propertiesBox.clear();
     propertiesBox.setVisible(false);
 
@@ -387,9 +390,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       } else {
         SourceStructureBox.getSourceStructureBox().show(root);
       }
-      // TODO(ZAMANOVA): how to show for diff as well?
-      // YaFormEditor yaDiffEditor = (YaFormEditor) getDiffProjectEditor().getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
-      // workColumnsEditor.getDiffSourceStructureBox().show(yaDiffEditor.getForm());
 
       // Show the component properties in the properties panel.
       updatePropertiesPanel(root.getSelectedComponents(), selected);
@@ -518,7 +518,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
    * Show the given component's properties in the properties panel.
    */
   protected void updatePropertiesPanel(List<MockComponent> components, boolean selected) {
-    LOG.warning("projectedtior type: " + (projectEditor instanceof ProjectEditor) + (projectEditor instanceof DiffProjectEditor));
     if (Ode.getInstance().isInDiffView()) {
       updateDiffPropertiesPanel(components, selected);
       return;
@@ -606,19 +605,13 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       designProperties.setPropertiesCaption(components.get(0).getName());
     }
     BoxSupplier.getPropertiesBox(projectEditor).setContent(designProperties);
-    // LOG.info("got properties box: "+ PropertiesBoxSupplier.getPropertiesBox(projectEditor));
   }
 
   protected void updateDiffPropertiesPanel(List<MockComponent> components, boolean selected) {
-    LOG.warning("called update diff properties panel" + components);
     String allUpdatedIds = Ode.getInstance().getUpdatedIds();
     List<MockComponent> filteredComponents = components.stream()
                                           .filter(c -> allUpdatedIds.contains(c.getUuid()))
                                           .collect(Collectors.toList());
-    // if (filteredComponents == null || filteredComponents.size() == 0) {
-    // LOG.warning("got filtered components" + filteredComponents + "from components: " + components);
-    //   return;
-    // }
     if (selectedProperties != null) {
       selectedProperties.removePropertyChangeListener(this);
     }
@@ -647,7 +640,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         } 
         for (EditableProperty property : component.getProperties()) {
           String propertyName = property.getName();
-          LOG.warning("prop: " + propertyName + "available properties: " + attributes);
           // Ignore UUID and NAME properties (can't be edited and always unique)
           if ("Uuid".equals(propertyName) || "Name".equals(propertyName) || !attributes.contains(propertyName)) {
             continue;
@@ -666,7 +658,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       for (EditableProperty property : propertyMaps.values()) {
         PropertyEditor editor = property.getEditor();
         editor.addStyleName("ode-Property-Moved");
-        LOG.info("editor: " + editor + "editor name" + editor.getStyleName());
         String name = property.getName();
         newProperties.addProperty(
             name,
@@ -698,7 +689,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       }
       selectedProperties = newProperties;
     }
-    LOG.info("left the loops");
     if (selected) {
       selectedProperties.addPropertyChangeListener(this);
     }
@@ -709,7 +699,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         property.getEditor().refresh();
       }
     }
-    // LOG.info("setting diff designer properties" + projectEditor);
     designProperties.setDiffProperties(selectedProperties);
     if (filteredComponents.size() == 1) {
       
@@ -723,7 +712,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       designProperties.setPropertiesCaption("no properties changed for this component");
 
     }
-    // LOG.info("got properties box: "+ projectEditor);
     BoxSupplier.getPropertiesBox(projectEditor).setContent(designProperties);
   }
 
