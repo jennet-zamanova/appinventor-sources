@@ -1,0 +1,12 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:box="urn:import:com.google.appinventor.client.boxes"
+             ui:generatedFormat="com.google.gwt.i18n.server.PropertyCatalogFactory"
+             ui:generatedKeys="com.google.gwt.i18n.server.keygen.MethodNameKeyGenerator"
+             ui:generateLocales="default">
+  <ui:with field="messages" type="com.google.appinventor.client.OdeMessages" />
+  <g:FlowPanel>
+    <box:SourceStructureBox ui:field="sourceStructureBox" height="50%"/> 
+    <box:PropertiesBox ui:field="propertiesBox" height="50%" />
+  </g:FlowPanel>
+</ui:UiBinder>

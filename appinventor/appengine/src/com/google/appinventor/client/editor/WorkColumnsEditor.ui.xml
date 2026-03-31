@@ -18,16 +18,17 @@
           <box:BlockSelectorBox ui:field="blockSelectorBox"/>
           <box:AssetListBox  ui:field="assetListBox" />
         </g:FlowPanel>
+        <w:CombinedStructurePropertiesBox ui:field="combinedDiffBox" visible="false"/>
         <box:PropertiesBox ui:field="propertiesBox" width="222px" />
         <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
       </g:FlowPanel>
       <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns" visible="false">
         <box:DiffViewerBox ui:field="diffViewerBox" />
         <g:FlowPanel ui:field="diffStructureAndAssets">
-          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" styleName="ode-diff"/>
+          <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" styleName="ode-Box diff-Split-Props"/>
           <box:DiffAssetListBox  ui:field="diffAssetListBox" visible="false"/>
+          <box:DiffPropertiesBox ui:field="diffPropertiesBox"  width="222px"/>
         </g:FlowPanel>
-        <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
       </g:FlowPanel>
     </g:FlowPanel>
   </g:FlowPanel>

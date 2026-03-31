@@ -21,6 +21,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.dom.client.Element;
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.editor.FileEditor;
+import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 // import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.shared.rpc.project.Project;

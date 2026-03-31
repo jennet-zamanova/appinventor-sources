@@ -13,6 +13,9 @@ import com.google.appinventor.client.boxes.BlockSelectorBox;
 import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.simple.components.MockComponent;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.settings.Settings;
 import com.google.appinventor.client.settings.project.ProjectSettings;
@@ -152,6 +155,14 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
       screenCheckboxMap += screen + ":" + isCheckedString + separator;
     }
     return screenCheckboxMap;
+  }
+
+  public void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor, MockComponent component, boolean selected) {
+    if (Ode.getInstance().isInDiffView()) {
+      DiffProjectEditor dpe = Ode.getInstance().getDiffProjectEditor();
+      DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) dpe.getFileEditor(designerEditor.getEntityName(), designerEditor.getEditorType());
+      de.changeComponentSelection(component.getUuid(), selected);
+    }
   }
 
   public final void buildScreenHashMap() {

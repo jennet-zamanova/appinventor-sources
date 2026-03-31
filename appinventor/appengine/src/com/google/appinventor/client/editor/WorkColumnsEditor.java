@@ -56,6 +56,8 @@ public class WorkColumnsEditor extends Composite {
     protected BlockSelectorBox blockSelectorBox; // do not show in diff mode
     @UiField(provided = true)
     protected PropertiesBox propertiesBox; //done, done
+    @UiField(provided = true)
+    protected CombinedStructurePropertiesBox combinedDiffBox;
 
     @UiField
     protected FlowPanel diffWorkColumns;  //done
@@ -98,6 +100,7 @@ public class WorkColumnsEditor extends Composite {
         viewerBox = ViewerBox.getViewerBox(); //done
         assetListBox = AssetListBox.getAssetListBox(); //done
         propertiesBox = PropertiesBox.getPropertiesBox();
+        combinedDiffBox = CombinedStructurePropertiesBox.get(); //only used if in diff
 
         
         diffViewerBox = DiffViewerBox.getViewerBox(); //done
@@ -252,6 +255,16 @@ public class WorkColumnsEditor extends Composite {
                 diffSourceStructureBox.show(yaDiffEditor.getForm());
                 // load project???
                 diffViewerBox.show(projectEditor);
+                sourceStructureBox.addStyleName("diff-Split-Props");
+                propertiesBox.addStyleName("diff-Split-Props");
+                viewerBox.setCaption("Original Viewer");
+                propertiesBox.setCaption("Original Properties");
+                // .ode-SourceScrollPanel
+            } else {
+                sourceStructureBox.removeStyleName("diff-Split-Props");
+                propertiesBox.removeStyleName("diff-Split-Props");
+                viewerBox.setCaption("Viewer");
+                propertiesBox.setCaption("Properties");
             }
         } else if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS && Ode.getInstance().isInDiffView() && fileEditor instanceof YaBlocksEditor) {
             YaBlocksEditor yaEditor = (YaBlocksEditor) fileEditor;
@@ -263,7 +276,8 @@ public class WorkColumnsEditor extends Composite {
                   WorkColumnsEditor.openSecondaryWorkspace(content);
                   return;
                 }
-              }
+            }
+            viewerBox.setCaption("Viewer");
         }
     }
 

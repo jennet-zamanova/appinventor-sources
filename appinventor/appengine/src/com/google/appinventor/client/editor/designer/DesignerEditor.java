@@ -19,6 +19,7 @@ import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.CombinedStructurePropertiesBox;
 import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
@@ -382,6 +383,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     if (loadComplete) {
       // TODO: SMRL Not sure this class should keep a pointer to source structure
       // Select the item in the source structure explorer.
+      projectEditor.updateRelevantComponentSelectionChange(this, component, selected);
       sourceStructureExplorer.selectItem(component.getSourceStructureExplorerItem());
       // TODO: make supplier for structurebox manage typing properly
       // Box sourceStructureBox = BoxSupplier.getSourceStructureBox(projectEditor).show(root);
@@ -396,7 +398,32 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
     } else {
       LOG.severe("onComponentSelectionChange called when loadComplete is false");
     }
+  }
 
+  public void changeComponentSelection(String componentUuid, boolean selected) {
+    if (loadComplete) {
+      MockComponent[] components = new MockComponent[1];
+      getComponentByUuid(root.asMockComponent(), componentUuid, components);
+      if (root.getLastSelectedComponent() != components[0] && components[0] != null && selected) {
+        root.setSelectedComponent(components[0], null);
+      }
+    } else {
+      LOG.severe("onComponentSelectionChange called when loadComplete is false");
+    }
+  }
+
+  public void getComponentByUuid(MockComponent component, String uuid, MockComponent[] res) {
+    if (loadComplete) {
+      if (component.getUuid() == uuid) {
+        res[0] = component;
+        return;
+      }
+      List<MockComponent> children = component.getChildren();
+      for (MockComponent child : children) {
+        getComponentByUuid(child, uuid, res);
+      }
+    }
+    return;
   }
 
   // SimpleEditor implementation
@@ -1115,7 +1142,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
 
   public Widget[] getWidgetsInRightOrder() {
     if (Ode.getInstance().isInDiffView()) {
-      return new Widget[]{ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox(), DiffViewerBox.getViewerBox(), Ode.getInstance().getDiffStructureAndAssets(), DiffPropertiesBox.getPropertiesBox()};
+      return new Widget[]{ViewerBox.getViewerBox(), CombinedStructurePropertiesBox.get(), Ode.getInstance().getDiffStructureAndAssets(), DiffViewerBox.getViewerBox(),};
     }
     return new Widget[]{PaletteBox.getPaletteBox(), ViewerBox.getViewerBox(), Ode.getInstance().getStructureAndAssets(), PropertiesBox.getPropertiesBox()};
   }

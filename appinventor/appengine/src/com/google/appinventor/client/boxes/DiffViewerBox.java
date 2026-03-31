@@ -40,11 +40,11 @@ public class DiffViewerBox extends Box {
    * Creates new empty viewer box.
    */
   private DiffViewerBox() {
-    super(MESSAGES.viewerBoxCaption(),
+    super("Uploaded " + MESSAGES.viewerBoxCaption(),
         600,    // height
         false,  // minimizable
         false); // removable
-    addStyleName("DiffViewerBox");
+    addStyleName("ViewerBox");
   }
 
   /**
@@ -57,7 +57,7 @@ public class DiffViewerBox extends Box {
     // SOMETHING FAILS WHEN THIS LINE IS RUN
     setContent(projectEditor.asWidget());
     ((DiffProjectEditor) projectEditor).addStyleName("diff-editor");
-    FileEditor toShow = ((DiffProjectEditor) projectEditor).getFileEditor(Ode.getInstance().getCurrentFileEditor().getFileId());
+    FileEditor toShow = ((DiffProjectEditor) projectEditor).getFileEditor(Ode.getInstance().getCurrentFileEditor().getEntityName(), Ode.getInstance().getCurrentFileEditor().getEditorType());
     if (toShow != null) {
       ((DiffProjectEditor) projectEditor).selectFileEditor(toShow);
     } else {

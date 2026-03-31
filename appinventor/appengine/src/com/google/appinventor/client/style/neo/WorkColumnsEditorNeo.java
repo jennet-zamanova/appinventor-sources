@@ -5,6 +5,7 @@
 
 package com.google.appinventor.client.style.neo;
 
+import com.google.appinventor.client.editor.CombinedStructurePropertiesBox;
 import com.google.appinventor.client.editor.WorkColumnsEditor;
 import com.google.appinventor.client.boxes.AssetListBox;
 import com.google.appinventor.client.boxes.BlockSelectorBox;
@@ -48,6 +49,8 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
   protected BlockSelectorBox blockSelectorBox;
   @UiField(provided = true)
   protected PropertiesBox propertiesBox = PropertiesBox.getPropertiesBox();
+  @UiField(provided = true)
+  protected CombinedStructurePropertiesBox combinedDiffBox;
 
   @UiField
   protected FlowPanel diffWorkColumns;  //done
@@ -92,6 +95,7 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
     sourceStructureBox = SourceStructureBox.getSourceStructureBox();
     blockSelectorBox = BlockSelectorBox.getBlockSelectorBox();
     propertiesBox = PropertiesBox.getPropertiesBox();
+    combinedDiffBox = CombinedStructurePropertiesBox.get(); //only used if in diff
 
     diffSourceStructureBox = DiffSourceStructureBox.getSourceStructureBox();
     diffViewerBox = DiffViewerBox.getViewerBox(); //done
@@ -111,6 +115,7 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
     super.structureAndAssets = structureAndAssets;
     super.consolePanel = consolePanel;
     super.designToolbar = designToolbar;
+    super.combinedDiffBox = combinedDiffBox;
     super.paletteBox = paletteBox;
     super.viewerBox = viewerBox;
     super.assetListBox = assetListBox;

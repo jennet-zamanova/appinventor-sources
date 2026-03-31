@@ -5,6 +5,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:ed="urn:import:com.google.appinventor.client.editor.youngandroid"
+             xmlns:w="urn:import:com.google.appinventor.client.editor"
              xmlns:neo="urn:import:com.google.appinventor.client.style.neo"
              xmlns:box="urn:import:com.google.appinventor.client.boxes"
              ui:generatedFormat="com.google.gwt.i18n.server.PropertyCatalogFactory"
@@ -25,19 +26,20 @@
             <box:AssetListBox  ui:field="assetListBox" />
           </g:FlowPanel>
         </g:FlowPanel>
+        <w:CombinedStructurePropertiesBox ui:field="combinedDiffBox" visible="false"/>
         <box:PropertiesBox ui:field="propertiesBox"  styleName="ode-Designer-RightColumns" />
         <ed:ConsolePanel ui:field="consolePanel" height="100%" visible="false" />
       </g:FlowPanel>
-      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns">
+      <g:FlowPanel ui:field="diffWorkColumns" styleName="ode-WorkColumns" visible="false">
         <box:DiffViewerBox ui:field="diffViewerBox" />
         <g:FlowPanel ui:field="diffStructureAndAssets" styleName="ode-Designer-RightColumns">
           <box:DiffSourceStructureBox ui:field="diffSourceStructureBox" />
-          <g:FlowPanel>
+          <g:FlowPanel visible="false">
             <g:Label text="{messages.assetListBoxCaption}" styleName="ode-AssetsTitle" />
             <box:DiffAssetListBox  ui:field="diffAssetListBox" />
           </g:FlowPanel>
+           <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
         </g:FlowPanel>
-        <box:DiffPropertiesBox ui:field="diffPropertiesBox" width="222px" />
       </g:FlowPanel>
     </g:FlowPanel>
   </g:FlowPanel>

@@ -1229,6 +1229,7 @@ div.StatusPanel {
 
 .ode-PropertiesPanel {
   background-color: #f7f9f2;
+  padding-bottom: 5px;
 }
 
 .ode-PropertiesPanel td {
@@ -3586,4 +3587,9 @@ div.dropdiv p {
 #aiConsolePanel .Error {
   color: red;
   font-weight: bolder;
+}
+
+.diff-Split-Props {
+  flex: 1 1 50%;
+  overflow: auto;
 }

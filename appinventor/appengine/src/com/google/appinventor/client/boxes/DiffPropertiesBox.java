@@ -56,7 +56,7 @@ public final class DiffPropertiesBox extends Box {
    * Creates new properties box.
    */
   private DiffPropertiesBox() {
-    super(MESSAGES.propertiesBoxCaption(),
+    super("Uploaded " + MESSAGES.propertiesBoxCaption(),
         200,    // height
         false,  // minimizable
         false,  // removable

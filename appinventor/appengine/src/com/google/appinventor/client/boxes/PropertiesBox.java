@@ -70,7 +70,6 @@ public final class PropertiesBox extends Box {
    * Show the given component's properties in the properties panel.
    */
   public void show(YaFormEditor formEditor, boolean selected) {
-    LOG.info("called show from somehwre");
     MockForm form = formEditor.getForm();
     List<MockComponent> components = form.getSelectedComponents();
     if (components == null || components.size() == 0) {

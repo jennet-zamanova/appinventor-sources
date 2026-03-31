@@ -9,6 +9,7 @@ package com.google.appinventor.client.editor;
 import com.google.appinventor.client.UiStyleFactory;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.simple.components.MockComponent;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -41,6 +42,8 @@ public interface IProjectEditor {
   DesignerEditor<?, ?, ?, ?, ?> getFormFileEditor(String formName);
 
   void onSave(String fileId);
+
+  void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor, MockComponent component, boolean selected);
   // void onLoad();
   // void onUnload();
 } 

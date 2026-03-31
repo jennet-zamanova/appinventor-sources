@@ -19,8 +19,10 @@ import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.ViewerBox;
 import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.IProjectEditor;
+import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.simple.components.MockComponent;
 import com.google.appinventor.client.editor.simple.components.MockFusionTablesControl;
 import com.google.appinventor.client.explorer.project.Project;
 import com.google.appinventor.client.settings.Settings;
@@ -150,6 +152,13 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   public Widget asWidget() {
     return this;
   }
+
+  public void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor, MockComponent component, boolean selected) {
+    ProjectEditor pe = Ode.getCurrentProjectEditor();
+    DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) pe.getFileEditor(designerEditor.getEntityName(), designerEditor.getEditorType());
+    de.changeComponentSelection(component.getUuid(), selected);
+  }
+
 
   private void loadProject() {
     // add form editors first, then blocks editors because the blocks editors

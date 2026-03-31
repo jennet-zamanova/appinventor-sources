@@ -48,6 +48,10 @@
       <ca:SendToGalleryAction/>
     </ai:ToolbarItem>
 
+    <ai:ToolbarItem name="diff" caption="Compare Projects"
+                    ui:field="switchToDiff" align="right">
+      <ya:SwitchToDiffAction />
+    </ai:ToolbarItem>
     <ai:ToolbarItem name="ToggleConsole" icon="view_sidebar" 
                     ui:field="toggleConsoleItem" align="right" styleName="ode-ProjectListButton bleft primary">
       <ya:ToggleConsoleAction/>
@@ -60,10 +64,6 @@
     <ai:ToolbarItem name="switchToBlocks" caption="{messages.switchToBlocksEditorButton}"
                     ui:field="switchToBlocks" align="right" styleName="ode-ProjectListButton bright primary">
       <ya:SwitchToBlocksEditorAction/>
-    </ai:ToolbarItem>
-    <ai:ToolbarItem name="diff" caption="Diff Blocks"
-                    ui:field="switchToDiff" align="right">
-      <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
   </ai:Toolbar>
 </ui:UiBinder>
