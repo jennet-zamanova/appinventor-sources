@@ -902,6 +902,22 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     return itemNode;
   }
 
+  protected TreeItem buildTree(String mod) {
+    // Instantiate new tree item for this component
+    // Note: We create a ClippedImagePrototype because we need something that can be
+    // used to get HTML for the iconImage. AbstractImagePrototype requires
+    // an ImageResource, which we don't necessarily have.
+    TreeItem itemNode = new TreeItem(
+        new HTML("<span>" + mod + iconImage.getElement().getString() + SafeHtmlUtils.htmlEscapeAllowEntities(getName()) + "</span>")) {
+      @Override
+      protected Focusable getFocusable() {
+        return nullFocusable;
+      }
+    };
+    itemNode.setUserObject(sourceStructureExplorerItem);
+    return itemNode;
+  }
+
   public void color(String colorClass) {
     // LOG.info("coloring item");
     this.addStyleName(colorClass);

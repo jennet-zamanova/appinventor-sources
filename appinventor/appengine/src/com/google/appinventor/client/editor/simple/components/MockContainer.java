@@ -146,9 +146,30 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
     itemNode.setVisible(view != 3 || isForm());
 
     // Recursively build the tree for child components
-    // LOG.info("ids: " + ids);
+    // TODO: figure out a way to be color-blind friendly
     for (MockComponent child : children) {
-      TreeItem childNode = child.buildTree();
+      TreeItem childNode;
+      if (newIds.contains(child.getUuid())) {
+        childNode = child.buildTree();
+        childNode.addStyleName("gwt-TreeItem-added");
+        child.color("gwt-TreeItem-added");
+      } else if (deletedIds.contains(child.getUuid())) {
+        childNode = child.buildTree();
+        childNode.addStyleName("gwt-TreeItem-deleted");
+        child.color("gwt-TreeItem-deleted");
+      } else if (movedIds.contains(child.getUuid())) {
+        childNode = child.buildTree();
+        childNode.addStyleName("gwt-TreeItem-moved");
+        child.color("gwt-TreeItem-moved");
+      } else if (updatedIds.contains(child.getUuid())) {
+        childNode = child.buildTree();
+        childNode.addStyleName("gwt-TreeItem-updated");
+        child.color("gwt-TreeItem-updated");
+      } else {
+        childNode = child.buildTree();
+        LOG.info("did not change");
+      }
+      
       boolean isVisible = true;
       if (view == 2 && child instanceof MockNonVisibleComponent) {
         isVisible = false;
@@ -157,23 +178,7 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       }
       // LOG.info("called build colored tree");
       childNode.setVisible(isVisible);
-      
-      // LOG.info("child uuid: " + child.getUuid());
-      if (newIds.contains(child.getUuid())) {
-        childNode.addStyleName("gwt-TreeItem-added");
-        child.color("gwt-TreeItem-added");
-      } else if (deletedIds.contains(child.getUuid())) {
-        childNode.addStyleName("gwt-TreeItem-deleted");
-        child.color("gwt-TreeItem-deleted");
-      } else if (movedIds.contains(child.getUuid())) {
-        childNode.addStyleName("gwt-TreeItem-moved");
-        child.color("gwt-TreeItem-moved");
-      } else if (updatedIds.contains(child.getUuid())) {
-        childNode.addStyleName("gwt-TreeItem-updated");
-        child.color("gwt-TreeItem-updated");
-      } else {
-        LOG.info("did not change");
-      }
+            
       // childNode.setStyleName("gwt-TreeItem-deleted");
       itemNode.addItem(childNode);
     }
