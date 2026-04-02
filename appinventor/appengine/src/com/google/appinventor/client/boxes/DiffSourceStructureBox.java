@@ -62,7 +62,6 @@ public class DiffSourceStructureBox extends Box implements ISourceStructureBox {
    * @param root current form
    */
   public void show(DesignerRootComponent root) {
-    LOG.warning("called show on diff ssb");
     getSourceStructureExplorer().updateTree(root.buildComponentsTree(),
         root.getLastSelectedComponent().getSourceStructureExplorerItem());
     getSourceStructureBox().setVisible(true);

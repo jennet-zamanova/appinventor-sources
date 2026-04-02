@@ -33,19 +33,15 @@ public final class BoxSupplier {
 
   public static Box getPropertiesBox(IProjectEditor projectEditor) {
     if (projectEditor instanceof DiffProjectEditor) {
-      LOG.warning("BoxSupplier: returning DiffPropertiesBox for diff view");
       return DIFF_PROPERTIES_BOX;
     }
-    LOG.warning("BoxSupplier: returning PropertiesBox for regular view");
     return PROPERTIES_BOX;
   }
 
   public static Box getSourceStructureBox(IProjectEditor projectEditor) {
     if (projectEditor instanceof DiffProjectEditor) {
-      LOG.warning("BoxSupplier: returning DiffSourceStructureBox for diff view");
       return DIFF_SOURCE_STRUCTURE_BOX;
     }
-    LOG.warning("BoxSupplier: returning SourceStructureBox for regular view");
     return STRUCTURE_BOX;
   }
 

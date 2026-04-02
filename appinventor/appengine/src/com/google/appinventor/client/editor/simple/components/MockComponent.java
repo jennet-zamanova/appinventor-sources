@@ -18,6 +18,7 @@ import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
 import com.google.appinventor.client.editor.simple.components.utils.PropertiesUtil;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.explorer.SourceStructureExplorerItem;
 import com.google.appinventor.client.explorer.project.Project;
@@ -82,6 +83,7 @@ import com.google.gwt.user.client.ui.SourcesMouseEvents;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -961,6 +963,14 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
           return asset;
         }
       }
+    } else if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+      // project being compared to is only available locally
+      HasAssetsFolder<YoungAndroidAssetsFolder> hasAssetsFolder = Ode.getInstance().getDiffRoot();
+      for (ProjectNode asset : hasAssetsFolder.getAssetsFolder().getChildren()) {
+        if (asset.getName().equals(name)) {
+          return asset;
+        }
+      }
     }
     return null;
   }
@@ -974,11 +984,24 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     if (text.length() > 0) {
       ProjectNode asset = getAssetNode(text);
       if (asset != null) {
-        return StorageUtil.getFileUrl(asset.getProjectId(), asset.getFileId());
+        if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+          ArrayBuffer blob = Ode.getInstance().getDiffContents().get("$diff:"+asset.getFileId());
+          if (blob != null) {
+            return createObjectURL(blob);
+          }
+        } else {
+          return StorageUtil.getFileUrl(asset.getProjectId(), asset.getFileId());
+        }
       }
     }
     return null;
   }
+
+  private static native String createObjectURL(ArrayBuffer javaRawData) /*-{
+    var arrayBufferView = new Uint8Array(javaRawData);
+    var blob = new Blob([arrayBufferView], { type: 'image/png' });
+    return URL.createObjectURL(blob);
+  }-*/;
 
   /**
    * Invoked by GWT whenever a browser event is dispatched to this component.
