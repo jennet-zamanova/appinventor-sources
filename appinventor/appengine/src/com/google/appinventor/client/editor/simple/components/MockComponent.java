@@ -1184,11 +1184,21 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
   }
 
   int getWidthHint() {
-    return Integer.parseInt(getPropertyValue(MockVisibleComponent.PROPERTY_NAME_WIDTH));
+    try {
+      return Integer.parseInt(getPropertyValue(MockVisibleComponent.PROPERTY_NAME_WIDTH));
+    } catch (IllegalStateException e) {
+      LOG.warning("wrong prop: " + e);
+      return 320;
+    }
   }
 
   int getHeightHint() {
-    return Integer.parseInt(getPropertyValue(MockVisibleComponent.PROPERTY_NAME_HEIGHT));
+    try {
+      return Integer.parseInt(getPropertyValue(MockVisibleComponent.PROPERTY_NAME_HEIGHT));
+    } catch (IllegalStateException e) {
+      LOG.warning("wrong prop: " + e);
+      return getPreferredHeight();
+    }
   }
 
   /**

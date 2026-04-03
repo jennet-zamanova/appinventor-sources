@@ -251,9 +251,13 @@ public class WorkColumnsEditor extends Composite {
             if (Ode.getInstance().isInDiffView()) {
                 DiffProjectEditor projectEditor = Ode.getInstance().getDiffProjectEditor();
                 YaFormEditor yaDiffEditor = (YaFormEditor) projectEditor.getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
-                yaDiffEditor.refreshCurrentPropertiesPanel();
-                diffSourceStructureBox.show(yaDiffEditor.getForm());
-                // load project???
+                if (yaDiffEditor != null) {
+                    yaDiffEditor.refreshCurrentPropertiesPanel();
+                    diffSourceStructureBox.show(yaDiffEditor.getForm());
+                    // load project???
+                } else {
+                    LOG.warning("there is no fileeditor matching name and type " + yaEditor.getEntityName() + yaEditor.getEditorType());
+                }
                 diffViewerBox.show(projectEditor);
                 sourceStructureBox.addStyleName("diff-Split-Props");
                 propertiesBox.addStyleName("diff-Split-Props");
