@@ -24,5 +24,8 @@ Blockly.PROCEDURE_CATEGORY_HUE = "#7C5385";  // [124, 83, 133]
 Blockly.DICTIONARY_CATEGORY_HUE = "#2D1799"; // [45, 23, 153]
 Blockly.BLOCK_REMOVED_HUE = "#cd9999"; // [205, 153, 153] Light red for removed blocks
 Blockly.BLOCK_ADDED_HUE = "#77a277"; // [153, 205, 153] Light green for added blocks
-Blockly.BLOCK_MOVED_ADDED_HUE = "#3770d3"; // [153, 153, 205] Light blue for changed blocks
-Blockly.BLOCK_MOVED_REMOVED_HUE = "#e7e0ab";
+Blockly.BLOCK_MOVED_HUE = "#26529e"; // [153, 153, 205] Light blue for changed blocks
+Blockly.BLOCK_MODIFIED_HUE = "#e8d43c";
+Blockly.BLOCK_GREY_OUT = "#777777";
+
+// #93267c

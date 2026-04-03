@@ -494,14 +494,6 @@ public abstract class BlocksEditor<S extends SourceNode, T extends DesignerEdito
     }
   }
 
-  // TODO: implement diffing functionality in BlocksEditor.java
-  @Override
-  public void diff(){
-    String v1 = blocksArea.getBlocksContent();
-    String v2 = "v2.xml";
-    blocksArea.showDiff(v1, v2);
-  }
-
   private static native void set(JavaScriptObject jso, String key, String value)/*-{
     jso[key] = value;
   }-*/;

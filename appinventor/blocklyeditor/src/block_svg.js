@@ -44,7 +44,13 @@ Blockly.BlockSvg.prototype.deletedBlock = null;
  * Block's addedBlock icon (if any).
  * @type {AI.DiffIcon}
  */
-Blockly.BlockSvg.prototype.diffBlock = null;
+Blockly.BlockSvg.prototype.movedBlock = null;
+
+/**
+ * Block's addedBlock icon (if any).
+ * @type {AI.DiffIcon}
+ */
+Blockly.BlockSvg.prototype.modifiedBlock = null;
 
 /**
  * Flag to indicate a bad block.
@@ -159,9 +165,32 @@ Blockly.BlockSvg.prototype.setModifiedBlockIcon = function() {
   if (this.isDeadOrDying()) {
     return;  // do not process diffs if the block is being destroyed
   }
-  if (!this.diffBlock) {
-      this.diffBlock = new AI.DiffIcon(this);
-      this.addIcon(this.diffBlock);
+  if (!this.modifiedBlock) {
+      this.modifiedBlock = new AI.DiffIcon(this);
+      this.addIcon(this.modifiedBlock);
+    }
+  if (this.rendered) {
+    // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
+    // for specificity
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'diffBlock');
+    this.workspace.requestRender(this);
+  }
+};
+
+/**
+ * Add this block's move icon.
+ */
+Blockly.BlockSvg.prototype.setMovedBlockIcon = function() {
+  if (!AI.DiffIcon) {
+    throw 'Diffs not supported.';
+  }
+  if (this.isDeadOrDying()) {
+    return;  // do not process diffs if the block is being destroyed
+  }
+  if (!this.movedBlock) {
+      this.movedBlock = new AI.DiffIcon(this);
+      this.addIcon(this.movedBlock);
     }
   if (this.rendered) {
     // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
@@ -181,7 +210,10 @@ Blockly.BlockSvg.prototype.highlightDiff = function() {
   } else if (this.deletedBlock) {
     Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
                            'deletedBlock');
-  } else if (this.diffBlock) {
+  } else if (this.movedBlock) {
+    Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
+                           'movedBlock');
+  } else if (this.modifiedBlock) {
     Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
                            'modifiedBlock');
   }
@@ -195,14 +227,18 @@ Blockly.BlockSvg.prototype.unhighlightDiff = function() {
   if (Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
     'addedBlock') || Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
     'deletedBlock') || Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
-    'modifiedBlock')) {
+    'modifiedBlock') || Blockly.utils.dom.hasClass(/** @type {!Element} */ (this.svgGroup_),
+    'movedBlock')) {
     if (this.addedBlock) {
       Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
                             'addedBlock');
     } else if (this.deletedBlock) {
       Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
                             'deletedBlock');
-    } else if (this.diffBlock) {
+    } else if (this.movedBlock) {
+      Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
+                            'movedBlock');
+    } else if (this.modifiedBlock) {
       Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
                             'modifiedBlock');
     }

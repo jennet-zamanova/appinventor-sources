@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -145,30 +146,38 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
     //in such a case, we need only the form's treeItem because all non-visible components are attached to it
     itemNode.setVisible(view != 3 || isForm());
 
+    if (isForm()) {
+      String style = "unchanged";
+      if (Arrays.asList(movedIds.split(",")).contains(this.getUuid())) {
+         style = "moved";
+      } else if (Arrays.asList(updatedIds.split(",")).contains(this.getUuid())) {
+        style = "updated";
+      } else {
+        LOG.info("did not change");
+      }
+      itemNode.addStyleName("gwt-TreeItem-"+style);
+      this.color("gwt-TreeItem-"+style);
+    }
+
     // Recursively build the tree for child components
     // TODO: figure out a way to be color-blind friendly
     for (MockComponent child : children) {
-      TreeItem childNode;
+      TreeItem childNode = child.buildTree();
+      String style = "unchanged";
       if (newIds.contains(child.getUuid())) {
-        childNode = child.buildTree();
-        childNode.addStyleName("gwt-TreeItem-added");
-        child.color("gwt-TreeItem-added");
+        style = "added";
       } else if (deletedIds.contains(child.getUuid())) {
-        childNode = child.buildTree();
-        childNode.addStyleName("gwt-TreeItem-deleted");
-        child.color("gwt-TreeItem-deleted");
+         style = "deleted";
       } else if (movedIds.contains(child.getUuid())) {
-        childNode = child.buildTree();
-        childNode.addStyleName("gwt-TreeItem-moved");
-        child.color("gwt-TreeItem-moved");
+         style = "moved";
       } else if (updatedIds.contains(child.getUuid())) {
-        childNode = child.buildTree();
-        childNode.addStyleName("gwt-TreeItem-updated");
-        child.color("gwt-TreeItem-updated");
+        style = "updated";
       } else {
-        childNode = child.buildTree();
         LOG.info("did not change");
       }
+
+      childNode.addStyleName("gwt-TreeItem-"+style);
+      child.color("gwt-TreeItem-"+style);
       
       boolean isVisible = true;
       if (view == 2 && child instanceof MockNonVisibleComponent) {

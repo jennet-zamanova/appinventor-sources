@@ -256,10 +256,10 @@
   fill: #000;
 }
 
-.diffBlock.blocklySelected.modifiedBlock>.blocklyPath {
+.diffBlock.blocklySelected.movedBlock>.blocklyPath {
   stroke-width: 4px;
-  stroke: rgb(33 68 128);
-  filter: brightness(1.4);
+  stroke: rgb(17 37 70);
+  filter: brightness(1.8);
 }
 
 .diffBlock.blocklySelected.addedBlock>.blocklyPath {
@@ -268,18 +268,28 @@
   filter: brightness(1.35);
 }
 
+.diffBlock.blocklySelected.modifiedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #b9a930;
+  filter: brightness(1.2);
+}
+
 .diffBlock.blocklySelected.deletedBlock>.blocklyPath {
   stroke-width: 4px;
   stroke: #ff0000;
   filter: brightness(1.2);
 }
 
-.diffBlock.blocklySelected.modifiedBlock>g>.blocklyText {
-  fill: white;
+.diffBlock.blocklySelected.movedBlock>g>.blocklyText {
+  fill: rgb(44 44 44);
 }
 
 .diffBlock.blocklySelected.addedBlock>g>.blocklyText {
   fill: rgb(101, 101, 101);
+}
+
+.diffBlock.blocklySelected.modifiedBlock>g>.blocklyText {
+  fill: rgb(44 44 44);
 }
 
 .diffBlock.blocklySelected.deletedBlock>g>.blocklyText {

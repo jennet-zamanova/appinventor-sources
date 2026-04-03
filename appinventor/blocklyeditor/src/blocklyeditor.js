@@ -1337,12 +1337,39 @@ function openSecondaryWorkspace(file) {
 
 
 function colorBlocks(mainWorkspace, secondaryWorkspace, diff) {
-  colorMovedBlocks(mainWorkspace, diff.movedIds.union(diff.modifiedIDs));
-  colorMovedBlocks(secondaryWorkspace, diff.movedIds.union(diff.modifiedIDs));
+  greyOutBlocks(mainWorkspace);
+  greyOutBlocks(secondaryWorkspace);
+
+  colorModifiedBlocks(mainWorkspace, diff.modifiedIDs);
+  colorModifiedBlocks(secondaryWorkspace, diff.modifiedIDs);
+
+  colorMovedBlocks(mainWorkspace, diff.movedIds);
+  colorMovedBlocks(secondaryWorkspace, diff.movedIds);
 
   colorAddedBlocks(secondaryWorkspace, diff.newIds);
   colorDeletedBlocks(mainWorkspace, diff.removedIds);
 }
+
+function greyOutBlocks(workspace) {
+  for (const block of workspace.getAllBlocks()) {
+    block.setColour(Blockly.BLOCK_GREY_OUT);
+    block.initSvg();
+    workspace.requestRender(block);
+  }
+}
+
+function colorModifiedBlocks(workspace, movedIds) {
+  for (const id of movedIds) {
+  const block = workspace.getBlockById(id);
+  if (block) {
+    block.addSelect();
+    block.setColour(Blockly.BLOCK_MODIFIED_HUE);
+    block.initSvg();
+    block.setModifiedBlockIcon();
+    workspace.requestRender(block);
+  }
+}
+} 
 
 // color moved first, so if inserted or deleted can just add at the end
 // first color only the moved block itself without children
@@ -1352,9 +1379,9 @@ function colorMovedBlocks(workspace, movedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
       block.addSelect();
-      block.setColour(Blockly.BLOCK_MOVED_ADDED_HUE);
+      block.setColour(Blockly.BLOCK_MOVED_HUE);
       block.initSvg();
-      block.setModifiedBlockIcon();
+      block.setMovedBlockIcon();
       workspace.requestRender(block);
     }
   }

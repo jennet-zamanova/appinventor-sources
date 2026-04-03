@@ -42,7 +42,8 @@
 .blocklyIconGroup .blocklyDiffIconOutline {
   stroke: #000000;
   stroke-width: 1px;
-  fill: rgb(55, 112, 211);
+  /* fill: rgb(55, 112, 211); */
+  fill: rgb(0, 0, 0);
 }
 
 /* .blocklyIconGroup .blocklyDiffIconDelta {

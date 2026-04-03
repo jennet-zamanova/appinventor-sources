@@ -39,10 +39,6 @@
        ui:field="sendToGalleryItem" align="center">
       <actions:SendToGalleryAction />
     </ai:ToolbarItem>
-    <ai:ToolbarItem name="Show Diff" caption="Show diff" ui:field="showDiffItem"
-                    align="center" visible="false">
-      <ya:ShowDiffAction />
-    </ai:ToolbarItem>
     <ai:ToolbarItem name="diff" caption="Compare Projects"
                     ui:field="switchToDiff" align="right">
       <ya:SwitchToDiffAction />

@@ -887,6 +887,21 @@ div.StatusPanel {
   background-color: #d2e0a6;
 }
 
+.gwt-Tree .gwt-TreeItem-unchanged span:hover,
+.gwt-Tree .gwt-TreeItem-deleted span:hover,
+.gwt-Tree .gwt-TreeItem-added span:hover,
+.gwt-Tree .gwt-TreeItem-updated span:hover,
+.gwt-Tree .gwt-TreeItem-moved span:hover,
+.gwt-Tree .gwt-TreeItem-unchanged .gwt-TreeItem-selected span,
+.gwt-Tree .gwt-TreeItem-deleted .gwt-TreeItem-selected span,
+.gwt-Tree .gwt-TreeItem-added .gwt-TreeItem-selected span,
+.gwt-Tree .gwt-TreeItem-updated .gwt-TreeItem-selected span,
+.gwt-Tree .gwt-TreeItem-moved .gwt-TreeItem-selected span {
+  border: 2px solid #93267c;
+  background: inherit;
+}
+
+
 .gwt-Tree .gwt-TreeItem-deleted, 
 .gwt-Tree .gwt-TreeItem-added, 
 .gwt-Tree .gwt-TreeItem-updated, 
@@ -898,24 +913,21 @@ div.StatusPanel {
   background-color: rgb(248, 255, 157);
 }
 
-.gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-deleted span {
-  background-color: #e0a6ac;
+  background-color: #f5b8b8;
 }
 
-.gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-added span {
-  background-color: #a6e0a8;
+  background-color: #a1dba1;
 }
 
-.gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-updated span {
-  background-color: #f8f7b6;
+  background-color: #e8d43c;
 }
 
-.gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-moved span {
-  background-color: #99d8e7;
+  background-color: #26529e;
+  color: white;
 }
 
 .gwt-Tree-focused {
@@ -1494,20 +1506,20 @@ select.ode-PropertyEditor[disabled] {
   border: 2px solid #8fc202;
 }
 
-.ode-SimpleMockComponent.gwt-TreeItem-added {
-  border: 2px solid green;
-}
-
 .ode-SimpleMockComponent.gwt-TreeItem-deleted {
-  border: 2px solid red;
+  border: 2px solid #f5b8b8;
 }
 
-.ode-SimpleMockComponent.gwt-TreeItem-moved {
-  border: 2px solid blue;
+.ode-SimpleMockComponent.gwt-TreeItem-added {
+  border: 2px solid #a1dba1;
 }
 
 .ode-SimpleMockComponent.gwt-TreeItem-updated {
-  border: 2px solid orange;
+  border: 2px solid #e8d43c;;
+}
+
+.ode-SimpleMockComponent.gwt-TreeItem-moved {
+  border: 2px solid #26529e;;
 }
 
 .ode-SimpleMockMapFeature-selected svg * {

@@ -2743,15 +2743,6 @@ public class Ode implements EntryPoint {
     this.modifiedAttributes = attributesMap;
   }
 
-  public void showDiff() {
-    inDiffView = true;
-    if (workColumnsEditor.getDesignToolbar().getCurrentView() == DesignToolbar.View.BLOCKS
-        // currentFileEditor may be null when switching projects
-        && currentFileEditor != null) {
-      currentFileEditor.diff();
-    }
-  }
-
   /**
    * setRendezvousServer
    *
