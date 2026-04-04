@@ -128,12 +128,16 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Main entry point for Ode. Defines the startup UI elements in
@@ -214,12 +218,27 @@ public class Ode implements EntryPoint {
   public static int currentView = PROJECTS;
 
   // diff info
-  private String newIds;
-  private String deletedIds;
-  private String movedIds;
-  private String updatedIds;
-  private String modifiedIds;
-  private HashMap<String, List<String>> modifiedAttributes;
+  public static class DiffIds {
+    List<String> newIds = null;
+    List<String> deletedIds = null;
+    List<String> movedIds = null;
+    List<String> updatedIds = null;
+
+    public DiffIds(List<String> newIds, List<String> deletedIds, List<String> movedIds, List<String> modifiedIds){
+      this.newIds = newIds;
+      this.deletedIds = deletedIds;
+      this.movedIds = movedIds;
+      this.updatedIds = Stream.of(newIds, newIds, movedIds, modifiedIds).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+  }
+  private HashMap<String, DiffIds> diffIds;
+  private HashMap<String, HashMap<String, List<String>>> modifiedAttributes;
+  // private String newIds;
+  // private String deletedIds;
+  // private String movedIds;
+  // private String updatedIds;
+  // private String modifiedIds;
+  // private HashMap<String, List<String>> modifiedAttributes;
 
   // GWT DeckPanel animation is 350ms but we add a small buffer
   public static final int DECKPANEL_ANIMATION_DURATION_MS = 375;
@@ -2691,55 +2710,60 @@ public class Ode implements EntryPoint {
     }
   }
 
-  public String getNewIds() {
-    return this.newIds;
+  public List<String> getNewIds() {
+    try {
+      return this.diffIds.get(currentFileEditor.getEntityName()).newIds;
+    } catch (Exception e) {
+      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+    }
+    return Collections.emptyList();
   }
 
   public HashMap<String, List<String>> getModifiedAttributes() {
-    return this.modifiedAttributes;
+    HashMap<String, List<String>> attrs = this.modifiedAttributes.get(currentFileEditor.getEntityName());
+    if (attrs == null) {
+      LOG.warning("attributes for the screen " + currentFileEditor.getEntityName() + " were not found");
+      return new HashMap<>();
+    }
+    return attrs;
   }
   
-  public String getDeletedIds() {
-    return this.deletedIds;
+  public List<String> getDeletedIds() {
+    try {
+      return this.diffIds.get(currentFileEditor.getEntityName()).deletedIds;
+    } catch (Exception e) {
+      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+    }
+    return Collections.emptyList();
   }
   
-  public String getMovedIds() {
-    return this.movedIds;
+  public List<String> getMovedIds() {
+    try {
+      return this.diffIds.get(currentFileEditor.getEntityName()).movedIds;
+    } catch (Exception e) {
+      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+    }
+    return Collections.emptyList();
   }
   
-  public String getUpdatedIds() {
-    return this.updatedIds;
-  }
-
-  public String getModifiedIds() {
-    return this.modifiedIds;
+  public List<String> getUpdatedIds() {
+    try {
+      return this.diffIds.get(currentFileEditor.getEntityName()).updatedIds;
+    } catch (Exception e) {
+      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+    }
+    return Collections.emptyList();
   }
 
   public void setInDiffView(boolean isInDiffView) {
     inDiffView = isInDiffView;
   }
 
-  public void setNewIds(String ids) {
-    this.newIds = ids;
-  }
-  
-  public void setDeletedIds(String ids) {
-    this.deletedIds = ids;
-  }
-  
-  public void setMovedIds(String ids) {
-    this.movedIds = ids;
-  }
-  
-  public void setUpdatedIds(String ids) {
-    this.updatedIds = ids;
+  public void setDiffIds(HashMap<String, DiffIds> diffIds) {
+    this.diffIds = diffIds;
   }
 
-  public void setModifiedIds(String ids) {
-    this.modifiedIds = ids;
-  }
-
-  public void setModifiedAttributes(HashMap<String, List<String>> attributesMap) {
+  public void setModifiedAttributes(HashMap<String, HashMap<String, List<String>>> attributesMap) {
     this.modifiedAttributes = attributesMap;
   }
 

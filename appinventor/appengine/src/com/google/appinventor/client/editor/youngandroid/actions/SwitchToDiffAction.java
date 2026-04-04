@@ -7,8 +7,10 @@
 package com.google.appinventor.client.editor.youngandroid.actions;
 
 import com.google.appinventor.client.Ode;
+import com.google.appinventor.client.Ode.DiffIds;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.editor.FileEditor;
+import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
@@ -47,69 +49,56 @@ public class SwitchToDiffAction implements Command {
       @Override
       public void onContent(Map<String, String> files) {
         Ode.getInstance().setDiffFileContents(files);
-        if (toolbar.getCurrentView() == DesignToolbar.View.BLOCKS) {
-          // for (String fileName : files.keySet()) {
-          //   if (fileName.endsWith("Screen1.bky")) {
-          //     String content = files.get(fileName);
-          //     // parse it, save it, display it raw — whatever you want
-          //     SwitchToDiffAction.openSecondaryWorkspace(content);
-          //     // LOG.info("file got from upload: " + content.length());
-          //     return;
-          //   }
-          // }
-          Ode.getInstance().setInDiffView(true);
-          Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
-          LOG.warning("did not find screen 1 blocks!!");
-        } else if (toolbar.getCurrentView() == DesignToolbar.View.DESIGNER) {
-          for (String fileName : files.keySet()) {
-            if (fileName.endsWith("Screen1.scm")) {
-              String content = files.get(fileName);
-              // parse it, save it, display it raw — whatever you want
-              // SwitchToDiffAction.openSecondaryWorkspace(content);
-              JSONObject j = YoungAndroidSourceAnalyzer.parseSourceFile(content, new ClientJsonParser());
-              FileEditor currentFileEditor = Ode.getInstance().getCurrentFileEditor();
-              if (currentFileEditor instanceof YaFormEditor) {
-                String screen1 = currentFileEditor.getRawFileContent();
-                JSONObject j1 = YoungAndroidSourceAnalyzer.parseSourceFile(screen1, new ClientJsonParser());
-                JavaScriptObject out = SwitchToDiffAction.openDesignerDiff(j1.toJson(), j.toJson());
-                DiffResult diffResult = out.cast();
-                String newIds = diffResult.getNewIds().toString();
-                String deletedIds = diffResult.getRemovedIds().toString();
-                String movedIds = diffResult.getMovedIds().toString();
-                String modifiedIds = diffResult.getUpdatedIds().toString();
-                UpdateMap updateInfo = diffResult.getUpdatedIdsInfo();
-                JsArrayString keys = updateInfo.getKeys();
-                HashMap<String, List<String>> idToAttribute = new HashMap<>();
-                for (int i = 0; i < keys.length(); i++) {
-                    String key = keys.get(i);
-                    JsArrayString attributes = updateInfo.getModifiedAttributes(key);
-                    List<String> attributesList = new ArrayList<>();
-                    for (int t = 0; t < attributes.length(); t++) {
-                      attributesList.add(attributes.get(t));
-                    }
-                    idToAttribute.put(key, attributesList);
-                }
-                // ((YaFormEditor) currentFileEditor).getForm().colorTree();
-                Ode.getInstance().setInDiffView(true);
-                Ode.getInstance().setNewIds(newIds);
-                Ode.getInstance().setDeletedIds(deletedIds);
-                Ode.getInstance().setMovedIds(movedIds);
-                Ode.getInstance().setModifiedIds(modifiedIds);
-                Ode.getInstance().setUpdatedIds(newIds + ", " + deletedIds + ", " + movedIds + ", " + modifiedIds);
-                Ode.getInstance().setModifiedAttributes(idToAttribute);
-                // SourceStructureBox.getSourceStructureBox()
-                //                   .getSourceStructureExplorer()
-                //                   .updateTree(((YaFormEditor) currentFileEditor).getForm()
-                //                                                                 .buildComponentsTree(),
-                //                               null);
-                Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
-                return;
+        // go through designer screens and save info
+        HashMap<String, DiffIds> diffInfo = new HashMap<>();
+        HashMap<String, HashMap<String, List<String>>> modifiedAttributes = new HashMap<>();
+
+        for (String fileName : files.keySet()) {
+          if (fileName.endsWith(".scm")) {
+            String uploadedContent = files.get(fileName);
+            JSONObject uploadedJsonObject = YoungAndroidSourceAnalyzer.parseSourceFile(uploadedContent, new ClientJsonParser());
+            String entityName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length()-4);
+            
+
+            FileEditor correspondingFileEditor = Ode.getCurrentProjectEditor().getFileEditor(entityName, DesignerEditor.class.getSimpleName());
+            if (correspondingFileEditor instanceof YaFormEditor) {
+              String correspondingScreen = correspondingFileEditor.getRawFileContent();
+              JSONObject correspondingJsonObject = YoungAndroidSourceAnalyzer.parseSourceFile(correspondingScreen, new ClientJsonParser());
+
+              JavaScriptObject out = SwitchToDiffAction.openDesignerDiff(correspondingJsonObject.toJson(), uploadedJsonObject.toJson());
+              DiffResult diffResult = out.cast();
+
+              List<String> newIds = Arrays.asList(diffResult.getNewIds().toString().split(","));
+              List<String> deletedIds = Arrays.asList(diffResult.getRemovedIds().toString().split(","));
+              List<String> movedIds = Arrays.asList(diffResult.getMovedIds().toString().split(","));
+
+              List<String> modifiedIds = Arrays.asList(diffResult.getUpdatedIds().toString().split(","));
+
+              DiffIds ids = new DiffIds(newIds, deletedIds, movedIds, modifiedIds);
+              diffInfo.put(entityName, ids);
+
+              UpdateMap updateInfo = diffResult.getUpdatedIdsInfo();
+              JsArrayString keys = updateInfo.getKeys();
+              HashMap<String, List<String>> idToAttribute = new HashMap<>();
+              for (int i = 0; i < keys.length(); i++) {
+                  String key = keys.get(i);
+                  JsArrayString attributes = updateInfo.getModifiedAttributes(key);
+                  List<String> attributesList = new ArrayList<>();
+                  for (int t = 0; t < attributes.length(); t++) {
+                    attributesList.add(attributes.get(t));
+                  }
+                  idToAttribute.put(key, attributesList);
               }
-              
+
+              modifiedAttributes.put(entityName, idToAttribute);
             }
           }
-          LOG.warning("did not find screen 1 blocks!!");
         }
+
+        Ode.getInstance().setDiffIds(diffInfo);
+        Ode.getInstance().setModifiedAttributes(modifiedAttributes);
+        Ode.getInstance().setInDiffView(true);
+        Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
       }
 
       @Override

@@ -635,7 +635,7 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
   }
 
   protected void updateDiffPropertiesPanel(List<MockComponent> components, boolean selected) {
-    String allUpdatedIds = Ode.getInstance().getUpdatedIds();
+    List<String> allUpdatedIds = Ode.getInstance().getUpdatedIds();
     List<MockComponent> filteredComponents = components.stream()
                                           .filter(c -> allUpdatedIds.contains(c.getUuid()))
                                           .collect(Collectors.toList());

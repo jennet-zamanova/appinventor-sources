@@ -136,11 +136,11 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
   // movedIds.toString(),
   // updatedIds.toString()
 
-  public TreeItem buildColoredTree(String newIds, String deletedIds, String movedIds, String updatedIds) {
+  public TreeItem buildColoredTree(List<String> newIds, List<String> deletedIds, List<String> movedIds, List<String> updatedIds) {
     return this.buildColoredTree(newIds, deletedIds, movedIds, updatedIds, 1);
   }
 
-  public TreeItem buildColoredTree(String newIds, String deletedIds, String movedIds, String updatedIds, int view) {
+  public TreeItem buildColoredTree(List<String> newIds, List<String> deletedIds, List<String> movedIds, List<String> updatedIds, int view) {
     TreeItem itemNode = super.buildTree();
     //hide all containers except form if only nonvisible components are to be shown
     //in such a case, we need only the form's treeItem because all non-visible components are attached to it
@@ -148,15 +148,12 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
 
     if (isForm()) {
       String style = "unchanged";
-      if (Arrays.asList(movedIds.split(",")).contains(this.getUuid())) {
+      if (movedIds.contains(this.getUuid())) {
          style = "moved";
-      } else if (Arrays.asList(updatedIds.split(",")).contains(this.getUuid())) {
+      } else if (updatedIds.contains(this.getUuid())) {
         style = "updated";
-      } else {
-        LOG.info("did not change");
-      }
-      itemNode.addStyleName("gwt-TreeItem-"+style);
-      this.color("gwt-TreeItem-"+style);
+      } 
+      itemNode.getWidget().addStyleName("gwt-TreeItem-"+style);
     }
 
     // Recursively build the tree for child components
@@ -172,11 +169,9 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
          style = "moved";
       } else if (updatedIds.contains(child.getUuid())) {
         style = "updated";
-      } else {
-        LOG.info("did not change");
       }
 
-      childNode.addStyleName("gwt-TreeItem-"+style);
+      childNode.getWidget().addStyleName("gwt-TreeItem-"+style);
       child.color("gwt-TreeItem-"+style);
       
       boolean isVisible = true;
@@ -193,7 +188,6 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
     }
 
     itemNode.setState(expanded);
-
     return itemNode;
   }
 

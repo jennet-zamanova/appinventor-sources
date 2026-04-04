@@ -304,6 +304,7 @@ body {
 .gwt-Tree .gwt-TreeItem-deleted, 
 .gwt-Tree .gwt-TreeItem-added, 
 .gwt-Tree .gwt-TreeItem-updated, 
+.gwt-Tree .gwt-TreeItem-unchanged, 
 .gwt-Tree .gwt-TreeItem-moved {
   background: none;
 }
@@ -311,6 +312,10 @@ body {
 .gwt-Tree .gwt-TreeItem span:hover,
 .gwt-Tree .gwt-TreeItem-selected span {
   background-color: clr-primary-700;
+}
+
+.gwt-Tree .gwt-TreeItem-updated span {
+  background-color: row-updated-highlight !important;
 }
 
 .gwt-Tree .gwt-TreeItem-deleted span {
@@ -321,13 +326,13 @@ body {
   background-color: row-added-highlight !important;
 }
 
-.gwt-Tree .gwt-TreeItem-updated span {
-  background-color: row-updated-highlight !important;
-}
-
 .gwt-Tree .gwt-TreeItem-moved span {
   background-color: row-moved-highlight !important;
   color: white;
+}
+
+.gwt-Tree .gwt-TreeItem-unchanged span {
+  background-color: inherit !important;
 }
 
 .gwt-Tree-focused {

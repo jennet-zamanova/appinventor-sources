@@ -892,11 +892,11 @@ div.StatusPanel {
 .gwt-Tree .gwt-TreeItem-added span:hover,
 .gwt-Tree .gwt-TreeItem-updated span:hover,
 .gwt-Tree .gwt-TreeItem-moved span:hover,
-.gwt-Tree .gwt-TreeItem-unchanged .gwt-TreeItem-selected span,
-.gwt-Tree .gwt-TreeItem-deleted .gwt-TreeItem-selected span,
-.gwt-Tree .gwt-TreeItem-added .gwt-TreeItem-selected span,
-.gwt-Tree .gwt-TreeItem-updated .gwt-TreeItem-selected span,
-.gwt-Tree .gwt-TreeItem-moved .gwt-TreeItem-selected span {
+.gwt-Tree .gwt-TreeItem-selected .gwt-TreeItem-unchanged span,
+.gwt-Tree .gwt-TreeItem-selected .gwt-TreeItem-deleted span,
+.gwt-Tree .gwt-TreeItem-selected .gwt-TreeItem-added span,
+.gwt-Tree .gwt-TreeItem-selected .gwt-TreeItem-updated span,
+.gwt-Tree .gwt-TreeItem-selected .gwt-TreeItem-moved span {
   border: 2px solid #93267c;
   background: inherit;
 }
@@ -905,12 +905,17 @@ div.StatusPanel {
 .gwt-Tree .gwt-TreeItem-deleted, 
 .gwt-Tree .gwt-TreeItem-added, 
 .gwt-Tree .gwt-TreeItem-updated, 
+.gwt-Tree .gwt-TreeItem-unchanged, 
 .gwt-Tree .gwt-TreeItem-moved {
   background: none;
 }
 
 .ode-PropertiesPanel-Moved, .ode-PropertyEditor-Moved, .ode-PropertyLabel-Moved, .ode-PropertyHeader-Moved {
   background-color: rgb(248, 255, 157);
+}
+
+.gwt-Tree .gwt-TreeItem-updated span {
+  background-color: #e8d43c;
 }
 
 .gwt-Tree .gwt-TreeItem-deleted span {
@@ -921,8 +926,8 @@ div.StatusPanel {
   background-color: #a1dba1;
 }
 
-.gwt-Tree .gwt-TreeItem-updated span {
-  background-color: #e8d43c;
+.gwt-Tree .gwt-TreeItem-unchanged span {
+  background-color: inherit;
 }
 
 .gwt-Tree .gwt-TreeItem-moved span {
