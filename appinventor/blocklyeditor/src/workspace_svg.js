@@ -24,8 +24,6 @@ goog.require('AI.Blockly.WorkspaceName');
 goog.require('AI.Blockly.Workspace');
 goog.require('AI.Blockly.Diff');
 goog.require('AI.Blockly.DesignerDiff');
-goog.require('AI.Blockly.Tests.Diff');
-goog.require('AI.Blockly.Tests.MoveDetection');
 
 /**
  * AI2 Blocks Drawer
