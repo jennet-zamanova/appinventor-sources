@@ -219,9 +219,8 @@ public class Properties<T extends Property> implements Iterable<T> {
    * @throws IllegalStateException  if no such property exists
    */
   public final String getPropertyValue(String name) {
-    if (name.equals("Scrollable")) {
-      LOG.info("getPropertyValue for: " + name);
-      LOG.info("getPropertyValue: " + propertiesMap.toString());
+    if (name.equals("Scrollable") && !propertiesMap.containsKey("Scrollable")) {
+      LOG.warning("getPropertyValue: " + propertiesMap.toString());
       return "True";
     }
     return getExistingProperty(name).getValue();

@@ -359,7 +359,7 @@ AI.Blockly.DesignerDiff = class {
             // attributes in props1
             const attrs1 = Object.entries(info1);
             for (const [key, value] of attrs1) {
-                if (value !== info2[key]) {
+                if (value !== info2[key] && key !== "$Components") {
                     if (updateInfo.has(id)) {
                         updateInfo.get(id).push({
                             attribute: key,
@@ -379,7 +379,7 @@ AI.Blockly.DesignerDiff = class {
             // attributes in props2 that are not in props1
             const attrs2 = Object.entries(info2);
             for (const [key, value] of attrs2) {
-                if (!info1[key]) {
+                if (!info1[key] && key !== "$Components") {
                     if (updateInfo.has(id)) {
                         updateInfo.get(id).push({
                             attribute: key,

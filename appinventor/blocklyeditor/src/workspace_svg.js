@@ -236,6 +236,7 @@ Blockly.WorkspaceSvg.prototype.addWorkspaceName = function(name) {
   if (!this.workspaceName_) {
     this.workspaceName_ = new Blockly.WorkspaceName(this);
     var svgWorkspaceName = this.workspaceName_.createDom(name);
+    svgWorkspaceName.style['font-size'] = 'medium';
     this.svgGroup_.appendChild(svgWorkspaceName);
     this.workspaceName_.init();
   }

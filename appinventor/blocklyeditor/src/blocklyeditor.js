@@ -1018,7 +1018,11 @@ Blockly.BlocklyEditor['create'] = function(container, formName, readOnly, rtl) {
     },
     renderer: 'geras2_renderer',
   };
+  const previousWorkspace = Blockly.getMainWorkspace();
   var workspace = Blockly.inject(container, options);
+  if (previousWorkspace) {
+    Blockly.common.setMainWorkspace(previousWorkspace);
+  }
   AI.Blockly.multiselect = Multiselect;
   var multiselectPlugin = new AI.Blockly.multiselect(workspace);
   multiselectPlugin.init(options);
@@ -1163,7 +1167,9 @@ AI.inject = function(container, workspace, isDarkMode=false, animationDelayMs=0)
   if (isDarkMode) {
     Blockly.common.getMainWorkspace().setTheme(Blockly.Themes.darkTheme);
   }
-  Blockly.common.setMainWorkspace(workspace);  // make workspace the 'active' workspace
+  if (!Blockly.getMainWorkspace()) {
+    Blockly.common.setMainWorkspace(workspace); // make workspace the 'active' workspace
+  }
   workspace.fireChangeListener(new AI.Events.ScreenSwitch(workspace.projectId, workspace.formName));
   var gridEnabled = top.BlocklyPanel_getGridEnabled && top.BlocklyPanel_getGridEnabled();
   var gridSnap = top.BlocklyPanel_getSnapEnabled && top.BlocklyPanel_getSnapEnabled();
@@ -1274,6 +1280,7 @@ function openSecondaryWorkspace(file) {
     container.style.display = 'flex';
     container.style.flexDirection = 'row';
     container.style.overflow = 'hidden';
+    svgParent.style.display = 'inherit';
     Blockly.svgResize(mainWs);
     Blockly.svgResize(secondaryWs);
   }, 100);
