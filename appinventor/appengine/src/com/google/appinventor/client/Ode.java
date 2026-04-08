@@ -474,6 +474,7 @@ public class Ode implements EntryPoint {
           projectToolbar.enableStartButton();
           projectToolbar.setProjectTabButtonsVisible(true);
           projectToolbar.setTrashTabButtonsVisible(false);
+          workColumnsEditor.resetToDesignerNormalView();
         }
       };
     if (getDesignToolbar().getCurrentView() != DesignToolbar.View.BLOCKS) {
@@ -683,12 +684,9 @@ public class Ode implements EntryPoint {
       // The project nodes have been loaded. Tell the viewer to open
       // the project. This will cause the projects source files to be fetched
       // asynchronously, and loaded into file editors.
+      inDiffView = false;
+      workColumnsEditor.resetToDesignerNormalView();
       workColumnsEditor.getViewerBox().show(projectRootNode);
-      if (isInDiffView()) {
-        DiffProjectEditor fakeEditor = new DiffProjectEditor(uiFactory);
-        LOG.warning("fake editor" + fakeEditor);
-        workColumnsEditor.getDiffViewerBox().show(fakeEditor);
-      }
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
       // will get called at the appropriate time.
@@ -1197,6 +1195,10 @@ public class Ode implements EntryPoint {
    */
   public WorkColumnsEditor getWorkColumnsEditor() {
     return workColumnsEditor;
+  }
+
+  public void stopCompareProjectView() {
+    Window.Location.reload();
   }
 
   public UiStyleFactory getUiStyleFactory() {

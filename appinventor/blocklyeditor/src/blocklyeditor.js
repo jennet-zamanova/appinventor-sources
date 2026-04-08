@@ -1228,6 +1228,28 @@ function openDesignerDiff(designer1, designer2) {
   return out
 }
 
+function extractComponentsFromXml(xml) {
+  const components = new Map(); // keyed by instanceName to avoid duplicates
+  // get all
+  const nodes = [...xml.querySelectorAll('block[type="component_component_block"]'),
+                ...xml.querySelectorAll('block[type="component_event"]'),
+                ...xml.querySelectorAll('block[type="component_set_get"]'),
+                ...xml.querySelectorAll('block[type="component_method"]')]
+  nodes.forEach(block => {
+    const mutation = block.querySelector('mutation');
+    if (mutation) {
+      const instanceName = mutation.getAttribute('instance_name');
+      const typeName = mutation.getAttribute('component_type');
+      const uid = block.getAttribute('id');
+      if (instanceName && !components.has(instanceName)) {
+        components.set(instanceName, { uid, instanceName, typeName });
+      }
+    }
+  });
+
+  return [...components.values()];
+}
+
 function openSecondaryWorkspace(file) {
   // TODO: really hacky - need to change!!!
   if (document.getElementById('secondary-workspace')) {
@@ -1290,13 +1312,37 @@ function openSecondaryWorkspace(file) {
   // Blockly.Xml.domToWorkspace(xml, secondaryWs);
   window.secondaryWorkspace = secondaryWs;
 
+  var xml = Blockly.utils.xml.textToDom(file);
+  console.log("xml: ", xml);
+
   // Copy AI2-specific context from main workspace
-  // 1. Copy component database
+  const assetNodes = xml.querySelectorAll('block[type="helpers_assets"] field[name="ASSET"]');
+  const assets = [...assetNodes].map(node => node.textContent);
+
+  secondaryWs.assetList_ = assets;
+
+  // Copy component database
+  const components = extractComponentsFromXml(xml);
   if (mainWs.componentDb_) {
     secondaryWs.componentDb_ = mainWs.componentDb_;
+    components.forEach((v) => secondaryWs.componentDb_.addInstance(v.uid, v.instanceName, v.typeName))
+  }
+  // TODO: add screenlist
+  if (mainWs.screenList_) {
+    secondaryWs.screenList_ = mainWs.screenList_;
+  }
+
+  // TODO: add procedures
+  if (mainWs.procedureDb_) {
+    secondaryWs.procedureDb_ = mainWs.procedureDb_;
+  }
+
+  if (mainWs.blocksNeedingRendering) {
+    secondaryWs.blocksNeedingRendering = mainWs.blocksNeedingRendering;
   }
 
   // 2. Copy warning handler (or disable it)
+  // TODO: do something about the handler
   if (mainWs.warningHandler) {
     secondaryWs.warningHandler = null;
   }
@@ -1311,6 +1357,7 @@ function openSecondaryWorkspace(file) {
     secondaryWs.getComponentMap = mainWs.getComponentMap.bind(mainWs);
   }
 
+  // TODO: add variables
   if (mainWs.variableDb_) {
     secondaryWs.variableDb_ = mainWs.variableDb_;
   }
@@ -1320,8 +1367,6 @@ function openSecondaryWorkspace(file) {
 
   // Now safe to load XML
   try {
-    var xml = Blockly.utils.xml.textToDom(file);
-    console.log("xml: ", xml);
     Blockly.Xml.domToWorkspace(xml, secondaryWs);
   } catch(e) {
     console.error('Failed to load blocks into secondary workspace:', e);

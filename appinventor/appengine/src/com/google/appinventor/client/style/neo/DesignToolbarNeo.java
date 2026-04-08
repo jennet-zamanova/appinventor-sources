@@ -25,6 +25,7 @@ public class DesignToolbarNeo extends DesignToolbar {
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
   @UiField protected ToolbarItem switchToDiff;
+  @UiField protected ToolbarItem switchFromDiff;
   @UiField protected ToolbarItem sendToGalleryItem;
 
   @Override
@@ -37,6 +38,7 @@ public class DesignToolbarNeo extends DesignToolbar {
     super.switchToDesign = switchToDesign;
     super.switchToBlocks = switchToBlocks;
     super.switchToDiff = switchToDiff;
+    super.switchFromDiff = switchFromDiff;
     super.sendToGalleryItem = sendToGalleryItem;
   }
 }

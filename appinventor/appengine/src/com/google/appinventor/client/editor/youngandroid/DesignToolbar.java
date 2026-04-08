@@ -154,6 +154,7 @@ public class DesignToolbar extends Toolbar {
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
   @UiField protected ToolbarItem switchToDiff;
+  @UiField protected ToolbarItem switchFromDiff;
   @UiField protected ToolbarItem sendToGalleryItem;
 
   /**
@@ -429,6 +430,10 @@ public class DesignToolbar extends Toolbar {
 
   public void setTutorialToggleVisible(boolean value) {
     setButtonVisible(WIDGET_NAME_TUTORIAL_TOGGLE, value);
+  }
+
+  public void setSwitchFromDiffButtonVisible(boolean value) {
+    setVisibleItem(switchFromDiff, value);
   }
 
 }

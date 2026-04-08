@@ -43,6 +43,10 @@
                     ui:field="switchToDiff" align="right">
       <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
+    <ai:ToolbarItem name="diff" caption="Stop Comparing Projects"
+                    ui:field="switchFromDiff" align="right" visible="false">
+      <ya:SwitchFromDiffAction />
+    </ai:ToolbarItem>
     <ai:ToolbarItem name ="Console Toggle" caption="{messages.toggleConsoleButton}" ui:field="toggleConsoleItem" align="right">
       <ya:ToggleConsoleAction />
     </ai:ToolbarItem>

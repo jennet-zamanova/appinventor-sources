@@ -234,6 +234,17 @@ public class WorkColumnsEditor extends Composite {
         propertiesBox.setVisible(visible);
     }
 
+    public final void resetToDesignerNormalView() {
+        Ode.getInstance().getDesignToolbar().setSwitchFromDiffButtonVisible(false);
+        structureAndAssets.insert(sourceStructureBox, 0);
+        Widget[] widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), viewerBox, structureAndAssets, propertiesBox};
+        workColumns.clear();
+        for (Widget w : widgetsToShow) {
+            workColumns.add(w);
+            w.setVisible(true);
+        }
+    }
+
     public final void shuffleColumns(FileEditor fileEditor) {
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();

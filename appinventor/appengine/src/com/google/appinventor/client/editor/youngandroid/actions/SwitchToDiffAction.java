@@ -99,6 +99,7 @@ public class SwitchToDiffAction implements Command {
         Ode.getInstance().setModifiedAttributes(modifiedAttributes);
         Ode.getInstance().setInDiffView(true);
         Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
+        Ode.getInstance().getDesignToolbar().setSwitchFromDiffButtonVisible(true);
       }
 
       @Override

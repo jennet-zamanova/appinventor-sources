@@ -52,6 +52,10 @@
                     ui:field="switchToDiff" align="right">
       <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
+    <ai:ToolbarItem name="diff" caption="Stop Comparing Projects"
+                    ui:field="switchFromDiff" align="right" visible="false">
+      <ya:SwitchFromDiffAction />
+    </ai:ToolbarItem>
     <ai:ToolbarItem name="ToggleConsole" icon="view_sidebar" 
                     ui:field="toggleConsoleItem" align="right" styleName="ode-ProjectListButton bleft primary">
       <ya:ToggleConsoleAction/>
