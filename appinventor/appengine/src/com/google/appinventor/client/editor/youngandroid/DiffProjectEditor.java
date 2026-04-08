@@ -97,6 +97,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   private boolean screen1FormLoaded = false;
   private boolean screen1Added = false;
 
+  private Map<String, Map<String, String>> projectSettings = new HashMap<>();
+
   private final Set<String> loadedBlocksEditors = new HashSet<>();
 
   protected static class FileContentHolder {
@@ -159,10 +161,54 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     de.changeComponentSelection(component.getUuid(), selected);
   }
 
+  private void loadProjectSettings() {
+    ArrayBuffer contents = Ode.getInstance().getDiffContents().get("$diff:youngandroidproject/project.properties");
+    if (contents != null) {
+      TextDecoder decoder = new TextDecoder("utf-8");
+      String content = decoder.decode(contents);
+      try {
+        String[] lines = content.split("\n");
+        Map<String, String> properties = new HashMap<>();
+        for (String line : lines) {
+          String[] parts = line.split("=");
+          if (parts.length == 2) {
+            properties.put(parts[0].trim(), parts[1].trim());
+          }
+        }
+
+        Map<String, String> allSettings = new HashMap<String,String>();
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ICON, properties.getOrDefault("icon", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_CODE, properties.getOrDefault("versioncode", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_NAME, properties.getOrDefault("versionname", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_USES_LOCATION, properties.getOrDefault("useslocation", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_APP_NAME, properties.getOrDefault("aname", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_SIZING, properties.getOrDefault("sizing", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_SHOW_LISTS_AS_JSON, properties.getOrDefault("showlistsasjson", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL, properties.getOrDefault("tutorialurl", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_BLOCK_SUBSET, properties.getOrDefault("subsetjson", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ACTIONBAR, properties.getOrDefault("actionbar", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_THEME, properties.getOrDefault("theme", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR, properties.getOrDefault("color.primary", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR_DARK, properties.getOrDefault("color.primary.dark", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ACCENT_COLOR, properties.getOrDefault("color.accent", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_DEFAULTFILESCOPE, properties.getOrDefault("defaultfilescope", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PROJECT_COLORS, properties.getOrDefault("projectcolors", "{}"));
+
+        projectSettings.put(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS, allSettings);
+      } catch (Exception e) {
+        LOG.warning("failed to load settings: " + e);
+      }
+    } else {
+      LOG.warning("File not found");
+    }
+  }
+
 
   private void loadProject() {
     // add form editors first, then blocks editors because the blocks editors
     // need access to their corresponding form editors to set up properly
+    // load settings
+    loadProjectSettings();
     for (ProjectNode source : Ode.getInstance().getDiffRoot().getAllSourceNodes()) {
       if (source instanceof YoungAndroidFormNode) {
         addDesigner(((YoungAndroidFormNode) source).getFormName(),
@@ -628,7 +674,12 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * @return the property value
    */
   public final String getProjectSettingsProperty(String category, String name) {
-    return "";
+    try {
+      return projectSettings.get(category).getOrDefault(name, "");
+    } catch (Exception e) {
+      LOG.warning("could not find setting " + name + " in category: " + category);
+      return "";
+    }
   }
 
   /**
@@ -639,7 +690,15 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * @param newValue  new property value
    */
   public final void changeProjectSettingsProperty(String category, String name, String newValue) {
-    return;
+    try {
+      if (projectSettings.get(category).get(name) != newValue) {
+        projectSettings.get(category).put(name, newValue);
+      }
+      return;
+    } catch (Exception e) {
+      LOG.warning("to change: could not find setting " + name + " in category: " + category);
+      return;
+    }
   }
 
   /**

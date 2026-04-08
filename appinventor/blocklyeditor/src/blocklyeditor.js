@@ -1252,17 +1252,19 @@ function extractComponentsFromXml(xml) {
 
 function openSecondaryWorkspace(file) {
   // TODO: really hacky - need to change!!!
+  var mainWs = Blockly.getMainWorkspace();
+
   if (document.getElementById('secondary-workspace')) {
     document.getElementById('secondary-workspace').remove();
   }
 
-  var svgParent = document.querySelector('svg.blocklySvg');
-  if (!svgParent) {
+  var svgParent = mainWs.getSvgGroup()?.parentElement;
+  var blocklyDiv = mainWs.injectionDiv;        // the unnamed div
+  if (!svgParent || !blocklyDiv) {
     console.error('Could not find Blockly SVG');
     return;
   }
 
-  var blocklyDiv = svgParent.parentElement;        // the unnamed div
   var container = blocklyDiv.parentElement;         // 5136918324969472_Screen1
 
   // Force side-by-side layout on the container
@@ -1288,7 +1290,6 @@ function openSecondaryWorkspace(file) {
 
   container.appendChild(secondaryDiv);
 
-  var mainWs = Blockly.getMainWorkspace();
   // Inject read-only Blockly into secondary
   var secondaryWs = Blockly.inject(secondaryDiv, {
     readOnly: true,
