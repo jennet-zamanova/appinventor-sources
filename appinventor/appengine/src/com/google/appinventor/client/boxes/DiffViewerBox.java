@@ -13,6 +13,7 @@ import com.google.appinventor.client.editor.FileEditor;
 import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
+import com.google.appinventor.client.editor.youngandroid.YaFormEditor;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import java.util.logging.Logger;
@@ -56,7 +57,6 @@ public class DiffViewerBox extends Box {
   public IProjectEditor show(IProjectEditor projectEditor) {
     // SOMETHING FAILS WHEN THIS LINE IS RUN
     setContent(projectEditor.asWidget());
-    ((DiffProjectEditor) projectEditor).addStyleName("diff-editor");
     FileEditor toShow = ((DiffProjectEditor) projectEditor).getFileEditor(Ode.getInstance().getCurrentFileEditor().getEntityName(), Ode.getInstance().getCurrentFileEditor().getEditorType());
     if (toShow != null) {
       ((DiffProjectEditor) projectEditor).selectFileEditor(toShow);
@@ -65,5 +65,20 @@ public class DiffViewerBox extends Box {
     }
     // Ode.getInstance().switchToProjectEditor();
     return projectEditor;
+  }
+
+  public IProjectEditor showFile(IProjectEditor projectEditor, YaFormEditor fileEditor) {
+    // SOMETHING FAILS WHEN THIS LINE IS RUN
+    setContent(projectEditor.asWidget());
+    if (fileEditor != null) {
+      ((DiffProjectEditor) projectEditor).selectFileEditor(fileEditor);
+    } else {
+      LOG.warning("did not find fileedtior!!!!");
+    }
+    return projectEditor;
+  }
+
+  public void clear() {
+    setContent((new DiffProjectEditor(Ode.getInstance().getUiStyleFactory())).asWidget());
   }
 }

@@ -212,9 +212,7 @@ Blockly.WorkspaceSvg.prototype.addWarningIndicator = function() {
  * Add the diff handler.
  */
 Blockly.WorkspaceSvg.prototype.addDiffHandler = function(secondaryWorkspace, ids) {
-  if (!this.diffHandler_) {
-    this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
-  }
+  this.diffHandler_ = new Blockly.DiffHandler(this, secondaryWorkspace, ids);
 };
 
 /**

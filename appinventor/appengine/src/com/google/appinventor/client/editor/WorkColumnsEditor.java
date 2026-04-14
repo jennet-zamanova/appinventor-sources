@@ -20,10 +20,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
 
+import java.io.File;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -41,6 +43,8 @@ public class WorkColumnsEditor extends Composite {
     protected FlowPanel structureAndAssets; //done
     @UiField 
     protected ConsolePanel consolePanel; //done
+    @UiField 
+    protected Label missingScreenLabel;
 
     @UiField
     protected DesignToolbar designToolbar; //done, done
@@ -243,6 +247,58 @@ public class WorkColumnsEditor extends Composite {
             workColumns.add(w);
             w.setVisible(true);
         }
+        missingScreenLabel.setVisible(false);
+    }
+
+    public final void shuffleColumnsMissingScreen(FileEditor fileEditor, FileEditor screen1Editor) {
+        LOG.info("cfe w: " + Ode.getInstance().getCurrentFileEditor());
+        Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
+        workColumns.clear();
+        for (Widget w : widgetsToShow) {
+            workColumns.add(w);
+            w.setVisible(true);
+        }
+
+        Ode.getInstance().setCurrentFileEditor(screen1Editor);
+
+        // LOG.info("cfe w1: " + Ode.getInstance().getCurrentFileEditor());
+        if (designToolbar.getCurrentView() == DesignToolbar.View.DESIGNER && fileEditor instanceof YaFormEditor) {
+            // LOG.info("cfe w2: " + Ode.getInstance().getCurrentFileEditor());
+            DiffProjectEditor projectEditor = Ode.getInstance().getDiffProjectEditor();
+            YaFormEditor yaDiffEditor = (YaFormEditor) fileEditor;
+            yaDiffEditor.refreshCurrentPropertiesPanel();
+            diffSourceStructureBox.show(yaDiffEditor.getForm());
+            // load project???
+            diffViewerBox.showFile(projectEditor, yaDiffEditor);
+
+            // todo
+            missingScreenLabel.setVisible(true);
+            viewerBox.clear();
+            sourceStructureBox.clear();
+            propertiesBox.clear();
+            
+            
+            sourceStructureBox.addStyleName("diff-Split-Props");
+            propertiesBox.addStyleName("diff-Split-Props");
+            viewerBox.setCaption("Original Viewer");
+            propertiesBox.setCaption("Original Properties");
+        } else if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS && fileEditor instanceof YaBlocksEditor) {
+            YaBlocksEditor yaEditor = (YaBlocksEditor) fileEditor;
+            Map<String, String> files = Ode.getInstance().getDiffFileContents();
+            for (String fileName : files.keySet()) {
+                if (fileName.endsWith(yaEditor.getEntityName() + ".bky")) {
+                  String content = files.get(fileName);
+                  // parse it, save it, display it raw — whatever you want
+                //   todo: or just make it main workspace?
+                  WorkColumnsEditor.openSecondaryWorkspace(content);
+                  viewerBox.setCaption("Viewer");
+                //   todo change label
+                  missingScreenLabel.setVisible(true);
+                  return;
+                }
+            }
+            missingScreenLabel.setVisible(true);
+        }
     }
 
     public final void shuffleColumns(FileEditor fileEditor) {
@@ -259,6 +315,9 @@ public class WorkColumnsEditor extends Composite {
             YaFormEditor yaEditor = (YaFormEditor) fileEditor;
             yaEditor.refreshCurrentPropertiesPanel();
             sourceStructureBox.show(yaEditor.getForm());
+            if (viewerBox.isCleared()) {
+                viewerBox.show(yaEditor.getProjectRootNode());
+            }
             if (Ode.getInstance().isInDiffView()) {
                 DiffProjectEditor projectEditor = Ode.getInstance().getDiffProjectEditor();
                 YaFormEditor yaDiffEditor = (YaFormEditor) projectEditor.getFileEditor(yaEditor.getEntityName(), yaEditor.getEditorType());
@@ -266,10 +325,16 @@ public class WorkColumnsEditor extends Composite {
                     yaDiffEditor.refreshCurrentPropertiesPanel();
                     diffSourceStructureBox.show(yaDiffEditor.getForm());
                     // load project???
+                    diffViewerBox.show(projectEditor);
+                    missingScreenLabel.setVisible(false);
                 } else {
+                    missingScreenLabel.setVisible(true);
+                    diffViewerBox.clear();
+                    diffSourceStructureBox.clear();
+                    diffPropertiesBox.clear();
                     LOG.warning("there is no fileeditor matching name and type " + yaEditor.getEntityName() + yaEditor.getEditorType());
                 }
-                diffViewerBox.show(projectEditor);
+                
                 sourceStructureBox.addStyleName("diff-Split-Props");
                 propertiesBox.addStyleName("diff-Split-Props");
                 viewerBox.setCaption("Original Viewer");
@@ -282,6 +347,7 @@ public class WorkColumnsEditor extends Composite {
                 propertiesBox.setCaption("Properties");
             }
         } else if (designToolbar.getCurrentView() == DesignToolbar.View.BLOCKS && Ode.getInstance().isInDiffView() && fileEditor instanceof YaBlocksEditor) {
+            
             YaBlocksEditor yaEditor = (YaBlocksEditor) fileEditor;
             Map<String, String> files = Ode.getInstance().getDiffFileContents();
             for (String fileName : files.keySet()) {
@@ -289,10 +355,12 @@ public class WorkColumnsEditor extends Composite {
                   String content = files.get(fileName);
                   // parse it, save it, display it raw — whatever you want
                   WorkColumnsEditor.openSecondaryWorkspace(content);
+                  viewerBox.setCaption("Viewer");
+                  missingScreenLabel.setVisible(false);
                   return;
                 }
             }
-            viewerBox.setCaption("Viewer");
+            missingScreenLabel.setVisible(true);
         }
     }
 

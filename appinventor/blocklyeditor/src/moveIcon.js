@@ -19,25 +19,25 @@
  */
 
 /**
- * @fileoverview Object representing a DiffIcon for MIT App Inventor.
+ * @fileoverview Object representing a MoveIcon for MIT App Inventor.
  */
 
 'use strict';
 
-goog.provide('AI.DiffIcon');
+goog.provide('AI.MoveIcon');
 
 /**
  * Class for an add.
  * @param {!Blockly.Block} block The block associated with this add.
  * @constructor
  */
-AI.DiffIcon = class extends Blockly.icons.Icon {
+AI.MoveIcon = class extends Blockly.icons.Icon {
   constructor(block) {
     super(block);
   }
 
   getType() {
-    return AI.DiffIcon.TYPE;
+    return AI.MoveIcon.TYPE;
   }
 
   initView(listener) {
@@ -61,17 +61,16 @@ AI.DiffIcon = class extends Blockly.icons.Icon {
       this.svgRoot);
 
     Blockly.utils.dom.createSvgElement('path',
-      {'class': 'blocklyDiffIcon',
-        'd': 'M3,13 L8,2 L13,13 L3,13'},
-        // m8.2592 15.2288 4.1818-4.1818-1.452-1.452-1.6843 1.6553v-5.9822l1.6843 1.6553 1.452-1.452-4.1818-4.1818-4.1818 4.1818 1.452 1.452 1.6843-1.6553v5.9822l-1.6843-1.6553-1.452 1.452 4.1818 4.1818Z
+      {'class': 'blocklyMoveIcon',
+        'd': 'm8.2592 15.2288 4.1818-4.1818-1.452-1.452-1.6843 1.6553v-5.9822l1.6843 1.6553 1.452-1.452-4.1818-4.1818-4.1818 4.1818 1.452 1.452 1.6843-1.6553v5.9822l-1.6843-1.6553-1.452 1.452 4.1818 4.1818Z'},
       // X fills circle vvv
       //'d': 'M 3.1931458,3.1931458 12.756854,12.756854 8,8 3.0931458,12.756854 12.756854,3.0931458'},
       this.svgRoot);
-    // Blockly.utils.dom.addClass(this.svgRoot, 'blockly-icon-diff');
+    // Blockly.utils.dom.addClass(this.svgRoot, 'blockly-icon-move');
   }
 
   getSize() {
-    return AI.DiffIcon.SIZE;
+    return AI.MoveIcon.SIZE;
   }
 
   getWeight() {
@@ -106,19 +105,19 @@ AI.DiffIcon = class extends Blockly.icons.Icon {
 };
 
 /**
- * Radius of the DiffIcon icon.
+ * Radius of the MoveIcon icon.
  */
-AI.DiffIcon.ICON_RADIUS = 8;
+AI.MoveIcon.ICON_RADIUS = 8;
 
 /**
- * Type for the DiffIcon icon.
+ * Type for the MoveIcon icon.
  */
-AI.DiffIcon.TYPE = new Blockly.icons.IconType('diff');
+AI.MoveIcon.TYPE = new Blockly.icons.IconType('moved_block');
 
 /**
- * Size of the DiffIcon icon.
+ * Size of the MoveIcon icon.
  */
-AI.DiffIcon.SIZE = new Blockly.utils.Size(
-  AI.DiffIcon.ICON_RADIUS * 2, AI.DiffIcon.ICON_RADIUS * 2);
+AI.MoveIcon.SIZE = new Blockly.utils.Size(
+  AI.MoveIcon.ICON_RADIUS * 2, AI.MoveIcon.ICON_RADIUS * 2);
 
-Blockly.icons.registry.register(AI.DiffIcon.TYPE, AI.DiffIcon);
+Blockly.icons.registry.register(AI.MoveIcon.TYPE, AI.MoveIcon);

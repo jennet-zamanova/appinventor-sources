@@ -20,6 +20,7 @@ goog.require('AI.ErrorIcon');
 goog.require('AI.AddedBlockIcon');
 goog.require('AI.DeletedBlockIcon');
 goog.require('AI.DiffIcon');
+goog.require('AI.MoveIcon');
 
 
 /**
@@ -42,7 +43,7 @@ Blockly.BlockSvg.prototype.deletedBlock = null;
 
 /**
  * Block's addedBlock icon (if any).
- * @type {AI.DiffIcon}
+ * @type {AI.MoveIcon}
  */
 Blockly.BlockSvg.prototype.movedBlock = null;
 
@@ -182,14 +183,14 @@ Blockly.BlockSvg.prototype.setModifiedBlockIcon = function() {
  * Add this block's move icon.
  */
 Blockly.BlockSvg.prototype.setMovedBlockIcon = function() {
-  if (!AI.DiffIcon) {
+  if (!AI.MoveIcon) {
     throw 'Diffs not supported.';
   }
   if (this.isDeadOrDying()) {
     return;  // do not process diffs if the block is being destroyed
   }
   if (!this.movedBlock) {
-      this.movedBlock = new AI.DiffIcon(this);
+      this.movedBlock = new AI.MoveIcon(this);
       this.addIcon(this.movedBlock);
     }
   if (this.rendered) {

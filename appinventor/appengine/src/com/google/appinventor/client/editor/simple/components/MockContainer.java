@@ -141,11 +141,7 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
   }
 
   public TreeItem buildColoredTree(List<String> newIds, List<String> deletedIds, List<String> movedIds, List<String> updatedIds, int view) {
-    TreeItem itemNode = super.buildTree();
-    //hide all containers except form if only nonvisible components are to be shown
-    //in such a case, we need only the form's treeItem because all non-visible components are attached to it
-    itemNode.setVisible(view != 3 || isForm());
-
+    TreeItem itemNode;
     if (isForm()) {
       String style = "unchanged";
       if (movedIds.contains(this.getUuid())) {
@@ -153,13 +149,19 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (updatedIds.contains(this.getUuid())) {
         style = "updated";
       } 
+      itemNode = super.buildTree(style);
+      itemNode.setVisible(true);
       itemNode.getWidget().addStyleName("gwt-TreeItem-"+style);
+    } else {
+      itemNode = super.buildTree();
+      //hide all containers except form if only nonvisible components are to be shown
+      //in such a case, we need only the form's treeItem because all non-visible components are attached to it
+      itemNode.setVisible(view != 3);
     }
 
     // Recursively build the tree for child components
     // TODO: figure out a way to be color-blind friendly
     for (MockComponent child : children) {
-      TreeItem childNode = child.buildTree();
       String style = "unchanged";
       if (newIds.contains(child.getUuid())) {
         style = "added";
@@ -170,7 +172,7 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (updatedIds.contains(child.getUuid())) {
         style = "updated";
       }
-
+      TreeItem childNode = child.buildTree(style);
       childNode.getWidget().addStyleName("gwt-TreeItem-"+style);
       child.color("gwt-TreeItem-"+style);
       

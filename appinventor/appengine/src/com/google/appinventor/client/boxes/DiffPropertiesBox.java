@@ -66,6 +66,11 @@ public final class DiffPropertiesBox extends Box {
     setContent(diffDesignProperties);
   }
 
+  public void clear() {
+    diffDesignProperties.clear();
+    setContent(diffDesignProperties);
+  }
+
   /*
    * Show the given component's properties in the properties panel.
    */

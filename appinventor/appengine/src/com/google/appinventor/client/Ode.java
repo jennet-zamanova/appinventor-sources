@@ -685,7 +685,6 @@ public class Ode implements EntryPoint {
       // the project. This will cause the projects source files to be fetched
       // asynchronously, and loaded into file editors.
       inDiffView = false;
-      workColumnsEditor.resetToDesignerNormalView();
       workColumnsEditor.getViewerBox().show(projectRootNode);
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
@@ -697,6 +696,7 @@ public class Ode implements EntryPoint {
       }
       assetManager.loadAssets(project.getProjectId());
       workColumnsEditor.getAssetListBox().getAssetList().refreshAssetList(project.getProjectId());
+      workColumnsEditor.resetToDesignerNormalView();
     }
     getTopToolbar().updateFileMenuButtons(1);
   }
@@ -2716,25 +2716,30 @@ public class Ode implements EntryPoint {
     try {
       return this.diffIds.get(currentFileEditor.getEntityName()).newIds;
     } catch (Exception e) {
-      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+      LOG.warning("ids for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
     }
     return Collections.emptyList();
   }
 
   public HashMap<String, List<String>> getModifiedAttributes() {
-    HashMap<String, List<String>> attrs = this.modifiedAttributes.get(currentFileEditor.getEntityName());
-    if (attrs == null) {
-      LOG.warning("attributes for the screen " + currentFileEditor.getEntityName() + " were not found");
-      return new HashMap<>();
+    try {
+      HashMap<String, List<String>> attrs = this.modifiedAttributes.get(currentFileEditor.getEntityName());
+      if (attrs == null) {
+        LOG.warning("attributes for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
+        return new HashMap<>();
+      }
+      return attrs;
+    } catch (Exception e) {
+      LOG.warning("attributes for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
     }
-    return attrs;
+    return new HashMap<>();
   }
   
   public List<String> getDeletedIds() {
     try {
       return this.diffIds.get(currentFileEditor.getEntityName()).deletedIds;
     } catch (Exception e) {
-      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+      LOG.warning("ids for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
     }
     return Collections.emptyList();
   }
@@ -2743,7 +2748,7 @@ public class Ode implements EntryPoint {
     try {
       return this.diffIds.get(currentFileEditor.getEntityName()).movedIds;
     } catch (Exception e) {
-      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+      LOG.warning("ids for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
     }
     return Collections.emptyList();
   }
@@ -2752,7 +2757,7 @@ public class Ode implements EntryPoint {
     try {
       return this.diffIds.get(currentFileEditor.getEntityName()).updatedIds;
     } catch (Exception e) {
-      LOG.warning("ids for the screen " + currentFileEditor.getEntityName() + " were not found");
+      LOG.warning("ids for the screen " + (currentFileEditor != null ? currentFileEditor.getEntityName() : "unknown file editor") + " were not found");
     }
     return Collections.emptyList();
   }

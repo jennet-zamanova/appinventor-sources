@@ -62,6 +62,7 @@ import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -909,8 +910,27 @@ public abstract class MockComponent extends Composite implements PropertyChangeL
     // Note: We create a ClippedImagePrototype because we need something that can be
     // used to get HTML for the iconImage. AbstractImagePrototype requires
     // an ImageResource, which we don't necessarily have.
+    ImageResource icon;
+    switch (mod) {
+      case "added":
+        icon = images.added();
+        break;
+      case "deleted":
+        icon = images.deleted();
+        break;
+      case "moved":
+        icon = images.moved();
+        break;
+      case "updated":
+        icon = images.changed();
+        break;
+      default:
+        icon = images.unchanged();
+        break;
+    }
+
     TreeItem itemNode = new TreeItem(
-        new HTML("<span>" + mod + iconImage.getElement().getString() + SafeHtmlUtils.htmlEscapeAllowEntities(getName()) + "</span>")) {
+        new HTML("<span>" + (new Image(icon)).getElement().getString() + iconImage.getElement().getString() + SafeHtmlUtils.htmlEscapeAllowEntities(getName()) + "</span>")) {
       @Override
       protected Focusable getFocusable() {
         return nullFocusable;

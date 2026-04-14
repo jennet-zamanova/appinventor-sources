@@ -46,6 +46,11 @@
   fill: rgb(0, 0, 0);
 }
 
+.blocklyIconGroup .blocklyMoveIcon {
+  stroke: transparent;
+  fill: white;
+}
+
 /* .blocklyIconGroup .blocklyDiffIconDelta {
   stroke: #ffffff;
   stroke-width: 2px;

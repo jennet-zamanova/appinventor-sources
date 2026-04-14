@@ -158,7 +158,10 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   public void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor, MockComponent component, boolean selected) {
     ProjectEditor pe = Ode.getCurrentProjectEditor();
     DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) pe.getFileEditor(designerEditor.getEntityName(), designerEditor.getEditorType());
-    de.changeComponentSelection(component.getUuid(), selected);
+    if (de != null) {
+      // screen might not exist
+      de.changeComponentSelection(component.getUuid(), selected);
+    }
   }
 
   private void loadProjectSettings() {

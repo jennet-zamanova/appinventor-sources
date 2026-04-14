@@ -76,4 +76,11 @@ public class SourceStructureBox extends Box implements ISourceStructureBox {
   public DockPanel getHeaderContainer() {
     return super.getHeaderContainer();
   }
+
+  public void clear() {
+    getSourceStructureExplorer().clearTree();
+    getSourceStructureBox().setVisible(true);
+    this.setVisible(true);
+    setContent(SUBINSTANCE.getSourceStructureExplorer());
+  }
 }

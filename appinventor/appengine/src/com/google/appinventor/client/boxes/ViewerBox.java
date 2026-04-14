@@ -10,6 +10,7 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import java.util.logging.Logger;
@@ -23,6 +24,8 @@ public class ViewerBox extends Box {
 
   // Singleton viewer box instance
   private static final ViewerBox INSTANCE = new ViewerBox();
+
+  private boolean isCleared = false;
 
   /**
    * Return the singleton viewer box.
@@ -53,7 +56,17 @@ public class ViewerBox extends Box {
     ProjectEditor projectEditor = Ode.getInstance().getEditorManager().openProject(projectRootNode);
     setContent(projectEditor);
     Ode.getInstance().switchToProjectEditor();
+    isCleared = false;
     return projectEditor;
+  }
+
+  public void clear() {
+    setContent((new DiffProjectEditor(Ode.getInstance().getUiStyleFactory())).asWidget());
+    isCleared = true;
+  }
+
+  public boolean isCleared() {
+    return isCleared;
   }
 }
 

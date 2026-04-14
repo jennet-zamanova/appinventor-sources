@@ -161,7 +161,10 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
     if (Ode.getInstance().isInDiffView()) {
       DiffProjectEditor dpe = Ode.getInstance().getDiffProjectEditor();
       DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) dpe.getFileEditor(designerEditor.getEntityName(), designerEditor.getEditorType());
-      de.changeComponentSelection(component.getUuid(), selected);
+      if (de != null) {
+        // screen might not exist
+        de.changeComponentSelection(component.getUuid(), selected);
+      }
     }
   }
 
@@ -259,6 +262,9 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
    * @return
    */
   public final FileEditor getFileEditor(String entityName, String editorType) {
+    if (editorsByType == null) {
+      return null;
+    }
     Map<String, FileEditor> entityEditors = editorsByType.get(entityName);
     if (entityEditors != null) {
       return entityEditors.get(editorType);

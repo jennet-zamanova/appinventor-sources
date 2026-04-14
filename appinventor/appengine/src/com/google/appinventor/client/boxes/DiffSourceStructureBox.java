@@ -69,6 +69,13 @@ public class DiffSourceStructureBox extends Box implements ISourceStructureBox {
     setContent(SUBINSTANCE.getSourceStructureExplorer());
   }
 
+  public void clear() {
+    getSourceStructureExplorer().clearTree();
+    getSourceStructureBox().setVisible(true);
+    this.setVisible(true);
+    setContent(SUBINSTANCE.getSourceStructureExplorer());
+  }
+
   /**
    * Returns the header container for the source structure box (used by childs).
    * @return DockPanel header container

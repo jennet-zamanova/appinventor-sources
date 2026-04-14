@@ -58,9 +58,27 @@ public interface Images extends Resources {
 
   /**
    * Close button image for the tab widget
-   */
+  */
   @Source("com/google/appinventor/images/close.png")
   ImageResource close();
+
+  /**
+   * Image for diffing
+   */
+  @Source("com/google/appinventor/images/unchanged.png")
+  ImageResource unchanged();
+
+  @Source("com/google/appinventor/images/added.png")
+  ImageResource added();
+
+  @Source("com/google/appinventor/images/deleted.png")
+  ImageResource deleted();
+
+  @Source("com/google/appinventor/images/moved.png")
+  ImageResource moved();
+
+  @Source("com/google/appinventor/images/changed.png")
+  ImageResource changed();
 
   /**
    * Phone status bar for Android Holo shown above the form in the visual designer

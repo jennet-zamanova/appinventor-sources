@@ -153,6 +153,9 @@ public final class PropertiesBox extends Box {
     }
   }
 
- 
+  public void clear() {
+    designProperties.clear();
+    setContent(designProperties);
+  }
  
 }

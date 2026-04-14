@@ -111,6 +111,17 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
     componentDatabaseChangeListeners.add(palettePanel);
   }
 
+  YaFormEditor(IProjectEditor projectEditor) {
+    super(projectEditor, new YoungAndroidFormNode(), SimpleComponentDatabase.getInstance(),
+        projectEditor.getUiFactory().createSimpleVisibleComponentsPanel(projectEditor, new YaNonVisibleComponentsPanel()));
+
+    // Create palettePanel, which will be used as the content of the PaletteBox.
+    palettePanel = new YoungAndroidPalettePanel(this);
+    palettePanel.loadComponents();
+    palettePanel.setSize("100%", "100%");
+    componentDatabaseChangeListeners.add(palettePanel);
+  }
+
   public boolean shouldDisplayHiddenComponents() {
     return projectEditor.getScreenCheckboxState(root.getTitle()) != null
                && projectEditor.getScreenCheckboxState(root.getTitle());

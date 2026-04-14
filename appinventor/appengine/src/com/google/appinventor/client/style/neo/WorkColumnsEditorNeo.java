@@ -23,6 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
 
 public class WorkColumnsEditorNeo extends WorkColumnsEditor {
@@ -34,6 +35,8 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
   protected FlowPanel structureAndAssets;
   @UiField 
   protected ConsolePanel consolePanel;
+  @UiField 
+  protected Label missingScreenLabel;
 
   @UiField
   protected DesignToolbar designToolbar;
