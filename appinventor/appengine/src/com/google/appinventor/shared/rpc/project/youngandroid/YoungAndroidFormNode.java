@@ -15,7 +15,7 @@ import com.google.appinventor.shared.storage.StorageUtil;
  * Young Android form source file node in the project tree.
  *
  */
-public final class YoungAndroidFormNode extends YoungAndroidSourceNode {
+public class YoungAndroidFormNode extends YoungAndroidSourceNode {
 
   // For serialization
   private static final long serialVersionUID = -933267987704020542L;

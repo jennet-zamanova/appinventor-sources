@@ -195,7 +195,7 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
     deckPanel.insert(fileEditor, beforeIndex);
   }
 
-  protected final void addFileEditorByType(FileEditor fileEditor) {
+  public final void addFileEditorByType(FileEditor fileEditor) {
     String entityName = SourceNode.getEntityName(fileEditor.getFileId());
     if (!editorsByType.containsKey(entityName)) {
       Map<String, FileEditor> editorMap = new HashMap<>();

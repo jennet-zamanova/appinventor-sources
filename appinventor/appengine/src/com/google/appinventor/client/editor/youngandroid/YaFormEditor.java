@@ -32,6 +32,7 @@ import com.google.appinventor.shared.properties.json.JSONArray;
 import com.google.appinventor.shared.properties.json.JSONObject;
 import com.google.appinventor.shared.properties.json.JSONParser;
 import com.google.appinventor.shared.properties.json.JSONValue;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidEmptyNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidFormNode;
 import com.google.appinventor.shared.settings.SettingsConstants;
 import com.google.appinventor.shared.youngandroid.YoungAndroidSourceAnalyzer;
@@ -111,11 +112,12 @@ public final class YaFormEditor extends DesignerEditor<YoungAndroidFormNode, Moc
     componentDatabaseChangeListeners.add(palettePanel);
   }
 
-  YaFormEditor(IProjectEditor projectEditor) {
-    super(projectEditor, new YoungAndroidFormNode(), SimpleComponentDatabase.getInstance(),
+  YaFormEditor(IProjectEditor projectEditor, long projectId) {
+    super(projectEditor, new YoungAndroidEmptyNode(projectId), SimpleComponentDatabase.getInstance(projectId),
         projectEditor.getUiFactory().createSimpleVisibleComponentsPanel(projectEditor, new YaNonVisibleComponentsPanel()));
 
     // Create palettePanel, which will be used as the content of the PaletteBox.
+    root = new MockForm(this);
     palettePanel = new YoungAndroidPalettePanel(this);
     palettePanel.loadComponents();
     palettePanel.setSize("100%", "100%");

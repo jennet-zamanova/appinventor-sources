@@ -5,6 +5,7 @@
 
 package com.google.appinventor.client.editor.simple.palette;
 
+import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
 import com.google.appinventor.client.editor.simple.SimpleEditor;
 import com.google.appinventor.client.editor.simple.components.MockAbsoluteArrangement;
@@ -60,11 +61,13 @@ import com.google.appinventor.client.editor.simple.components.MockTwitter;
 import com.google.appinventor.client.editor.simple.components.MockVerticalArrangement;
 import com.google.appinventor.client.editor.simple.components.MockVideoPlayer;
 import com.google.appinventor.client.editor.simple.components.MockWebViewer;
+import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.shared.simple.ComponentDatabaseInterface;
 import com.google.appinventor.shared.storage.StorageUtil;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Image;
 import java.util.Map;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
 /**
  * Base implementation of ComponentFactory that can be subclassed for specific App Inventor editors.
@@ -249,8 +252,17 @@ public class BaseComponentFactory implements ComponentFactory {
   private Image getImageFromPath(String iconPath, String packageName) {
     if (iconPath.startsWith("aiwebres/") && packageName != null) {
       // icon for extension
-      Image image = new Image(StorageUtil.getFileUrl(editor.getProjectId(),
+      Image image = new Image();
+      if (editor.getProjectEditor() instanceof DiffProjectEditor) {
+        ArrayBuffer blob = Ode.getInstance().getDiffContents().get("$diff:"+"assets/external_comps/" + packageName + "/" + iconPath);
+        if (blob != null) {
+          image = new Image(createObjectURL(blob));
+        }
+      } else {
+        image = new Image(StorageUtil.getFileUrl(editor.getProjectId(),
           "assets/external_comps/" + packageName + "/" + iconPath));
+      }
+      
       image.setWidth("16px");
       image.setHeight("16px");
       return image;
@@ -261,6 +273,12 @@ public class BaseComponentFactory implements ComponentFactory {
       return new Image(iconPath);
     }
   }
+
+  private static native String createObjectURL(ArrayBuffer javaRawData) /*-{
+    var arrayBufferView = new Uint8Array(javaRawData);
+    var blob = new Blob([arrayBufferView], { type: 'image/png' });
+    return URL.createObjectURL(blob);
+  }-*/;
 
   private String getLicenseUrlFromPath(String licensePath, String packageName) {
     if (licensePath.startsWith("aiwebres/") && packageName != null) {

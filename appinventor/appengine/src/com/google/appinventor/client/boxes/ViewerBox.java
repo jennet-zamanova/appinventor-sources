@@ -27,6 +27,8 @@ public class ViewerBox extends Box {
 
   private boolean isCleared = false;
 
+  private ProjectEditor projectEditor;
+
   /**
    * Return the singleton viewer box.
    *
@@ -53,9 +55,18 @@ public class ViewerBox extends Box {
    * @param projectRootNode  the root node of the project to show in the viewer
    */
   public ProjectEditor show(ProjectRootNode projectRootNode) {
-    ProjectEditor projectEditor = Ode.getInstance().getEditorManager().openProject(projectRootNode);
+    projectEditor = Ode.getInstance().getEditorManager().openProject(projectRootNode);
     setContent(projectEditor);
     Ode.getInstance().switchToProjectEditor();
+    isCleared = false;
+    return projectEditor;
+  }
+
+  public ProjectEditor show() {
+    if (!isCleared) {
+      LOG.warning("not cleared!");
+    }
+    setContent(projectEditor);
     isCleared = false;
     return projectEditor;
   }

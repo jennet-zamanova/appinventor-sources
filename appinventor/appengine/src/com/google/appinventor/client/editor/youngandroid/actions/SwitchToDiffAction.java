@@ -51,7 +51,7 @@ public class SwitchToDiffAction implements Command {
         Ode.getInstance().setDiffFileContents(files);
         // go through designer screens and save info
         HashMap<String, DiffIds> diffInfo = new HashMap<>();
-        List<String> missingScreens = new ArrayList<String>();
+        List<String> allScreens = new ArrayList<String>();
         HashMap<String, HashMap<String, List<String>>> modifiedAttributes = new HashMap<>();
 
         for (String fileName : files.keySet()) {
@@ -59,7 +59,7 @@ public class SwitchToDiffAction implements Command {
             String uploadedContent = files.get(fileName);
             JSONObject uploadedJsonObject = YoungAndroidSourceAnalyzer.parseSourceFile(uploadedContent, new ClientJsonParser());
             String entityName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.length()-4);
-            
+            allScreens.add(entityName);
 
             FileEditor correspondingFileEditor = Ode.getCurrentProjectEditor().getFileEditor(entityName, DesignerEditor.class.getSimpleName());
             if (correspondingFileEditor != null && (correspondingFileEditor instanceof YaFormEditor)) {
@@ -92,19 +92,17 @@ public class SwitchToDiffAction implements Command {
               }
 
               modifiedAttributes.put(entityName, idToAttribute);
-            } else {
-              missingScreens.add(entityName);
-            }
+            } 
           }
         }
 
         Ode.getInstance().setDiffIds(diffInfo);
         Ode.getInstance().setModifiedAttributes(modifiedAttributes);
         LOG.warning("diff: " + diffInfo);
-        toolbar.addMissingScreens(toolbar.getCurrentProject().getProjectId(), missingScreens);
         Ode.getInstance().setInDiffView(true);
         Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
         Ode.getInstance().getDesignToolbar().setSwitchFromDiffButtonVisible(true);
+        toolbar.updateMissingScreens(toolbar.getCurrentProject().getProjectId(), allScreens);
       }
 
       @Override

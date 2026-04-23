@@ -53,7 +53,7 @@ AI.MoveIcon = class extends Blockly.icons.Icon {
     </g>
     */
     Blockly.utils.dom.createSvgElement('circle',
-      {'class': 'blocklyDiffIconOutline',
+      {'class': 'blocklyMoveIconOutline',
         'r': AI.AddedBlockIcon.ICON_RADIUS,
         'cx': AI.AddedBlockIcon.ICON_RADIUS,
         'cy': AI.AddedBlockIcon.ICON_RADIUS,

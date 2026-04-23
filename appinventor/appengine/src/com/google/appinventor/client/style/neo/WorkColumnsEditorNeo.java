@@ -37,6 +37,8 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
   protected ConsolePanel consolePanel;
   @UiField 
   protected Label missingScreenLabel;
+  @UiField 
+  protected Label missingUploadedScreenLabel;
 
   @UiField
   protected DesignToolbar designToolbar;

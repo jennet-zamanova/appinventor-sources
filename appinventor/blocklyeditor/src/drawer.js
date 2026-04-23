@@ -37,7 +37,7 @@ Blockly.Drawer = function(parentWorkspace, opt_options) {
   }
   this.workspace_ = parentWorkspace;
   this.flyout_ = this.workspace_.getFlyout();
-  this.flyout_.setAutoClose(true);
+  this.flyout_?.setAutoClose(true);
   this.lastComponent = null;
 };
 

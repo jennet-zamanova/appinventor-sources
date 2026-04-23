@@ -57,9 +57,13 @@ public final class YoungAndroidAssetSelectorPropertyEditor extends AdditionalCho
     if (editor.getProjectEditor() instanceof DiffProjectEditor) {
       assetsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot()).getAssetsFolder();
     } else {
-      Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
-      assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
-      project.addProjectChangeListener(this);
+      if (editor.getProjectId() != -1) {
+        Project project = Ode.getInstance().getProjectManager().getProject(editor.getProjectId());
+        assetsFolder = ((YoungAndroidProjectNode) project.getRootNode()).getAssetsFolder();
+        project.addProjectChangeListener(this);
+      } else {
+        assetsFolder = new YoungAndroidAssetsFolder("$diff$empty$");
+      }
     }
     
 

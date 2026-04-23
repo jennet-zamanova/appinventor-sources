@@ -22,10 +22,10 @@ Blockly.COLOR_CATEGORY_HUE = "#7D7D7D";  // [125, 125, 125]
 Blockly.VARIABLE_CATEGORY_HUE = "#D05F2D";  // [208, 95, 45]
 Blockly.PROCEDURE_CATEGORY_HUE = "#7C5385";  // [124, 83, 133]
 Blockly.DICTIONARY_CATEGORY_HUE = "#2D1799"; // [45, 23, 153]
-Blockly.BLOCK_REMOVED_HUE = "#cd9999"; // [205, 153, 153] Light red for removed blocks
-Blockly.BLOCK_ADDED_HUE = "#77a277"; // [153, 205, 153] Light green for added blocks
-Blockly.BLOCK_MOVED_HUE = "#26529e"; // [153, 153, 205] Light blue for changed blocks
-Blockly.BLOCK_MODIFIED_HUE = "#e8d43c";
+Blockly.BLOCK_REMOVED_HUE = "#dca4a4"; // "#cd9999"; // [205, 153, 153] Light red for removed blocks
+Blockly.BLOCK_ADDED_HUE = "#80b380"; // "#77a277"; // [153, 205, 153] Light green for added blocks
+Blockly.BLOCK_MOVED_HUE = "#26529e"; //"#26529e"; // [153, 153, 205] Light blue for changed blocks
+Blockly.BLOCK_MODIFIED_HUE = "#decb35";// "#e8d43c";
 Blockly.BLOCK_GREY_OUT = "#777777";
 
 // #93267c

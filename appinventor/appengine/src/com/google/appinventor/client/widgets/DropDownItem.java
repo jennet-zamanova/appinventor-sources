@@ -46,6 +46,14 @@ public class DropDownItem {
     icon = image;
   }
 
+  public DropDownItem(String widgetName, String caption, Command command, Image image, String style) {
+    this.name = widgetName;
+    this.caption = caption;
+    this.command = command;
+    this.styleName = style;
+    icon = image;
+  }
+
   public DropDownItem(String name, String caption, Command command, String style, boolean visible) {
     this.name = name;
     this.caption = caption;

@@ -6,9 +6,12 @@
 
 package com.google.appinventor.client.editor.youngandroid;
 
+import static com.google.appinventor.client.Ode.MESSAGES;
 import static com.google.appinventor.shared.settings.SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS;
 import static com.google.appinventor.shared.settings.SettingsConstants.YOUNG_ANDROID_SETTINGS_PROJECT_COLORS;
 import static com.google.appinventor.common.constants.YoungAndroidStructureConstants.FORM_PROPERTIES_EXTENSION;
+
+import com.google.appinventor.client.ErrorReporter;
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.OdeAsyncCallback;
 import com.google.appinventor.client.UiStyleFactory;
@@ -22,6 +25,7 @@ import com.google.appinventor.client.editor.IProjectEditor;
 import com.google.appinventor.client.editor.ProjectEditor;
 import com.google.appinventor.client.editor.blocks.BlocksEditor;
 import com.google.appinventor.client.editor.designer.DesignerEditor;
+import com.google.appinventor.client.editor.simple.SimpleComponentDatabase;
 import com.google.appinventor.client.editor.simple.components.MockComponent;
 import com.google.appinventor.client.editor.simple.components.MockFusionTablesControl;
 import com.google.appinventor.client.explorer.project.Project;
@@ -39,14 +43,18 @@ import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjec
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidSourceNode;
 import com.google.appinventor.shared.settings.SettingsConstants;
 import com.google.appinventor.shared.storage.StorageUtil;
+import com.google.appinventor.client.utils.Promise;
+import com.google.appinventor.common.utils.StringUtils;
+import com.google.gwt.json.client.JSONException;
 import com.google.appinventor.shared.youngandroid.YoungAndroidSourceAnalyzer;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.user.client.Command;
+import com.google.appinventor.shared.properties.json.JSONArray;
 import com.google.appinventor.shared.properties.json.JSONObject;
-
+import com.google.appinventor.shared.properties.json.JSONValue;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -79,16 +87,28 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   protected final UiStyleFactory uiFactory;
 
   private final Map<String, FileEditor> openFileEditors;
+
   private static class EditorSet {
     DesignerEditor<?, ?, ?, ?, ?> formEditor = null;
     BlocksEditor<?, ?> blocksEditor = null;
   }
 
+  // Database of component type descriptions
+  private final SimpleComponentDatabase COMPONENT_DATABASE;
+  // Mapping of package names to extensions defined by the package (n > 1)
+  private final Map<String, Set<String>> externalCollections = new HashMap<>();
+  private final Map<String, String> extensionToNodeName = new HashMap<>();
+  private final Map<String, Set<String>> extensionsInNode = new HashMap<>();
+
+  // List of External Components
+  private final List<String> externalComponents = new ArrayList<>();
+
   // Maps form name -> editors for this form
   private final Map<String, EditorSet> editorMap = new HashMap<>();
   private final Map<String, Map<String, FileEditor>> editorsByType;
   protected final List<String> fileIds;
-  // private final HashMap<String,String> locationHashMap = new HashMap<String,String>();
+  // private final HashMap<String,String> locationHashMap = new
+  // HashMap<String,String>();
   private final DeckPanel deckPanel;
   private FileEditor selectedFileEditor;
   private final TreeMap<String, Boolean> screenHashMap = new TreeMap<String, Boolean>();
@@ -129,6 +149,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     fileIds = new ArrayList<String>();
     editorsByType = Maps.newHashMap();
 
+    COMPONENT_DATABASE = SimpleComponentDatabase.getInstance(Ode.getInstance().getDiffRoot().getProjectId());
+
     deckPanel = new DeckPanel();
     deckPanel.addStyleName("diff-deck-panel");
 
@@ -142,11 +164,13 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * Processes the project before loading into the project editor.
    * To do any any pre-processing of the Project
    * Calls the loadProject() after prepareProject() is fully executed.
-   * Currently, prepareProject loads all external components associated with project.
+   * Currently, prepareProject loads all external components associated with
+   * project.
    */
   public void processProject() {
-    // resetExternalComponents();
+    resetExternalComponents();
     resetProjectWarnings();
+    loadExternalComponents();
     loadProject();
   }
 
@@ -155,9 +179,11 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     return this;
   }
 
-  public void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor, MockComponent component, boolean selected) {
+  public void updateRelevantComponentSelectionChange(DesignerEditor<?, ?, ?, ?, ?> designerEditor,
+      MockComponent component, boolean selected) {
     ProjectEditor pe = Ode.getCurrentProjectEditor();
-    DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) pe.getFileEditor(designerEditor.getEntityName(), designerEditor.getEditorType());
+    DesignerEditor<?, ?, ?, ?, ?> de = (DesignerEditor<?, ?, ?, ?, ?>) pe.getFileEditor(designerEditor.getEntityName(),
+        designerEditor.getEditorType());
     if (de != null) {
       // screen might not exist
       de.changeComponentSelection(component.getUuid(), selected);
@@ -179,23 +205,34 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
           }
         }
 
-        Map<String, String> allSettings = new HashMap<String,String>();
+        Map<String, String> allSettings = new HashMap<String, String>();
         allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ICON, properties.getOrDefault("icon", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_CODE, properties.getOrDefault("versioncode", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_NAME, properties.getOrDefault("versionname", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_USES_LOCATION, properties.getOrDefault("useslocation", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_CODE,
+            properties.getOrDefault("versioncode", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_VERSION_NAME,
+            properties.getOrDefault("versionname", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_USES_LOCATION,
+            properties.getOrDefault("useslocation", ""));
         allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_APP_NAME, properties.getOrDefault("aname", ""));
         allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_SIZING, properties.getOrDefault("sizing", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_SHOW_LISTS_AS_JSON, properties.getOrDefault("showlistsasjson", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL, properties.getOrDefault("tutorialurl", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_BLOCK_SUBSET, properties.getOrDefault("subsetjson", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_SHOW_LISTS_AS_JSON,
+            properties.getOrDefault("showlistsasjson", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL,
+            properties.getOrDefault("tutorialurl", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_BLOCK_SUBSET,
+            properties.getOrDefault("subsetjson", ""));
         allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ACTIONBAR, properties.getOrDefault("actionbar", ""));
         allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_THEME, properties.getOrDefault("theme", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR, properties.getOrDefault("color.primary", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR_DARK, properties.getOrDefault("color.primary.dark", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ACCENT_COLOR, properties.getOrDefault("color.accent", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_DEFAULTFILESCOPE, properties.getOrDefault("defaultfilescope", ""));
-        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PROJECT_COLORS, properties.getOrDefault("projectcolors", "{}"));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR,
+            properties.getOrDefault("color.primary", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PRIMARY_COLOR_DARK,
+            properties.getOrDefault("color.primary.dark", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_ACCENT_COLOR,
+            properties.getOrDefault("color.accent", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_DEFAULTFILESCOPE,
+            properties.getOrDefault("defaultfilescope", ""));
+        allSettings.put(SettingsConstants.YOUNG_ANDROID_SETTINGS_PROJECT_COLORS,
+            properties.getOrDefault("projectcolors", "{}"));
 
         projectSettings.put(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS, allSettings);
       } catch (Exception e) {
@@ -205,7 +242,6 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
       LOG.warning("File not found");
     }
   }
-
 
   private void loadProject() {
     // add form editors first, then blocks editors because the blocks editors
@@ -218,7 +254,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
             new YaFormEditor(this, (YoungAndroidFormNode) source));
       }
     }
-    for (ProjectNode source: Ode.getInstance().getDiffRoot().getAllSourceNodes()) {
+    for (ProjectNode source : Ode.getInstance().getDiffRoot().getAllSourceNodes()) {
       if (source instanceof YoungAndroidBlocksNode) {
         addBlocksEditor(((YoungAndroidBlocksNode) source).getFormName(),
             new YaBlocksEditor(this, (YoungAndroidBlocksNode) source));
@@ -228,24 +264,25 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     // Add the screens to the design toolbar, along with their associated editors
     // DesignToolbar designToolbar = Ode.getInstance().getDesignToolbar();
     // for (String formName : editorMap.keySet()) {
-    //   EditorSet editors = editorMap.get(formName);
-    //   if (editors.formEditor != null && editors.blocksEditor != null) {
-    //     designToolbar.addScreen(projectRootNode.getProjectId(), formName, editors.formEditor,
-    //         editors.blocksEditor);
+    // EditorSet editors = editorMap.get(formName);
+    // if (editors.formEditor != null && editors.blocksEditor != null) {
+    // designToolbar.addScreen(projectRootNode.getProjectId(), formName,
+    // editors.formEditor,
+    // editors.blocksEditor);
 
-    //     if (isLastOpened(formName)) {
-    //       screen1Added = true;
-    //       if (readyToShowScreen1()) {  // probably not yet but who knows?
-    //         LOG.info("YaProjectEditor.loadProject: switching to screen " + formName
-    //             + " for project " + projectRootNode.getProjectId());
-    //         switchToForm(formName, projectRootNode.getProjectId());
-    //       }
-    //     }
-    //   } else if (editors.formEditor == null) {
-    //     LOG.warning("Missing form editor for " + formName);
-    //   } else {
-    //     LOG.warning("Missing blocks editor for " + formName);
-    //   }
+    // if (isLastOpened(formName)) {
+    // screen1Added = true;
+    // if (readyToShowScreen1()) { // probably not yet but who knows?
+    // LOG.info("YaProjectEditor.loadProject: switching to screen " + formName
+    // + " for project " + projectRootNode.getProjectId());
+    // switchToForm(formName, projectRootNode.getProjectId());
+    // }
+    // }
+    // } else if (editors.formEditor == null) {
+    // LOG.warning("Missing form editor for " + formName);
+    // } else {
+    // LOG.warning("Missing blocks editor for " + formName);
+    // }
     // }
 
     // New project loading logic
@@ -254,7 +291,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     // 3. Upgrade Screen1
     // 4. Upgrade all other screens
     // 5. Open Screen1
-    return ;
+    return;
   }
 
   private void addDesigner(final String entityName, final DesignerEditor<?, ?, ?, ?, ?> newDesigner) {
@@ -274,7 +311,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     String contents = load2(fileId);
     // upgrade
     JSONObject propertiesObject = YoungAndroidSourceAnalyzer.parseSourceFile(
-      contents, new ClientJsonParser());
+        contents, new ClientJsonParser());
     newDesigner.setPreUpgradeJsonString(propertiesObject.toJson());
     // final FileContentHolder fileContentHolder = new FileContentHolder(contents);
     int pos = Collections.binarySearch(fileIds, newDesigner.getFileId(), getFileIdComparator());
@@ -289,7 +326,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
             + entityName + " for project " + newDesigner.getProjectId());
       }
     }
-      newDesigner.onFileLoaded(contents);
+    newDesigner.onFileLoaded(contents);
   }
 
   private String load2(String fileId) {
@@ -332,7 +369,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
         LOG.info("YaProjectEditor.addBlocksEditor.loadFile.execute: switching to screen "
             + formName + " for project " + editor.getProjectId());
         // Ode.getInstance().getDesignToolbar().switchToScreen(editor.getProjectId(),
-        //     formName, DesignToolbar.View.DESIGNER);
+        // formName, DesignToolbar.View.DESIGNER);
       }
     }
   }
@@ -343,8 +380,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     }
     loadedBlocksEditors.add(formName);
 
-    final BlocksEditor<?, DesignerEditor<?, ?, ?, ?, ?>> newBlocksEditor =
-        (BlocksEditor) editorMap.get(formName).blocksEditor;
+    final BlocksEditor<?, DesignerEditor<?, ?, ?, ?, ?>> newBlocksEditor = (BlocksEditor) editorMap
+        .get(formName).blocksEditor;
 
     final String fileId = newBlocksEditor.getFileId();
     String blkFileContent = load2(fileId);
@@ -357,7 +394,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     String lastOpened = this.getProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
         SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED);
     if (lastOpened.isEmpty()) { // This happens sometimes when a screen is deleted
-      lastOpened = "Screen1";   // Haven't found the cause, so this is a workaround
+      lastOpened = "Screen1"; // Haven't found the cause, so this is a workaround
     }
     return lastOpened.equals(formName);
   }
@@ -367,8 +404,10 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   }
 
   private static Comparator<String> getFileIdComparator() {
-    // File editors (YaFormEditors and YaBlocksEditors) are sorted so that Screen1 always comes
-    // first and others are in alphabetical order. Within each pair, the YaFormEditor is
+    // File editors (YaFormEditors and YaBlocksEditors) are sorted so that Screen1
+    // always comes
+    // first and others are in alphabetical order. Within each pair, the
+    // YaFormEditor is
     // immediately before the YaBlocksEditor.
     return new Comparator<String>() {
       @Override
@@ -379,7 +418,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
         // Give priority to screen1.
         if (YoungAndroidSourceNode.isScreen1(fileId1)) {
           if (YoungAndroidSourceNode.isScreen1(fileId2)) {
-            // They are both named screen1. The form editor should come before the blocks editor.
+            // They are both named screen1. The form editor should come before the blocks
+            // editor.
             if (isForm1) {
               return isForm2 ? 0 : -1;
             } else {
@@ -400,7 +440,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
         if (compare != 0) {
           return compare;
         }
-        // They are both the same name without extension. The form editor should come before the
+        // They are both the same name without extension. The form editor should come
+        // before the
         // blocks editor.
         if (isForm1) {
           return isForm2 ? 0 : -1;
@@ -412,47 +453,101 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   }
 
   // HOW???
-  // private void resetExternalComponents() {
-  //   COMPONENT_DATABASE.addComponentDatabaseListener(this);
-  //   try {
-  //     COMPONENT_DATABASE.resetDatabase();
-  //   } catch (JSONException e) {
-  //     // thrown if any of the component/extension descriptions are not valid JSON
-  //     // ErrorReporter.reportError(Ode.MESSAGES.componentDatabaseCorrupt(project.getProjectName()));
-  //   }
-  //   externalComponents.clear();
-  //   extensionsInNode.clear();
-  //   extensionToNodeName.clear();
-  // }
+  private void resetExternalComponents() {
+    // COMPONENT_DATABASE.addComponentDatabaseListener(this);
+    try {
+      COMPONENT_DATABASE.resetDatabase();
+    } catch (JSONException e) {
+      // thrown if any of the component/extension descriptions are not valid JSON
+      //
+      ErrorReporter.reportError(Ode.MESSAGES.componentDatabaseCorrupt("diff project"));
+    }
+    externalComponents.clear();
+    extensionsInNode.clear();
+    extensionToNodeName.clear();
+  }
 
-  // private Promise<Object> loadExternalComponents() {
-  //   //Get the list of all ComponentNodes to be Added
-  //   List<ProjectNode> componentNodes = new ArrayList<>();
-  //   YoungAndroidComponentsFolder componentsFolder =
-  //       ((YoungAndroidProjectNode) project.getRootNode()).getComponentsFolder();
-  //   for (ProjectNode node : componentsFolder.getChildren()) {
-  //     // Find all components that are json files.
-  //     final String nodeName = node.getName();
-  //     if (nodeName.endsWith(".json") && StringUtils.countMatches(node.getFileId(), "/") == 3) {
-  //       componentNodes.add(node);
-  //     }
-  //   }
+  private void loadExternalComponents() {
+    // Get the list of all ComponentNodes to be Added
+    List<ProjectNode> componentNodes = new ArrayList<>();
+    YoungAndroidComponentsFolder componentsFolder = ((YoungAndroidProjectNode) Ode.getInstance().getDiffRoot()).getComponentsFolder();
+    for (ProjectNode node : componentsFolder.getChildren()) {
+      // Find all components that are json files.
+      final String nodeName = node.getName();
+      if (nodeName.endsWith(".json") && StringUtils.countMatches(node.getFileId(), "/") == 3) {
+        componentNodes.add(node);
+      }
+    }
+    for (ProjectNode node: componentNodes) {
+      importExtension(node);
+    }
+    // Create a promise that resolves once all components have been added
+  }
 
-  //   // Create a promise that resolves once all components have been added
-  //   return Promise.allOf(componentNodes
-  //       .stream()
-  //       .map(this::importExtension)
-  //       .toArray(Promise[]::new));
-  // }
+  /**
+   * Imports an extension into the project represented by the given {@code node}.
+   *
+   * @param node the node of the extension to import
+   * @return a promise that resolves when the extension has been imported
+   *         successfully
+   */
+  public void importExtension(final ProjectNode node) {
+    final String fileId = node.getFileId();
+    String jsonFileContent = load2(fileId);
+    JSONValue value;
+    try {
+      value = new ClientJsonParser().parse(jsonFileContent);
+    } catch (JSONException e) {
+      // thrown if jsonFileContent is not valid JSON
+      String[] parts = fileId.split("/");
+      if (parts.length > 3 && fileId.endsWith("components.json")) {
+        throw new Error(MESSAGES.extensionDescriptorCorrupt(parts[2], "diff project"));
+      } else {
+        throw new Error(MESSAGES.invalidExtensionInProject("diff project"));
+      }
+    }
+    // COMPONENT_DATABASE.addComponentDatabaseListener(DiffProjectEditor.this);
+    if (value instanceof JSONArray) {
+      JSONArray componentList = value.asArray();
+      COMPONENT_DATABASE.addComponents(componentList);
+      for (JSONValue component : componentList.getElements()) {
+        String name = component.asObject().get("type").asString().getString();
+        // group new extensions by package name
+        String packageName = name.substring(0, name.lastIndexOf('.'));
+        if (!externalCollections.containsKey(packageName)) {
+          externalCollections.put(packageName, new HashSet<String>());
+        }
+        externalCollections.get(packageName).add(name);
+
+        if (!extensionsInNode.containsKey(fileId)) {
+          extensionsInNode.put(fileId, new HashSet<String>());
+        }
+        extensionsInNode.get(fileId).add(name);
+        extensionToNodeName.put(name, fileId);
+
+        name = packageName;
+        if (!externalComponents.contains(name)) {
+          externalComponents.add(name);
+        }
+      }
+    } else {
+      JSONObject componentInfo = value.asObject();
+      COMPONENT_DATABASE.addComponent(componentInfo);
+      // In case of upgrade, we do not need to add entry
+      if (!externalComponents.contains(componentInfo.get("type").toString())) {
+        externalComponents.add(componentInfo.get("type").toString());
+      }
+    }
+  }
 
   private void resetProjectWarnings() {
     MockFusionTablesControl.resetWarning();
   }
 
   /**
-   * Called when the ProjectEditor widget is loaded after having been hidden. 
-   * Subclasses must implement this method, taking responsibility for causing 
-   * the onShow method of the selected file editor to be called and for updating 
+   * Called when the ProjectEditor widget is loaded after having been hidden.
+   * Subclasses must implement this method, taking responsibility for causing
+   * the onShow method of the selected file editor to be called and for updating
    * any other UI elements related to showing the project editor.
    */
   protected void onShow() {
@@ -461,8 +556,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
 
   /**
    * Called when the ProjectEditor widget is about to be unloaded. Subclasses
-   * must implement this method, taking responsibility for causing the onHide 
-   * method of the selected file editor to be called and for updating any 
+   * must implement this method, taking responsibility for causing the onHide
+   * method of the selected file editor to be called and for updating any
    * other UI elements related to hiding the project editor.
    */
   protected void onHide() {
@@ -478,7 +573,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     return uiFactory;
   }
 
-    // TODO: how to manage chekboxes!??
+  // TODO: how to manage chekboxes!??
   public final void setScreenCheckboxState(String screen, Boolean isChecked) {
     screenHashMap.put(screen, isChecked);
   }
@@ -510,8 +605,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   public final void buildScreenHashMap() {
     String screenCheckboxMap = getProjectSettingsProperty(
         SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-        SettingsConstants.YOUNG_ANDROID_SETTINGS_SCREEN_CHECKBOX_STATE_MAP
-    );
+        SettingsConstants.YOUNG_ANDROID_SETTINGS_SCREEN_CHECKBOX_STATE_MAP);
     String[] pairs = screenCheckboxMap.split(" ");
     for (String pair : pairs) {
       String[] mapping = pair.split(":");
@@ -525,7 +619,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * Inserts a file editor in this editor at the specified index.
    *
    * @param fileEditor  file editor to insert
-   * @param beforeIndex  the index before which fileEditor will be inserted
+   * @param beforeIndex the index before which fileEditor will be inserted
    */
   public final void insertFileEditor(FileEditor fileEditor, int beforeIndex) {
     String fileId = fileEditor.getFileId();
@@ -534,7 +628,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     deckPanel.insert(fileEditor, beforeIndex);
   }
 
-  protected final void addFileEditorByType(FileEditor fileEditor) {
+  public final void addFileEditorByType(FileEditor fileEditor) {
     String entityName = SourceNode.getEntityName(fileEditor.getFileId());
     if (!editorsByType.containsKey(entityName)) {
       Map<String, FileEditor> editorMap = new HashMap<>();
@@ -555,7 +649,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * this method. If you're thinking about calling this method directly from
    * somewhere else, please reconsider!
    *
-   * @param fileEditor  file editor to select
+   * @param fileEditor file editor to select
    */
   public final void selectFileEditor(FileEditor fileEditor) {
     int index = deckPanel.getWidgetIndex(fileEditor);
@@ -568,13 +662,14 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
     }
     LOG.info("ProjectEditor: got selectFileEditor for "
         + ((fileEditor == null) ? null : fileEditor.getFileId())
-        +  " selectedFileEditor is "
+        + " selectedFileEditor is "
         + ((selectedFileEditor == null) ? null : selectedFileEditor.getFileId()));
     if (selectedFileEditor != null && selectedFileEditor != fileEditor) {
       selectedFileEditor.onHide();
     }
     // Note that we still want to do the following statements even if
-    // selectedFileEditor == fileEditor already. This handles the case of switching back
+    // selectedFileEditor == fileEditor already. This handles the case of switching
+    // back
     // to a previously opened project from another project.
     selectedFileEditor = fileEditor;
     deckPanel.showWidget(index);
@@ -586,18 +681,18 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   }
 
   /*
-  * Returns the BlocksEditor for the given form name in this project
-  */
+   * Returns the BlocksEditor for the given form name in this project
+   */
   public BlocksEditor<?, ?> getBlocksFileEditor(String formName) {
     if (editorMap.containsKey(formName) && loadedBlocksEditors.contains(formName)) {
       return editorMap.get(formName).blocksEditor;
-    } 
+    }
     return null;
   }
 
   /*
-  * Returns the YaFormEditor for the given form name in this project
-  */
+   * Returns the YaFormEditor for the given form name in this project
+   */
   public DesignerEditor<?, ?, ?, ?, ?> getFormFileEditor(String formName) {
     if (editorMap.containsKey(formName)) {
       return editorMap.get(formName).formEditor;
@@ -608,14 +703,15 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   /**
    * Returns the file editor for the given file ID.
    *
-   * @param fileId  file ID of the file
+   * @param fileId file ID of the file
    */
   public final FileEditor getFileEditor(String fileId) {
     return openFileEditors.get(fileId);
   }
 
   /**
-   * Get the file editor of the given <code>editorType</code>, if any, for <code>entityName</code>.
+   * Get the file editor of the given <code>editorType</code>, if any, for
+   * <code>entityName</code>.
    *
    * @param entityName
    * @param editorType
@@ -649,7 +745,7 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
    * This is used when the files are about to be deleted. If
    * selectedFileEditor is closed, sets selectedFileEditor to null.
    *
-   * @param closeFileIds  file IDs of the files to be closed
+   * @param closeFileIds file IDs of the files to be closed
    */
   public final void closeFileEditors(String[] closeFileIds) {
     for (String fileId : closeFileIds) {
@@ -672,8 +768,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   /**
    * Returns the value of a project settings property.
    *
-   * @param category  property category
-   * @param name  property name
+   * @param category property category
+   * @param name     property name
    * @return the property value
    */
   public final String getProjectSettingsProperty(String category, String name) {
@@ -688,9 +784,9 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   /**
    * Changes the value of a project settings property.
    *
-   * @param category  property category
-   * @param name  property name
-   * @param newValue  new property value
+   * @param category property category
+   * @param name     property name
+   * @param newValue new property value
    */
   public final void changeProjectSettingsProperty(String category, String name, String newValue) {
     try {
@@ -706,8 +802,10 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
 
   /**
    *
-   * @param componentName The name of the component registering location permission
-   * @param newValue either "True" or "False" indicating whether permission is need.
+   * @param componentName The name of the component registering location
+   *                      permission
+   * @param newValue      either "True" or "False" indicating whether permission
+   *                      is need.
    */
   public final void recordLocationSetting(String componentName, String newValue) {
     return;
@@ -720,12 +818,12 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
   /**
    * Notification that the file with the given file ID has been saved.
    *
-   * @param fileId  file ID of the file that was saved
+   * @param fileId file ID of the file that was saved
    */
   public final void onSave(String fileId) {
     // FileEditor fileEditor = openFileEditors.get(fileId);
     // if (fileEditor != null) {
-    //   fileEditor.onSave();
+    // fileEditor.onSave();
     // }
   }
 
@@ -733,18 +831,22 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
 
   @Override
   protected void onLoad() {
-    // onLoad is called immediately after a widget becomes attached to the browser's document.
-    // onLoad will be called both when a project is opened the first time and when an
+    // onLoad is called immediately after a widget becomes attached to the browser's
+    // document.
+    // onLoad will be called both when a project is opened the first time and when
+    // an
     // already-opened project is re-opened.
-    // This is different from the ProjectEditor method loadProject, which is called to load the
+    // This is different from the ProjectEditor method loadProject, which is called
+    // to load the
     // project just after the editor is created.
     // LOG.info("ProjectEditor: got onLoad for project " + projectId);
     super.onLoad();
-    // String tutorialURL = getProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-    //                                                 SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL);
+    // String tutorialURL =
+    // getProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+    // SettingsConstants.YOUNG_ANDROID_SETTINGS_TUTORIAL_URL);
     // if (!tutorialURL.isEmpty()) {
-    //   Ode ode = Ode.getInstance();
-    //   ode.setTutorialURL(tutorialURL);
+    // Ode ode = Ode.getInstance();
+    // ode.setTutorialURL(tutorialURL);
     // }
 
     onShow();
@@ -752,7 +854,8 @@ public class DiffProjectEditor extends Composite implements IProjectEditor {
 
   @Override
   protected void onUnload() {
-    // onUnload is called immediately before a widget becomes detached from the browser's document.
+    // onUnload is called immediately before a widget becomes detached from the
+    // browser's document.
     // Ode ode = Ode.getInstance();
     // ode.setTutorialVisible(false, true);
     // ode.getDesignToolbar().setTutorialToggleVisible(false);

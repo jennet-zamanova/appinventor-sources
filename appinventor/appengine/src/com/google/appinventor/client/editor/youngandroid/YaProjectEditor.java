@@ -556,6 +556,22 @@ public final class YaProjectEditor extends ProjectEditor implements ProjectChang
     };
   }
 
+  public void addEmptyDesignerEditor(final String entityName, final YaFormEditor newDesigner) {
+    if (!editorMap.containsKey(entityName)) {
+      EditorSet editors = new EditorSet();
+      editors.formEditor = newDesigner;
+      editorMap.put(entityName, editors);
+    }
+  }
+
+  public void addEmptyBlocksEditor(final String entityName, final YaBlocksEditor newBlocksEditor) {
+    if (!editorMap.containsKey(entityName)) {
+      EditorSet editors = new EditorSet();
+      editors.blocksEditor = newBlocksEditor;
+      editorMap.put(entityName, editors);
+    }
+  }
+
   private void addDesigner(final String entityName, final DesignerEditor<?, ?, ?, ?, ?> newDesigner) {
     if (editorMap.containsKey(entityName)) {
       // This happens if the blocks editor was already added.

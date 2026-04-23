@@ -202,9 +202,13 @@ public interface OdeMessages extends Messages, ComponentTranslations {
   @Description("Label of the button for switching to the form editor")
   String switchToFormEditorButton();
 
-  @DefaultMessage("Uploaded File Does NOT Have This File")
-  @Description("Text if the screen is missing in the uploaded file in compare project view")
+  @DefaultMessage("Original File Does NOT Have This Screen")
+  @Description("Text if the screen is missing in the original file in compare project view")
   String missingScreenLabel();
+
+  @DefaultMessage("Uploaded File Does NOT Have This Screen")
+  @Description("Text if the screen is missing in the uploaded file in compare project view")
+  String missingUploadedScreenLabel();
 
   @DefaultMessage("Packaging ...")
   @Description("Label of the button leading to build related cascade items, when building")

@@ -142,18 +142,22 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
 
   public TreeItem buildColoredTree(List<String> newIds, List<String> deletedIds, List<String> movedIds, List<String> updatedIds, int view) {
     TreeItem itemNode;
+
+    String itemStyle = "unchanged";
+    if (newIds.contains(this.getUuid())) {
+      itemStyle = "added";
+    } else if (deletedIds.contains(this.getUuid())) {
+      itemStyle = "deleted";
+    } else if (movedIds.contains(this.getUuid())) {
+      itemStyle = "moved";
+    } else if (updatedIds.contains(this.getUuid())) {
+      itemStyle = "updated";
+    }
+    itemNode = super.buildTree(itemStyle);
+    itemNode.getWidget().addStyleName("gwt-TreeItem-"+itemStyle);
     if (isForm()) {
-      String style = "unchanged";
-      if (movedIds.contains(this.getUuid())) {
-         style = "moved";
-      } else if (updatedIds.contains(this.getUuid())) {
-        style = "updated";
-      } 
-      itemNode = super.buildTree(style);
       itemNode.setVisible(true);
-      itemNode.getWidget().addStyleName("gwt-TreeItem-"+style);
     } else {
-      itemNode = super.buildTree();
       //hide all containers except form if only nonvisible components are to be shown
       //in such a case, we need only the form's treeItem because all non-visible components are attached to it
       itemNode.setVisible(view != 3);
@@ -172,7 +176,12 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (updatedIds.contains(child.getUuid())) {
         style = "updated";
       }
-      TreeItem childNode = child.buildTree(style);
+      TreeItem childNode;
+      if (child instanceof MockContainer) {
+        childNode = child.buildTree();
+      } else {
+        childNode = child.buildTree(style);
+      }
       childNode.getWidget().addStyleName("gwt-TreeItem-"+style);
       child.color("gwt-TreeItem-"+style);
       
@@ -182,13 +191,9 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
       } else if (view == 3 && child instanceof MockVisibleComponent) {
         isVisible = false;
       }
-      // LOG.info("called build colored tree");
       childNode.setVisible(isVisible);
-            
-      // childNode.setStyleName("gwt-TreeItem-deleted");
       itemNode.addItem(childNode);
     }
-
     itemNode.setState(expanded);
     return itemNode;
   }

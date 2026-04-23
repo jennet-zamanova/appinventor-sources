@@ -27,6 +27,7 @@ public interface IProjectEditor {
   void buildScreenHashMap();
 
   void insertFileEditor(FileEditor fileEditor, int beforeIndex);
+  void addFileEditorByType(FileEditor fileEditor);
   void selectFileEditor(FileEditor fileEditor);
   FileEditor getFileEditor(String fileId);
   FileEditor getFileEditor(String entityName, String editorType);

@@ -914,6 +914,14 @@ div.StatusPanel {
   background-color: rgb(248, 255, 157);
 }
 
+.ode-AddedScreen {
+  background-color: #a1dba1;
+}
+
+.ode-DeletedScreen {
+  background-color: #f5b8b8;
+}
+
 .gwt-Tree .gwt-TreeItem-updated span {
   background-color: #e8d43c;
 }

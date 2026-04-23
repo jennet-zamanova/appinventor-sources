@@ -15,6 +15,7 @@
   <g:FlowPanel styleName="ode-ProjectEditor">
     <neo:DesignToolbarNeo ui:field="designToolbar" />
     <g:Label ui:field="missingScreenLabel" text="{messages.missingScreenLabel}" visible="false" styleName="missing-Screen"/>
+    <g:Label ui:field="missingUploadedScreenLabel" text="{messages.missingUploadedScreenLabel}" visible="false" styleName="missing-Screen"/>
     <g:FlowPanel styleName="ode-WorkColumns" >
       <g:FlowPanel ui:field="workColumns" styleName="ode-WorkColumns" >
         <box:PaletteBox ui:field="paletteBox" styleName="ode-Designer-LeftColumn" />

@@ -1250,13 +1250,137 @@ function extractComponentsFromXml(xml) {
   return [...components.values()];
 }
 
-function openSecondaryWorkspace(file) {
+function openSecondaryEmptyWorkspace() {
   // TODO: really hacky - need to change!!!
   var mainWs = Blockly.getMainWorkspace();
 
-  if (document.getElementById('secondary-workspace')) {
-    document.getElementById('secondary-workspace').remove();
+  // very hacky
+  document.querySelectorAll('#secondary-workspace').forEach(el => el.remove());
+
+  var svgParent = mainWs.getSvgGroup()?.parentElement;
+  var blocklyDiv = mainWs.injectionDiv;        // the unnamed div
+  if (!svgParent || !blocklyDiv) {
+    console.error('Could not find Blockly SVG');
+    return;
   }
+
+  var container = blocklyDiv.parentElement;         // 5136918324969472_Screen1
+
+  // Force side-by-side layout on the container
+  container.style.display = 'flex';
+  container.style.flexDirection = 'row';
+  container.style.overflow = 'hidden';
+
+  // Constrain the existing blockly div to left half
+  blocklyDiv.style.flex = '1';
+  blocklyDiv.style.minWidth = '0';
+  blocklyDiv.style.position = 'relative'; // override any absolute positioning
+
+  // Create secondary div on the right
+  var secondaryDiv = document.createElement('div');
+  secondaryDiv.id = 'secondary-workspace';
+  secondaryDiv.style.flex = '1';
+  secondaryDiv.style.minWidth = '0';
+  secondaryDiv.style.height = '100%';
+  secondaryDiv.style.position = 'relative';
+  secondaryDiv.style.borderLeft = '2px solid #ccc';
+  
+  // var sc = Blockly.BlocklyEditor.create(container, "second_workspace", true, true)
+
+  container.appendChild(secondaryDiv);
+
+  // Inject read-only Blockly into secondary
+  var secondaryWs = Blockly.inject(secondaryDiv, {
+    readOnly: true,
+    scrollbars: true,
+    zoom: { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
+    parentWorkspace: mainWs,
+  });
+
+  // Force resize AFTER DOM has updated
+  setTimeout(function() {
+    container.style.display = 'flex';
+    container.style.flexDirection = 'row';
+    container.style.overflow = 'hidden';
+    svgParent.style.display = 'inherit';
+    Blockly.svgResize(mainWs);
+    Blockly.svgResize(secondaryWs);
+  }, 100);
+
+  // const xml = Blockly.utils.xml.textToDom(file);
+  // console.log("converted xml: ", xml);
+  // Blockly.Xml.domToWorkspace(xml, secondaryWs);
+  window.secondaryWorkspace = secondaryWs;
+
+  // Copy component database
+  if (mainWs.componentDb_) {
+    secondaryWs.componentDb_ = mainWs.componentDb_;
+  }
+  // TODO: add screenlist
+  if (mainWs.screenList_) {
+    secondaryWs.screenList_ = mainWs.screenList_;
+  }
+
+  // TODO: add procedures
+  if (mainWs.procedureDb_) {
+    secondaryWs.procedureDb_ = mainWs.procedureDb_;
+  }
+
+  if (mainWs.blocksNeedingRendering) {
+    secondaryWs.blocksNeedingRendering = mainWs.blocksNeedingRendering;
+  }
+
+  // 2. Copy warning handler (or disable it)
+  // TODO: do something about the handler
+  if (mainWs.warningHandler) {
+    secondaryWs.warningHandler = null;
+  }
+
+  // 3. Copy type block map
+  if (mainWs.typeBlock) {
+    secondaryWs.typeBlock = mainWs.typeBlock;
+  }
+
+  // 4. Copy component instances
+  if (mainWs.getComponentMap) {
+    secondaryWs.getComponentMap = mainWs.getComponentMap.bind(mainWs);
+  }
+
+  // TODO: add variables
+  if (mainWs.variableDb_) {
+    secondaryWs.variableDb_ = mainWs.variableDb_;
+  }
+
+  secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
+  secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
+  
+  const blocksContent1 = mainWs.getTopBlocks();
+  const blocksContent2 = secondaryWs.getTopBlocks();
+  const diff = AI.Blockly.Diff.diff(blocksContent1, blocksContent2, mainWs.blockDB, secondaryWs.blockDB);
+  console.log("diff output is", diff);
+  const ids = new Set([...diff.newIds, ...diff.movedIds, ...diff.removedIds, ...diff.modifiedIDs]);
+  colorBlocks(mainWs, secondaryWs, diff);
+  mainWs.addDiffHandler(secondaryWs, ids);
+  mainWs.addDiffIndicator(secondaryWs, ids);
+  mainWs.getDiffIndicator().updateDiffCount();
+  mainWs.scrollCenter();
+  mainWs.addWorkspaceName("Original");
+  secondaryWs.addWorkspaceName("Uploaded");
+  secondaryWs.scrollCenter();
+}
+
+
+function openSecondaryWorkspace(file) {
+  if (file == "") {
+    openSecondaryEmptyWorkspace();
+    return;
+  }
+  // TODO: really hacky - need to change!!!
+  var mainWs = Blockly.getMainWorkspace();
+
+  console.log("mainWs: ", mainWs.getTopBlocks());
+  // very hacky
+  document.querySelectorAll('#secondary-workspace').forEach(el => el.remove());
 
   var svgParent = mainWs.getSvgGroup()?.parentElement;
   var blocklyDiv = mainWs.injectionDiv;        // the unnamed div
@@ -1367,6 +1491,7 @@ function openSecondaryWorkspace(file) {
   secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
 
   // Now safe to load XML
+  // TODO: might fails if blocks have issues????
   try {
     Blockly.Xml.domToWorkspace(xml, secondaryWs);
   } catch(e) {

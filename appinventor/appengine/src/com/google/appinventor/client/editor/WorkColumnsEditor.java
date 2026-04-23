@@ -11,6 +11,7 @@ import com.google.appinventor.client.boxes.PaletteBox;
 import com.google.appinventor.client.boxes.PropertiesBox;
 import com.google.appinventor.client.boxes.SourceStructureBox;
 import com.google.appinventor.client.boxes.ViewerBox;
+import com.google.appinventor.client.editor.blocks.BlocklyPanel;
 import com.google.appinventor.client.editor.youngandroid.ConsolePanel;
 import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
@@ -45,6 +46,8 @@ public class WorkColumnsEditor extends Composite {
     protected ConsolePanel consolePanel; //done
     @UiField 
     protected Label missingScreenLabel;
+    @UiField 
+    protected Label missingUploadedScreenLabel;
 
     @UiField
     protected DesignToolbar designToolbar; //done, done
@@ -248,10 +251,12 @@ public class WorkColumnsEditor extends Composite {
             w.setVisible(true);
         }
         missingScreenLabel.setVisible(false);
+        missingUploadedScreenLabel.setVisible(false);
     }
 
     public final void shuffleColumnsMissingScreen(FileEditor fileEditor, FileEditor screen1Editor) {
-        LOG.info("cfe w: " + Ode.getInstance().getCurrentFileEditor());
+        missingScreenLabel.setVisible(true);
+        missingUploadedScreenLabel.setVisible(false);
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();
         for (Widget w : widgetsToShow) {
@@ -261,9 +266,7 @@ public class WorkColumnsEditor extends Composite {
 
         Ode.getInstance().setCurrentFileEditor(screen1Editor);
 
-        // LOG.info("cfe w1: " + Ode.getInstance().getCurrentFileEditor());
         if (designToolbar.getCurrentView() == DesignToolbar.View.DESIGNER && fileEditor instanceof YaFormEditor) {
-            // LOG.info("cfe w2: " + Ode.getInstance().getCurrentFileEditor());
             DiffProjectEditor projectEditor = Ode.getInstance().getDiffProjectEditor();
             YaFormEditor yaDiffEditor = (YaFormEditor) fileEditor;
             yaDiffEditor.refreshCurrentPropertiesPanel();
@@ -272,7 +275,6 @@ public class WorkColumnsEditor extends Composite {
             diffViewerBox.showFile(projectEditor, yaDiffEditor);
 
             // todo
-            missingScreenLabel.setVisible(true);
             viewerBox.clear();
             sourceStructureBox.clear();
             propertiesBox.clear();
@@ -292,16 +294,16 @@ public class WorkColumnsEditor extends Composite {
                 //   todo: or just make it main workspace?
                   WorkColumnsEditor.openSecondaryWorkspace(content);
                   viewerBox.setCaption("Viewer");
-                //   todo change label
-                  missingScreenLabel.setVisible(true);
+                  viewerBox.show();
                   return;
                 }
             }
-            missingScreenLabel.setVisible(true);
         }
     }
 
     public final void shuffleColumns(FileEditor fileEditor) {
+        missingUploadedScreenLabel.setVisible(false);
+        missingScreenLabel.setVisible(false);
         Widget[] widgetsToShow = fileEditor.getWidgetsInRightOrder();
         workColumns.clear();
         for (Widget w : widgetsToShow) {
@@ -326,9 +328,8 @@ public class WorkColumnsEditor extends Composite {
                     diffSourceStructureBox.show(yaDiffEditor.getForm());
                     // load project???
                     diffViewerBox.show(projectEditor);
-                    missingScreenLabel.setVisible(false);
                 } else {
-                    missingScreenLabel.setVisible(true);
+                    missingUploadedScreenLabel.setVisible(true);
                     diffViewerBox.clear();
                     diffSourceStructureBox.clear();
                     diffPropertiesBox.clear();
@@ -356,15 +357,21 @@ public class WorkColumnsEditor extends Composite {
                   // parse it, save it, display it raw — whatever you want
                   WorkColumnsEditor.openSecondaryWorkspace(content);
                   viewerBox.setCaption("Viewer");
-                  missingScreenLabel.setVisible(false);
                   return;
                 }
             }
-            missingScreenLabel.setVisible(true);
+            WorkColumnsEditor.openSecondaryEmptyWorkspace();
+            viewerBox.setCaption("Viewer");
+            viewerBox.show();
+            missingUploadedScreenLabel.setVisible(true);
         }
     }
 
     public static native void openSecondaryWorkspace(String file) /*-{
         $wnd.openSecondaryWorkspace(file);
+    }-*/;
+
+    public static native void openSecondaryEmptyWorkspace() /*-{
+        $wnd.openSecondaryEmptyWorkspace();
     }-*/;
 }

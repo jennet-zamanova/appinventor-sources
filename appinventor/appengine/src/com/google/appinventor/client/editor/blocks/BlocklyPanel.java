@@ -752,6 +752,31 @@ public class BlocklyPanel extends HTMLPanel {
     workspace.setVisible(false);  // The workspace is invisible by default
   }-*/;
 
+  public native void initEmptyWorkspace(String projectId, String formName, boolean readOnly, boolean rtl, String targetLang)/*-{
+    var el = this.@com.google.gwt.user.client.ui.UIObject::getElement()();
+    var workspace = $wnd.Blockly.BlocklyEditor.create(el, formName, readOnly, rtl, targetLang);
+    workspace.projectId = projectId;
+    var cb = $entry(this.@com.google.appinventor.client.editor.blocks.BlocklyPanel::workspaceChanged(Lcom/google/gwt/core/client/JavaScriptObject;));
+    cb = cb.bind(this);
+    this.@com.google.appinventor.client.editor.blocks.BlocklyPanel::workspace = workspace;
+    $wnd.Blockly.common.setMainWorkspace(workspace);
+    workspace.refreshBackpack();
+    if (workspace.pendingRender === true) {
+      workspace.pendingRenderFunc();
+    }
+    // Trigger a screen switch to send new YAIL.
+    var parts = workspace.formName.split(/_(.+)/);  // Split string on first _
+    if ($wnd.Blockly.ReplMgr.isConnected()) {
+      $wnd.Blockly.ReplMgr.pollYail(workspace);
+    }
+    workspace.fireChangeListener(new $wnd.AI.Events.ScreenSwitch(parts[0], parts[1]));
+    var handler = workspace.getWarningHandler();
+    if (handler) {
+      handler.determineDuplicateComponentEventHandlers();
+      workspace.requestErrorChecking();
+    }
+  }-*/;
+
   /**
    * Inject the workspace into the &lt;div&gt; element with specific mode
    */

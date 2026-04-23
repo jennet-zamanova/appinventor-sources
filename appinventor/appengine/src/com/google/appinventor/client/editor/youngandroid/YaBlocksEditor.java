@@ -33,6 +33,7 @@ import com.google.appinventor.shared.rpc.project.ProjectNode;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidAssetsFolder;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidBlocksEmptyNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidBlocksNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidFormNode;
 import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidProjectNode;
@@ -87,6 +88,13 @@ public final class YaBlocksEditor extends BlocksEditor<YoungAndroidBlocksNode, Y
       project.addProjectChangeListener(this);
       onProjectLoaded(project);
     }
+  }
+
+  YaBlocksEditor(IProjectEditor projectEditor, long projectId) {
+    super(projectEditor, new YoungAndroidBlocksEmptyNode(projectId), YaVersion.YOUNG_ANDROID_VERSION, YAIL,
+        BlocksCodeGenerationTarget.YAIL,
+        SimpleComponentDatabase.getInstance(projectId));
+    project = Ode.getInstance().getProjectManager().getProject(projectId);
   }
 
   // FileEditor methods
@@ -145,6 +153,11 @@ public final class YaBlocksEditor extends BlocksEditor<YoungAndroidBlocksNode, Y
   public void makeActiveWorkspace() {
     blocksArea.setActiveFormWorkspace();
     super.makeActiveWorkspace();
+  }
+
+  public void createEmptyWorkspace() {
+    blocksArea.initEmptyWorkspace("-1", "$diff$empty$", false, true, "Yail");
+    blocksArea.setActiveFormWorkspace();
   }
 
   // Do whatever is needed to save Blockly state when our project is about to be

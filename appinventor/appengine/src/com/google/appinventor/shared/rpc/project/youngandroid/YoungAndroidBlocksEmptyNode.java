@@ -3,6 +3,7 @@ package com.google.appinventor.shared.rpc.project.youngandroid;
 import static com.google.appinventor.common.constants.YoungAndroidStructureConstants.BLOCKLY_SOURCE_EXTENSION;
 import static com.google.appinventor.common.constants.YoungAndroidStructureConstants.CODEBLOCKS_SOURCE_EXTENSION;
 
+import com.google.appinventor.shared.rpc.project.ProjectRootNode;
 import com.google.appinventor.shared.storage.StorageUtil;
 
 
@@ -11,21 +12,30 @@ import com.google.appinventor.shared.storage.StorageUtil;
  *
  * @author lizlooney@google.com (Liz Looney)
  */
-public class YoungAndroidBlocksNode extends YoungAndroidSourceNode {
-
-  /**
-   * Default constructor (for serialization only).
-   */
-  public YoungAndroidBlocksNode() {
-  }
-
+public final class YoungAndroidBlocksEmptyNode extends YoungAndroidBlocksNode {
   /**
    * Creates a new Young Android blocks source file project node.
    *
    * @param fileId  file id
    */
-  public YoungAndroidBlocksNode(String fileId) {
-    super(StorageUtil.basename(fileId), fileId);
+  private long projectID;
+
+  public YoungAndroidBlocksEmptyNode() {
+    super("$diff$empty$");
+    projectID = -1;
+  }
+
+  public YoungAndroidBlocksEmptyNode(long projectId) {
+    super("$diff$empty$");
+    projectID = projectId;
+  }
+
+  public long getProjectId() {
+    return projectID;
+  }
+
+  public ProjectRootNode getProjectRoot() {
+    return new YoungAndroidProjectEmptyNode();
   }
 
   public static String getCodeblocksFileId(String qualifiedName) {

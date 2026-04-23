@@ -205,6 +205,12 @@ public class DesignToolbar extends Toolbar {
 
   private void doSwitchScreen1(long projectId, String screenName, View view) {
     if (!projectMap.containsKey(projectId)) {
+      if (projectId == -1 && missingScreens.contains(screenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
+        LOG.warning("Trying to switch to missing screen " + screenName +
+          " in project " + currentProject.name + ". diff view.");
+        switchDiffScreen(projectId, screenName, view);
+        return;
+      }
       LOG.warning("DesignToolbar: no project with id " + projectId
           + ". Ignoring SwitchScreenAction.execute().");
       return;
@@ -220,7 +226,7 @@ public class DesignToolbar extends Toolbar {
     if (missingScreens.contains(newScreenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
       LOG.warning("Trying to switch to missing screen " + newScreenName +
           " in project " + currentProject.name + ". diff view.");
-      // switchDiffScreen(projectId, newScreenName, view);
+      switchDiffScreen(projectId, newScreenName, view);
       return;
     }
     if (!currentProject.screens.containsKey(newScreenName)) {
@@ -272,15 +278,20 @@ public class DesignToolbar extends Toolbar {
 
   // should we make an empty screen specifically for this?
   private void switchDiffScreen(long projectId, String newScreenName, View view) {
-    LOG.info("cfe: " + Ode.getInstance().getCurrentFileEditor());
-    // DiffProjectEditor fakeEditor = new DiffProjectEditor(Ode.getInstance().getUiStyleFactory());
-    // Screen screen = currentProject.screens.get(YoungAndroidSourceNode.SCREEN1_FORM_NAME);
-    // Screen screen = new Screen(newScreenName, fakeEditor.getFormFileEditor(newScreenName), fakeEditor.getBlocksFileEditor(newScreenName));
     DiffProjectEditor diffProjectEditor = Ode.getInstance().getDiffProjectEditor();
     
     FileEditor screen1Editor = currentProject.screens.get(YoungAndroidSourceNode.SCREEN1_FORM_NAME).designerEditor;
     IProjectEditor projectEditor = screen1Editor.getProjectEditor();
-    FileEditor emptyEditor = new YaFormEditor(projectEditor);
+
+    FileEditor emptyFormEditor = new YaFormEditor(projectEditor, screen1Editor.getProjectId());
+    projectEditor.addFileEditorByType(emptyFormEditor);
+    FileEditor emptyBlocksEditor = new YaBlocksEditor(projectEditor, screen1Editor.getProjectId());
+    projectEditor.addFileEditorByType(emptyBlocksEditor);
+
+    if (projectEditor instanceof YaProjectEditor) {
+      ((YaProjectEditor) projectEditor).addEmptyDesignerEditor("$diff$empty$", (YaFormEditor) emptyFormEditor);
+      ((YaProjectEditor) projectEditor).addEmptyBlocksEditor("$diff$empty$", (YaBlocksEditor) emptyBlocksEditor);
+    }
     // currentProject.setCurrentScreen(YoungAndroidSourceNode.SCREEN1_FORM_NAME);
     currentProject.setCurrentScreen(newScreenName);
     setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, newScreenName);
@@ -291,19 +302,15 @@ public class DesignToolbar extends Toolbar {
     currentView = view;
     // Inform the Blockly Panel which project/screen (aka form) we are working on 
     // otherwise in diffview the wrong workspace is used
-    // todo get empty workspace
-    // BlocklyPanel.setCurrentForm(projectId + "_" + newScreenName);
-    // screen.blocksEditor.makeActiveWorkspace();
+    BlocklyPanel.setCurrentForm("$diff$empty$");
+    emptyBlocksEditor.makeActiveWorkspace();
     if (view == View.DESIGNER) {
-      Ode.getInstance().getWorkColumnsEditor().shuffleColumnsMissingScreen(diffProjectEditor.getFormFileEditor(newScreenName), emptyEditor);
-      // fakeEditor.selectFileEditor(screen.designerEditor);
-      // screen.designerEditor.onShow();
-
+      Ode.getInstance().getWorkColumnsEditor().shuffleColumnsMissingScreen(diffProjectEditor.getFormFileEditor(newScreenName), emptyFormEditor);
       toggleEditor(false);
     } else {  // must be View.BLOCKS
-      Ode.getInstance().getWorkColumnsEditor().shuffleColumnsMissingScreen(diffProjectEditor.getBlocksFileEditor(newScreenName), emptyEditor);
-      // fakeEditor.selectFileEditor(screen.blocksEditor);
-      // screen.blocksEditor.onShow();
+      projectEditor.insertFileEditor(emptyBlocksEditor, 0);
+      projectEditor.selectFileEditor(emptyBlocksEditor);
+      Ode.getInstance().getWorkColumnsEditor().shuffleColumnsMissingScreen(diffProjectEditor.getBlocksFileEditor(newScreenName), emptyFormEditor);
       toggleEditor(true);
     }
   
@@ -378,14 +385,23 @@ public class DesignToolbar extends Toolbar {
     }
   }
 
-  public void addMissingScreens(long projectId, List<String> screenNames) {
+  public void updateMissingScreens(long projectId, List<String> screenNames) {
+    // setDropDownButtonCaption
     DesignProject project = projectMap.get(projectId);
-    missingScreens = screenNames;
+    List<String> missingScreenNames = new ArrayList<String>();
     Set<String> currentScreens = project.screens.keySet();
     for (String screen: screenNames) {
       if (!currentScreens.contains(screen)) {
+        missingScreenNames.add(screen);
         addDropDownButtonItem(WIDGET_NAME_SCREENS_DROPDOWN, new DropDownItem(screen,
-          screen, new SwitchScreenAction(projectId, screen), new Image(Ode.getImageBundle().form())));
+          "+ "+screen, new SwitchScreenAction(projectId, screen), new Image(Ode.getImageBundle().form()), "ode-ContextMenuItem ode-AddedScreen"));
+      }
+    }
+    missingScreens = missingScreenNames;
+    for (String screen: currentScreens) {
+      if (!screenNames.contains(screen)) {
+        setDropDownButtonCaption(screen, "- " + screen);
+        setDropDownButtonStyle(screen, "ode-ContextMenuItem ode-DeletedScreen");
       }
     }
   }

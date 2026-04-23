@@ -12,7 +12,7 @@
 .blocklyIconGroup .blocklyErrorIconOutline {
   stroke: #000000;
   stroke-width: 1px;
-  fill: #ff0000;
+  fill: #ff5f5f;
 }
 
 .blocklyIconGroup .blocklyErrorIconX {
@@ -26,12 +26,12 @@
 
 .blocklyIconGroup .blocklyAddedBlockIconOutline {
   stroke: #000000;
-  stroke-width: 1px;
-  fill: #0c450c;
+  stroke-width: 2px;
+  fill: #92cc93;
 }
 
 .blocklyIconGroup .blocklyDiffIcon {
-  stroke: #ffffff;
+  stroke: black;
   stroke-width: 2px;
   stroke-linecap:round;
   stroke-linejoin:round;
@@ -41,9 +41,14 @@
 
 .blocklyIconGroup .blocklyDiffIconOutline {
   stroke: #000000;
-  stroke-width: 1px;
-  /* fill: rgb(55, 112, 211); */
-  fill: rgb(0, 0, 0);
+  stroke-width: 2px;
+  fill: #ffee69;
+}
+
+.blocklyIconGroup .blocklyMoveIconOutline {
+  stroke: white;
+  stroke-width: 2px;
+  fill: #0b3379;
 }
 
 .blocklyIconGroup .blocklyMoveIcon {
@@ -62,7 +67,7 @@
 
 .blocklyIconGroup .blocklyDeletedBlockIconOutline {
   stroke: #000000;
-  stroke-width: 1px;
+  stroke-width: 2px;
   fill: #ff0000;
 }
 
