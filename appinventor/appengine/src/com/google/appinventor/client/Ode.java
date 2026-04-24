@@ -228,7 +228,7 @@ public class Ode implements EntryPoint {
       this.newIds = newIds;
       this.deletedIds = deletedIds;
       this.movedIds = movedIds;
-      this.updatedIds = Stream.of(newIds, newIds, movedIds, modifiedIds).flatMap(Collection::stream).collect(Collectors.toList());
+      this.updatedIds = Stream.of(newIds, deletedIds, movedIds, modifiedIds).flatMap(Collection::stream).collect(Collectors.toList());
     }
   }
   private HashMap<String, DiffIds> diffIds;
