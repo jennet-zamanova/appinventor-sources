@@ -1289,12 +1289,22 @@ function openSecondaryEmptyWorkspace() {
 
   container.appendChild(secondaryDiv);
 
+  const gridOps = { ...mainWs.options.gridOptions }
+  gridOps.enabled = false;
+
   // Inject read-only Blockly into secondary
   var secondaryWs = Blockly.inject(secondaryDiv, {
-    readOnly: true,
-    scrollbars: true,
-    zoom: { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
-    parentWorkspace: mainWs,
+    'readOnly': false,
+    'scrollbars': true,
+    'zoom': { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
+    'parentWorkspace': mainWs,
+    'renderer': mainWs.options.renderer,
+    'rtl': mainWs.options.RTL,
+    'collapse': mainWs.options.collapse,
+    'comments': mainWs.options.comments,
+    'disable': mainWs.options.disable,
+    'grid': gridOps,
+    'theme': mainWs.options.theme,
   });
 
   // Force resize AFTER DOM has updated
@@ -1350,6 +1360,10 @@ function openSecondaryEmptyWorkspace() {
   if (mainWs.variableDb_) {
     secondaryWs.variableDb_ = mainWs.variableDb_;
   }
+
+  var gridEnabled = top.BlocklyPanel_getGridEnabled && top.BlocklyPanel_getGridEnabled();
+  var gridSnap = top.BlocklyPanel_getSnapEnabled && top.BlocklyPanel_getSnapEnabled();
+  secondaryWs.setGridSettings(gridEnabled, gridSnap);
 
   secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
   secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
@@ -1414,12 +1428,22 @@ function openSecondaryWorkspace(file) {
 
   container.appendChild(secondaryDiv);
 
+  const gridOps = { ...mainWs.options.gridOptions }
+  gridOps.enabled = false;
+
   // Inject read-only Blockly into secondary
   var secondaryWs = Blockly.inject(secondaryDiv, {
-    readOnly: true,
-    scrollbars: true,
-    zoom: { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
-    parentWorkspace: mainWs,
+    'readOnly': false,
+    'scrollbars': true,
+    'zoom': { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
+    'parentWorkspace': mainWs,
+    'renderer': mainWs.options.renderer,
+    'rtl': mainWs.options.RTL,
+    'collapse': mainWs.options.collapse,
+    'comments': mainWs.options.comments,
+    'disable': mainWs.options.disable,
+    'grid': gridOps,
+    'theme': mainWs.options.theme,
   });
 
   // Force resize AFTER DOM has updated
@@ -1486,6 +1510,10 @@ function openSecondaryWorkspace(file) {
   if (mainWs.variableDb_) {
     secondaryWs.variableDb_ = mainWs.variableDb_;
   }
+
+  var gridEnabled = top.BlocklyPanel_getGridEnabled && top.BlocklyPanel_getGridEnabled();
+  var gridSnap = top.BlocklyPanel_getSnapEnabled && top.BlocklyPanel_getSnapEnabled();
+  secondaryWs.setGridSettings(gridEnabled, gridSnap);
 
   secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
   secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
