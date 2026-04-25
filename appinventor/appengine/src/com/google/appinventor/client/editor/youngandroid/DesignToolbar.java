@@ -179,6 +179,8 @@ public class DesignToolbar extends Toolbar {
     setVisibleItem(sendToGalleryItem, Ode.getSystemConfig().getGalleryEnabled()
         && !Ode.getInstance().getGalleryReadOnly());
 
+    setButtonEnabled(switchToDiff.getName(), Ode.getInstance().isDiffingAvailable());
+
     // Gray out the Designer button and enable the blocks button
     toggleEditor(false);
     // Ode.getInstance().getTopToolbar().updateFileMenuButtons(0);
@@ -482,6 +484,7 @@ public class DesignToolbar extends Toolbar {
   public void toggleEditor(boolean blocks) {
     setButtonEnabled(switchToBlocks.getName(), !blocks);
     setButtonEnabled(switchToDesign.getName(), blocks);
+    setButtonEnabled(switchToDiff.getName(), Ode.getInstance().isDiffingAvailable() && !Ode.getInstance().isInDiffView());
 
     boolean notOnScreen1 = getCurrentProject() != null
         && !"Screen1".equals(getCurrentProject().currentScreen);
@@ -518,6 +521,7 @@ public class DesignToolbar extends Toolbar {
 
   public void setSwitchFromDiffButtonVisible(boolean value) {
     setVisibleItem(switchFromDiff, value);
+    setButtonEnabled(switchToDiff.getName(), !value && Ode.getInstance().isDiffingAvailable());
   }
 
 }

@@ -26,6 +26,6 @@ Blockly.BLOCK_REMOVED_HUE = "#dca4a4"; // "#cd9999"; // [205, 153, 153] Light re
 Blockly.BLOCK_ADDED_HUE = "#80b380"; // "#77a277"; // [153, 205, 153] Light green for added blocks
 Blockly.BLOCK_MOVED_HUE = "#26529e"; //"#26529e"; // [153, 153, 205] Light blue for changed blocks
 Blockly.BLOCK_MODIFIED_HUE = "#decb35";// "#e8d43c";
-Blockly.BLOCK_GREY_OUT = "#777777";
+Blockly.BLOCK_GREY_OUT = "#999999";
 
 // #93267c

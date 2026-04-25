@@ -233,6 +233,7 @@ public class Ode implements EntryPoint {
   }
   private HashMap<String, DiffIds> diffIds;
   private HashMap<String, HashMap<String, List<String>>> modifiedAttributes;
+  private boolean diffingAvailable;
   // private String newIds;
   // private String deletedIds;
   // private String movedIds;
@@ -804,6 +805,7 @@ public class Ode implements EntryPoint {
         })
         .then0(this::handleGalleryId)
         .then0(this::checkTos)
+        .then0(this::handleDiffAvailability)
         .then0(this::loadUserSettings)
         .then0(() -> Promise.allOf(
             Promise.wrap(this::processSettings),
@@ -885,6 +887,16 @@ public class Ode implements EntryPoint {
       return rejectWithReason(MESSAGES.serverUnavailable());
     }
 
+    return resolve(null);
+  }
+
+  private Promise<Object> handleDiffAvailability() {
+    String diffingAvailableParam = Window.Location.getParameter("diff");
+    if ("true".equalsIgnoreCase(diffingAvailableParam)) {
+      diffingAvailable = true;
+    } else {
+      diffingAvailable = false;
+    }
     return resolve(null);
   }
 
@@ -2614,6 +2626,10 @@ public class Ode implements EntryPoint {
 
   public boolean isInDiffView() {
     return inDiffView;
+  }
+
+  public boolean isDiffingAvailable() {
+    return diffingAvailable;
   }
 
   public boolean isConsoleVisible() {

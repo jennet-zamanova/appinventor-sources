@@ -39,11 +39,11 @@
        ui:field="sendToGalleryItem" align="center">
       <actions:SendToGalleryAction />
     </ai:ToolbarItem>
-    <ai:ToolbarItem name="diff" caption="Compare Projects"
+    <ai:ToolbarItem name="switchToDiff" caption="Compare Projects"
                     ui:field="switchToDiff" align="right">
       <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
-    <ai:ToolbarItem name="diff" caption="Stop Comparing Projects"
+    <ai:ToolbarItem name="switchFromDiff" caption="Stop Comparing Projects"
                     ui:field="switchFromDiff" align="right" visible="false">
       <ya:SwitchFromDiffAction />
     </ai:ToolbarItem>
