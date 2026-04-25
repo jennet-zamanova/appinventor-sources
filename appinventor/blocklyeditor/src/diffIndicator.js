@@ -141,11 +141,15 @@ Blockly.DiffIndicator.prototype.init = function() {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 Blockly.DiffIndicator.prototype.dispose = function() {
+  if (this.workspace_ && this.workspace_.getComponentManager) {
+    this.workspace_.getComponentManager().removeComponent(this.id);
+  }
   if (this.svgGroup_) {
     goog.dom.removeNode(this.svgGroup_);
     this.svgGroup_ = null;
   }
 
+  this.initialized_ = false;
   this.diffCount_ = null;
   this.iconDiffGroup_ = null;
   this.iconDiffMark_ = null;
@@ -158,7 +162,7 @@ Blockly.DiffIndicator.prototype.dispose = function() {
  * @private
  */
 Blockly.DiffIndicator.prototype.position_ = function(metrics) {
-  if (!metrics) {
+  if (!metrics || !this.svgGroup_) {
     // There are no metrics available (workspace is probably not visible).
     return;
   }
@@ -178,11 +182,22 @@ Blockly.DiffIndicator.prototype.position_ = function(metrics) {
  *
  */
 Blockly.DiffIndicator.prototype.updateDiffCount = function() {
-  this.diffCount_.textContent = this.workspace_.getDiffHandler().getDiffCount();
+  if (!this.diffCount_) {
+    return;
+  }
+  var handler = this.workspace_.getDiffHandler();
+  this.diffCount_.textContent = handler ? handler.getDiffCount() : 0;
 }
 
 Blockly.DiffIndicator.prototype.updateCurrentDiff = function(currentDiff) {
+  if (!this.diffCount_) {
+    return;
+  }
   var handler = this.workspace_.getDiffHandler();
+  if (!handler) {
+    this.diffCount_.textContent = "0/0";
+    return;
+  }
   currentDiff++;  // make it 1-based
   this.diffCount_.textContent = currentDiff + "/" + handler.getDiffCount();
 }

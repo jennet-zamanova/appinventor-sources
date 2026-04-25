@@ -246,6 +246,16 @@ public abstract class ProjectEditor extends Composite implements IProjectEditor 
   }
 
   /**
+   * Returns the entity name of the selected file editor, if any.
+   */
+  public final String getSelectedFileEditorEntityName() {
+    if (selectedFileEditor == null) {
+      return null;
+    }
+    return selectedFileEditor.getEntityName();
+  }
+
+  /**
    * Returns the file editor for the given file ID.
    *
    * @param fileId  file ID of the file

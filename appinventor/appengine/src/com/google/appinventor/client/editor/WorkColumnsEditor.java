@@ -252,6 +252,7 @@ public class WorkColumnsEditor extends Composite {
         }
         missingScreenLabel.setVisible(false);
         missingUploadedScreenLabel.setVisible(false);
+        WorkColumnsEditor.closeSecondaryWorkspace();
     }
 
     public final void shuffleColumnsMissingScreen(FileEditor fileEditor, FileEditor screen1Editor) {
@@ -373,5 +374,11 @@ public class WorkColumnsEditor extends Composite {
 
     public static native void openSecondaryEmptyWorkspace() /*-{
         $wnd.openSecondaryEmptyWorkspace();
+    }-*/;
+
+    public static native void closeSecondaryWorkspace() /*-{
+        if ($wnd.closeSecondaryWorkspace) {
+            $wnd.closeSecondaryWorkspace();
+        }
     }-*/;
 }

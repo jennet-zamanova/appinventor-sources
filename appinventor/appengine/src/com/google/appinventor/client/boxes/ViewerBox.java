@@ -10,9 +10,12 @@ import static com.google.appinventor.client.Ode.MESSAGES;
 
 import com.google.appinventor.client.Ode;
 import com.google.appinventor.client.editor.ProjectEditor;
+import com.google.appinventor.client.editor.WorkColumnsEditor;
+import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.editor.youngandroid.DiffProjectEditor;
 import com.google.appinventor.client.widgets.boxes.Box;
 import com.google.appinventor.shared.rpc.project.ProjectRootNode;
+import com.google.appinventor.shared.rpc.project.youngandroid.YoungAndroidSourceNode;
 import java.util.logging.Logger;
 
 /**
@@ -55,8 +58,20 @@ public class ViewerBox extends Box {
    * @param projectRootNode  the root node of the project to show in the viewer
    */
   public ProjectEditor show(ProjectRootNode projectRootNode) {
+    long projectId = projectRootNode.getProjectId();
+    boolean alreadyOpen = Ode.getInstance().getEditorManager().getOpenProjectEditor(projectId) != null;
     projectEditor = Ode.getInstance().getEditorManager().openProject(projectRootNode);
     setContent(projectEditor);
+    if (alreadyOpen) {
+      String selectedScreen = projectEditor.getSelectedFileEditorEntityName();
+      // Diff mode may select synthetic placeholders like "$diff$empty$".
+      // Never route normal project reopen through those pseudo-screens.
+      if (selectedScreen == null || selectedScreen.isEmpty() || selectedScreen.startsWith("$diff$")) {
+        selectedScreen = YoungAndroidSourceNode.SCREEN1_FORM_NAME;
+      }
+      Ode.getInstance().getDesignToolbar()
+          .switchToScreen(projectId, selectedScreen, DesignToolbar.View.DESIGNER);
+    }
     Ode.getInstance().switchToProjectEditor();
     isCleared = false;
     return projectEditor;

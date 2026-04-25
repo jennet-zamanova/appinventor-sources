@@ -686,6 +686,7 @@ public class Ode implements EntryPoint {
       // the project. This will cause the projects source files to be fetched
       // asynchronously, and loaded into file editors.
       inDiffView = false;
+      workColumnsEditor.resetToDesignerNormalView();
       workColumnsEditor.getViewerBox().show(projectRootNode);
       // Note: we can't call switchToProjectEditor until the Screen1 file editor
       // finishes loading. We leave that to setCurrentFileEditor(), which
@@ -697,7 +698,6 @@ public class Ode implements EntryPoint {
       }
       assetManager.loadAssets(project.getProjectId());
       workColumnsEditor.getAssetListBox().getAssetList().refreshAssetList(project.getProjectId());
-      workColumnsEditor.resetToDesignerNormalView();
     }
     getTopToolbar().updateFileMenuButtons(1);
   }

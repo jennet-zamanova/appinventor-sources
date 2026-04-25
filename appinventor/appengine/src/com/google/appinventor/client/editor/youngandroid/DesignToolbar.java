@@ -274,8 +274,12 @@ public class DesignToolbar extends Toolbar {
   
     Ode.getInstance().getTopToolbar().updateFileMenuButtons(1);
     
-    projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
-        SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED, newScreenName);
+    // Do not persist synthetic/missing diff screens as last-opened for the real project.
+    // Otherwise reopening the project later can target a screen that doesn't exist.
+    if (currentProject.screens.containsKey(newScreenName)) {
+      projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
+          SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED, newScreenName);
+    }
   }
 
   // should we make an empty screen specifically for this?

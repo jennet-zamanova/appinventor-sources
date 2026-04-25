@@ -109,12 +109,16 @@ Blockly.WorkspaceName.prototype.init = function() {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 Blockly.WorkspaceName.prototype.dispose = function() {
+  if (this.workspace_ && this.workspace_.getComponentManager) {
+    this.workspace_.getComponentManager().removeComponent(this.id);
+  }
   if (this.svgGroup_) {
     goog.dom.removeNode(this.svgGroup_);
     this.svgGroup_ = null;
   }
 
-  this.diffCount_ = null;
+  this.initialized_ = false;
+  this.workspaceName_ = null;
 
 };
 

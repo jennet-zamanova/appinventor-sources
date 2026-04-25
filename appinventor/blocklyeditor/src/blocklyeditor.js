@@ -1321,6 +1321,10 @@ function openSecondaryEmptyWorkspace() {
   // console.log("converted xml: ", xml);
   // Blockly.Xml.domToWorkspace(xml, secondaryWs);
   window.secondaryWorkspace = secondaryWs;
+  // Ensure the original main workspace remains the active/main workspace.
+  if (mainWs && Blockly.common && Blockly.common.setMainWorkspace) {
+    Blockly.common.setMainWorkspace(mainWs);
+  }
 
   // Copy component database
   if (mainWs.componentDb_) {
@@ -1383,6 +1387,46 @@ function openSecondaryEmptyWorkspace() {
   secondaryWs.scrollCenter();
 }
 
+function closeSecondaryWorkspace() {
+  var mainWs = Blockly.getMainWorkspace && Blockly.getMainWorkspace();
+  if (!mainWs) {
+    return;
+  }
+
+  resetDiffStyling(mainWs);
+  if (mainWs.diffIndicator_) {
+    mainWs.diffIndicator_.dispose();
+    mainWs.diffIndicator_ = null;
+  }
+  mainWs.diffHandler_ = null;
+  mainWs.removeWorkspaceName();
+
+  if (window.secondaryWorkspace && window.secondaryWorkspace.dispose) {
+    window.secondaryWorkspace.dispose();
+  }
+  window.secondaryWorkspace = null;
+
+  document.querySelectorAll('#secondary-workspace').forEach(el => el.remove());
+
+  var blocklyDiv = mainWs.injectionDiv;
+  if (!blocklyDiv) {
+    return;
+  }
+  var container = blocklyDiv.parentElement;
+  if (!container) {
+    return;
+  }
+
+  // Restore normal single-workspace layout.
+  container.style.display = '';
+  container.style.flexDirection = '';
+  container.style.overflow = '';
+  blocklyDiv.style.flex = '';
+  blocklyDiv.style.minWidth = '';
+  blocklyDiv.style.position = '';
+
+  Blockly.svgResize(mainWs);
+}
 
 function openSecondaryWorkspace(file) {
   if (file == "") {
@@ -1460,6 +1504,14 @@ function openSecondaryWorkspace(file) {
   // console.log("converted xml: ", xml);
   // Blockly.Xml.domToWorkspace(xml, secondaryWs);
   window.secondaryWorkspace = secondaryWs;
+
+  // Restore the original main workspace: Blockly.inject sets the newly
+  // created workspace as the active/main workspace, so explicitly reset
+  // it back to the previous `mainWs` so later calls to
+  // `Blockly.getMainWorkspace()` return the true primary workspace.
+  if (mainWs && Blockly.common && Blockly.common.setMainWorkspace) {
+    Blockly.common.setMainWorkspace(mainWs);
+  }
 
   var xml = Blockly.utils.xml.textToDom(file);
   console.log("xml: ", xml);
@@ -1556,8 +1608,58 @@ function colorBlocks(mainWorkspace, secondaryWorkspace, diff) {
   colorDeletedBlocks(mainWorkspace, diff.removedIds);
 }
 
+function rememberOriginalBlockColour(block) {
+  if (!block) {
+    return;
+  }
+  if (typeof block.aiOriginalColour === 'undefined') {
+    block.aiOriginalColour = block.getColour();
+  }
+}
+
+function clearDiffIcon(block, iconField) {
+  if (!block || !block[iconField]) {
+    return;
+  }
+  const icon = block[iconField];
+  if (icon.getType) {
+    block.removeIcon(icon.getType());
+  }
+  block[iconField] = null;
+}
+
+function resetDiffStyling(workspace) {
+  for (const block of workspace.getAllBlocks()) {
+    if (typeof block.aiOriginalColour !== 'undefined') {
+      block.setColour(block.aiOriginalColour);
+      delete block.aiOriginalColour;
+    }
+
+    clearDiffIcon(block, 'addedBlock');
+    clearDiffIcon(block, 'deletedBlock');
+    clearDiffIcon(block, 'modifiedBlock');
+    clearDiffIcon(block, 'movedBlock');
+
+    if (block.setHighlighted) {
+      block.setHighlighted(false);
+    }
+    if (block.removeSelect) {
+      block.removeSelect();
+    }
+    if (block.svgGroup_) {
+      Blockly.utils.dom.removeClass(block.svgGroup_, 'diffBlock');
+      Blockly.utils.dom.removeClass(block.svgGroup_, 'addedBlock');
+      Blockly.utils.dom.removeClass(block.svgGroup_, 'deletedBlock');
+      Blockly.utils.dom.removeClass(block.svgGroup_, 'modifiedBlock');
+      Blockly.utils.dom.removeClass(block.svgGroup_, 'movedBlock');
+    }
+    workspace.requestRender(block);
+  }
+}
+
 function greyOutBlocks(workspace) {
   for (const block of workspace.getAllBlocks()) {
+    rememberOriginalBlockColour(block);
     block.setColour(Blockly.BLOCK_GREY_OUT);
     block.initSvg();
     workspace.requestRender(block);
@@ -1568,6 +1670,7 @@ function colorModifiedBlocks(workspace, movedIds) {
   for (const id of movedIds) {
   const block = workspace.getBlockById(id);
   if (block) {
+    rememberOriginalBlockColour(block);
     block.addSelect();
     block.setColour(Blockly.BLOCK_MODIFIED_HUE);
     block.initSvg();
@@ -1584,6 +1687,7 @@ function colorMovedBlocks(workspace, movedIds) {
     for (const id of movedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
+      rememberOriginalBlockColour(block);
       block.addSelect();
       block.setColour(Blockly.BLOCK_MOVED_HUE);
       block.initSvg();
@@ -1597,6 +1701,7 @@ function colorAddedBlocks(workspace, addedIds) {
   for (const id of addedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
+      rememberOriginalBlockColour(block);
       block.addSelect();
       block.setColour(Blockly.BLOCK_ADDED_HUE);
       block.initSvg();
@@ -1610,6 +1715,7 @@ function colorDeletedBlocks(workspace, deletedIds) {
     for (const id of deletedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
+      rememberOriginalBlockColour(block);
       block.addSelect();
       block.setColour(Blockly.BLOCK_REMOVED_HUE);
       block.initSvg();

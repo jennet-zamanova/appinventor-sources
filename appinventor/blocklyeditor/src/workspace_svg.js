@@ -240,6 +240,13 @@ Blockly.WorkspaceSvg.prototype.addWorkspaceName = function(name) {
   }
 };
 
+Blockly.WorkspaceSvg.prototype.removeWorkspaceName = function() {
+  if (this.workspaceName_) {
+    this.workspaceName_.dispose();
+  }
+  this.workspaceName_ = null;
+};
+
 /**
  * Add a backpack.
  */
