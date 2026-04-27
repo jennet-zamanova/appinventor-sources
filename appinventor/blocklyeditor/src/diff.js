@@ -115,6 +115,16 @@ AI.Blockly.Diff = class {
                         i += 1
                     }
                 }
+                if (node.mutationToDom) {
+                    const mutation = node.mutationToDom();
+                    if (mutation) {
+                        mutation.removeAttribute("xmlns");
+                        for (const attr of mutation.attributes) {
+                            console.log(`${attr.name} = ${attr.value}`);
+                            attributesMap[attr.name] = attr.value;
+                        }
+                    }
+                }
                 
                 map.set(nodeId, attributesMap);
             }
