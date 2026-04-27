@@ -280,6 +280,37 @@
   filter: brightness(1.2);
 }
 
+.diffBlock.movedBlock>.blocklyPathLight,
+.diffBlock.addedBlock>.blocklyPathLight,
+.diffBlock.modifiedBlock>.blocklyPathLight,
+.diffBlock.deletedBlock>.blocklyPathLight {
+  display: none;
+}
+
+.diffBlock.movedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: rgb(17 37 70);
+  filter: brightness(1.8);
+}
+
+.diffBlock.addedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #0c450c;
+  filter: brightness(1.35);
+}
+
+.diffBlock.modifiedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #b9a930;
+  filter: brightness(1.2);
+}
+
+.diffBlock.deletedBlock>.blocklyPath {
+  stroke-width: 4px;
+  stroke: #ff0000;
+  filter: brightness(1.2);
+}
+
 .diffBlock.blocklySelected.movedBlock>g>.blocklyText {
   fill: rgb(44 44 44);
 }

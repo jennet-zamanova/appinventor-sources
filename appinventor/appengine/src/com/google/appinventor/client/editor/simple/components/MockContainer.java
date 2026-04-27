@@ -183,7 +183,7 @@ public abstract class MockContainer extends MockVisibleComponent implements Drop
         childNode = child.buildTree(style);
       }
       childNode.getWidget().addStyleName("gwt-TreeItem-"+style);
-      child.color("gwt-TreeItem-"+style);
+      child.color("gwt-TreeItem-DiffView");
       
       boolean isVisible = true;
       if (view == 2 && child instanceof MockNonVisibleComponent) {

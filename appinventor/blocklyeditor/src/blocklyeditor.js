@@ -1544,9 +1544,7 @@ function openSecondaryWorkspace(file) {
 
   // 2. Copy warning handler (or disable it)
   // TODO: do something about the handler
-  if (mainWs.warningHandler) {
-    secondaryWs.warningHandler = null;
-  }
+  secondaryWs.warningHandler = null;
 
   // 3. Copy type block map
   if (mainWs.typeBlock) {
@@ -1668,27 +1666,26 @@ function greyOutBlocks(workspace) {
 
 function colorModifiedBlocks(workspace, movedIds) {
   for (const id of movedIds) {
-  const block = workspace.getBlockById(id);
-  if (block) {
-    rememberOriginalBlockColour(block);
-    block.addSelect();
-    block.setColour(Blockly.BLOCK_MODIFIED_HUE);
-    block.initSvg();
-    block.setModifiedBlockIcon();
-    workspace.requestRender(block);
+    const block = workspace.getBlockById(id);
+    if (block) {
+      rememberOriginalBlockColour(block);
+      // block.addSelect();
+      block.setColour(Blockly.BLOCK_MODIFIED_HUE);
+      block.initSvg();
+      block.setModifiedBlockIcon();
+      workspace.requestRender(block);
+    }
   }
-}
 } 
 
 // color moved first, so if inserted or deleted can just add at the end
 // first color only the moved block itself without children
 // option 2 color kids as well
 function colorMovedBlocks(workspace, movedIds) {
-    for (const id of movedIds) {
+  for (const id of movedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
       rememberOriginalBlockColour(block);
-      block.addSelect();
       block.setColour(Blockly.BLOCK_MOVED_HUE);
       block.initSvg();
       block.setMovedBlockIcon();
@@ -1702,7 +1699,6 @@ function colorAddedBlocks(workspace, addedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
       rememberOriginalBlockColour(block);
-      block.addSelect();
       block.setColour(Blockly.BLOCK_ADDED_HUE);
       block.initSvg();
       block.setAddedBlockIcon();
@@ -1712,11 +1708,10 @@ function colorAddedBlocks(workspace, addedIds) {
 }
 
 function colorDeletedBlocks(workspace, deletedIds) {
-    for (const id of deletedIds) {
+  for (const id of deletedIds) {
     const block = workspace.getBlockById(id);
     if (block) {
       rememberOriginalBlockColour(block);
-      block.addSelect();
       block.setColour(Blockly.BLOCK_REMOVED_HUE);
       block.initSvg();
       block.setDeletedBlockIcon();

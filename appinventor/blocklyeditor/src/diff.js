@@ -120,7 +120,6 @@ AI.Blockly.Diff = class {
                     if (mutation) {
                         mutation.removeAttribute("xmlns");
                         for (const attr of mutation.attributes) {
-                            console.log(`${attr.name} = ${attr.value}`);
                             attributesMap[attr.name] = attr.value;
                         }
                     }

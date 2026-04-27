@@ -218,6 +218,7 @@ Blockly.BlockSvg.prototype.highlightDiff = function() {
     Blockly.utils.dom.addClass(/** @type {!Element} */ (this.svgGroup_),
                            'modifiedBlock');
   }
+  this.addSelect();
   if (this.rendered) {
     // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
     this.workspace.requestRender(this);
@@ -243,6 +244,7 @@ Blockly.BlockSvg.prototype.unhighlightDiff = function() {
       Blockly.utils.dom.removeClass(/** @type {!Element} */ (this.svgGroup_),
                             'modifiedBlock');
     }
+    this.removeSelect();
     if (this.rendered) {
       // Adding or removing a diff icon will cause the block to change shape so we need to re-render.
       this.workspace.requestRender(this);
