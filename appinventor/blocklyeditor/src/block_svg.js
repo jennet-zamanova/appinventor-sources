@@ -42,13 +42,13 @@ Blockly.BlockSvg.prototype.addedBlock = null;
 Blockly.BlockSvg.prototype.deletedBlock = null;
 
 /**
- * Block's addedBlock icon (if any).
+ * Block's movedBlock icon (if any).
  * @type {AI.MoveIcon}
  */
 Blockly.BlockSvg.prototype.movedBlock = null;
 
 /**
- * Block's addedBlock icon (if any).
+ * Block's modifiedBlock icon (if any).
  * @type {AI.DiffIcon}
  */
 Blockly.BlockSvg.prototype.modifiedBlock = null;
@@ -86,7 +86,7 @@ Blockly.BlockSvg.prototype.setErrorIconText = function(text) {
   if (!AI.ErrorIcon) {
     throw 'Warnings not supported.';
   }
-  if (this.isDeadOrDying()) {
+  if (this.isDeadOrDying() || this.workspace.isSecondaryWorkspace()) {
     return;  // do not process errors if the block is being destroyed
   }
   var changedState = false;
@@ -347,6 +347,9 @@ Blockly.BlockSvg.prototype.dispose = (function(func) {
  *     maintain multiple errors.
  */
 Blockly.BlockSvg.prototype.setErrorText = function(text, opt_id) {
+  if ( this.workspace.isSecondaryWorkspace()) {
+    return;  // do not process errors if the block is on a secondary workspace
+  }
   if (!this.setErrorText.pid_) {
     // Create a database of warning PIDs.
     // Only runs once per block (and only those with warnings).

@@ -1371,6 +1371,8 @@ function openSecondaryEmptyWorkspace() {
 
   secondaryWs.getEventTypeObject = () => mainWs.getEventTypeObject();
   secondaryWs.getProcedureDatabase = () => mainWs.getProcedureDatabase();
+
+  secondaryWs.setSecondaryWorkspace(true);
   
   const blocksContent1 = mainWs.getTopBlocks();
   const blocksContent2 = secondaryWs.getTopBlocks();
@@ -1480,7 +1482,7 @@ function openSecondaryWorkspace(file) {
     'readOnly': false,
     'scrollbars': true,
     'zoom': { controls: true, wheel: true, startScale: mainWs.options.zoomOptions.startScale },
-    'parentWorkspace': mainWs,
+    // 'parentWorkspace': mainWs,
     'renderer': mainWs.options.renderer,
     'rtl': mainWs.options.RTL,
     'collapse': mainWs.options.collapse,
@@ -1575,6 +1577,8 @@ function openSecondaryWorkspace(file) {
   } catch(e) {
     console.error('Failed to load blocks into secondary workspace:', e);
   }
+
+  secondaryWs.setSecondaryWorkspace(true);
   
   const blocksContent1 = mainWs.getTopBlocks();
   const blocksContent2 = secondaryWs.getTopBlocks();

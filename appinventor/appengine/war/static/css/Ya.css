@@ -820,6 +820,11 @@ div.StatusPanel {
   border: 2px solid #8fc202;
 }
 
+.ode-Icon-selected.gwt-TreeItem-DiffView.ode-Icon-selected,
+.gwt-TreeItem-DiffView.ode-Icon-selected {
+  border: 2px solid #93267c;
+}
+
 .gwt-TabBar {
   margin: 5px 0 5px 0;
 }
@@ -1431,6 +1436,11 @@ select.ode-PropertyEditor[disabled] {
   border: 2px solid #8fc202;
 }
 
+.ode-SimpleMockForm.gwt-TreeItem-DiffView.ode-SimpleMockForm-selected,
+.gwt-TreeItem-DiffView.ode-SimpleMockForm-selected {
+  border: 2px solid #93267c;
+}
+
 .ode-SimpleMockFormTitleBar {
   background-color: dimgray;
   color: white;
@@ -1519,6 +1529,11 @@ select.ode-PropertyEditor[disabled] {
   border: 2px solid #8fc202;
 }
 
+.ode-SimpleMockContainer.gwt-TreeItem-DiffView.ode-SimpleMockContainer-selected,
+.gwt-TreeItem-DiffView.ode-SimpleMockContainer-selected {
+  border: 2px solid #93267c;
+}
+
 span.ode-SimpleMockComponent.gwt-TreeItem-DiffView.ode-SimpleMockComponent-selected,
 .ode-SimpleMockComponent.gwt-TreeItem-DiffView.ode-SimpleMockComponent-selected,
 .gwt-TreeItem-DiffView.ode-SimpleMockComponent-selected {
@@ -1558,6 +1573,11 @@ path.ode-SimpleMockMapFeature-selected {
 .ode-SimpleMockMapFeature-selected img {
   padding: 0;
   border: 2px solid #8fc202;
+}
+
+.ode-SimpleMockMapFeature.gwt-TreeItem-DiffView.ode-SimpleMockMapFeature-selected,
+.gwt-TreeItem-DiffView.ode-SimpleMockMapFeature-selected {
+  border: 2px solid #93267c;
 }
 
 .ode-SimpleMockContainer .leaflet-container .leaflet-toolbar-icon {

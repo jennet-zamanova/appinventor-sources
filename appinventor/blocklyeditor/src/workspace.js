@@ -16,6 +16,10 @@ goog.provide('AI.Blockly.Workspace');
 Blockly.Workspace.prototype.arranged_type_ = null;
 Blockly.Workspace.prototype.arranged_latest_position_ = null;  // used to default to (previous is used for menus)
 Blockly.Workspace.prototype.arranged_position_ = null;
+/**
+ * Whether this workspace is a secondary workspace (e.g. for a procedure definition).
+ */
+Blockly.WorkspaceSvg.prototype.isSecondaryWorkspace_ = false;
 
 Blockly.Workspace.prototype.resetArrangements = function() {
   // reset the variables used for menus, but keep the latest position, so the current horizontal or
@@ -86,3 +90,12 @@ Blockly.Workspace.prototype.dispose = (function(func) {
       return wrappedFunc;
     }
   })(Blockly.Workspace.prototype.dispose);
+
+Blockly.WorkspaceSvg.prototype.setSecondaryWorkspace = function(isSecondary) {
+  this.isSecondaryWorkspace_ = isSecondary; 
+};
+
+Blockly.WorkspaceSvg.prototype.isSecondaryWorkspace = function() {
+  return this.isSecondaryWorkspace_;
+};
+
