@@ -1507,14 +1507,6 @@ function openSecondaryWorkspace(file) {
   // Blockly.Xml.domToWorkspace(xml, secondaryWs);
   window.secondaryWorkspace = secondaryWs;
 
-  // Restore the original main workspace: Blockly.inject sets the newly
-  // created workspace as the active/main workspace, so explicitly reset
-  // it back to the previous `mainWs` so later calls to
-  // `Blockly.getMainWorkspace()` return the true primary workspace.
-  if (mainWs && Blockly.common && Blockly.common.setMainWorkspace) {
-    Blockly.common.setMainWorkspace(mainWs);
-  }
-
   var xml = Blockly.utils.xml.textToDom(file);
   console.log("xml: ", xml);
 
@@ -1576,6 +1568,14 @@ function openSecondaryWorkspace(file) {
     Blockly.Xml.domToWorkspace(xml, secondaryWs);
   } catch(e) {
     console.error('Failed to load blocks into secondary workspace:', e);
+  } finally {
+    // Restore the original main workspace: Blockly.inject sets the newly
+    // created workspace as the active/main workspace, so explicitly reset
+    // it back to the previous `mainWs` so later calls to
+    // `Blockly.getMainWorkspace()` return the true primary workspace.
+    if (mainWs && Blockly.common && Blockly.common.setMainWorkspace) {
+      Blockly.common.setMainWorkspace(mainWs);
+    }
   }
 
   secondaryWs.setSecondaryWorkspace(true);

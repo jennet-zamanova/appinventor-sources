@@ -199,6 +199,9 @@ public class Properties<T extends Property> implements Iterable<T> {
    */
   public final boolean changePropertyValue(String name, String value) {
     try {
+      if (!hasProperty(name)) {
+        return false;
+      }
       getExistingProperty(name).setValue(value);
       return true;
     } catch (IllegalStateException e) {

@@ -644,17 +644,26 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
       selectedProperties.removePropertyChangeListener(this);
     }
     if (filteredComponents.size() == 1) {
-      selectedProperties = filteredComponents.get(0).getProperties();
-      if (Ode.getInstance().getModifiedAttributes().containsKey(filteredComponents.get(0).getUuid())) {
-        List<String> keptProperties = Ode.getInstance().getModifiedAttributes().get(filteredComponents.get(0).getUuid());
-        Iterator<EditableProperty> iterator = selectedProperties.iterator();
-        while (iterator.hasNext()) {
-          EditableProperty property = iterator.next();
-          if (!keptProperties.contains(property.getName()) && !"Name".equals(property.getName()) && !"Uuid".equals(property.getName())) {
-            selectedProperties.removeProperty(property.getName());
-          }
+      EditableProperties newProperties = new EditableProperties(true);
+      List<String> keptProperties = Ode.getInstance().getModifiedAttributes().get(filteredComponents.get(0).getUuid());
+      for (EditableProperty property : filteredComponents.get(0).getProperties()) {
+        if (keptProperties == null || keptProperties.contains(property.getName()) || "Name".equals(property.getName()) || "Uuid".equals(property.getName())) {
+          String name = property.getName();
+          newProperties.addProperty(
+              name,
+              property.getValue(),
+              property.getCaption(),
+              property.getCategory(),
+              property.getDescription(),
+              PropertiesUtil.createPropertyEditor(property.getEditorType(),
+                  property.getDefaultValue(), this, property.getEditorArgs()),
+              property.getType(),
+              property.getEditorType(),
+              property.getEditorArgs()
+          );
         }
       }
+      selectedProperties = newProperties;
     } else {
       EditableProperties newProperties = new EditableProperties(true);
       Map<String, EditableProperty> propertyMaps = new HashMap<>();
@@ -716,9 +725,6 @@ public abstract class DesignerEditor<S extends SourceNode, T extends MockDesigne
         newProperties.getProperty(name).setValue(sharedValue);
       }
       selectedProperties = newProperties;
-    }
-    if (selected) {
-      selectedProperties.addPropertyChangeListener(this);
     }
     Iterator<EditableProperty> iterator = selectedProperties.iterator();
     while (iterator.hasNext()) {
