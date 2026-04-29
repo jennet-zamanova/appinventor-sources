@@ -34,9 +34,11 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -174,6 +176,43 @@ public class LoginServlet extends HttpServlet {
       if (redirect != null) {
         uri = redirect;
       }
+      uri = new UriBuilder(uri)
+          .add("locale", locale)
+          .add("repo", repo)
+          .add("autoload", autoload)
+          .add("ng", newGalleryId)
+          .add("galleryId", galleryId).build();
+      resp.sendRedirect(uri);
+      return;
+    } else if ("study".equals(page)) {
+      String studyId = params.get("studyId");
+      long value = ByteBuffer.wrap(Base64.getDecoder().decode(studyId)).getLong();
+      LOG.info("Value = " + value);
+      User user = storageIo.getStudyUser(value);
+      if (user == null) {
+        fail(req, resp, "Invalid Study ID", locale);
+        return;
+      }
+      userInfo = new OdeAuthFilter.UserInfo(); // Create new userInfo object
+      userInfo.setUserId(user.getUserId());
+      String newCookie = userInfo.buildCookie(false);
+      if (DEBUG) {
+        LOG.info("newCookie = " + newCookie);
+      }
+      if (newCookie != null) {
+        Cookie cook = new Cookie("AppInventor", newCookie);
+        cook.setPath("/");
+        resp.addCookie(cook);
+      }
+      Cookie cook = new Cookie("ACSID", null);
+      cook.setPath("/");
+      cook.setMaxAge(0);
+      resp.addCookie(cook);
+      String uri = "/";
+      if (redirect != null) {
+        uri = redirect;
+      }
+
       uri = new UriBuilder(uri)
         .add("locale", locale)
         .add("repo", repo)

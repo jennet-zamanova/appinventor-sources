@@ -328,6 +328,12 @@ public class StoredData {
     String allowedExtensions;
   }
 
+  static final class StudyTicket {
+    @Id Long id;
+    String email;
+    Date stamped;
+  }
+
   public static final class ProjectNotFoundException extends IOException {
     ProjectNotFoundException(String message) {
       super(message);

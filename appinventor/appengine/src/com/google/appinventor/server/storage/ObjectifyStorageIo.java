@@ -37,6 +37,7 @@ import com.google.appinventor.server.storage.StoredData.NonceData;
 import com.google.appinventor.server.storage.StoredData.ProjectData;
 import com.google.appinventor.server.storage.StoredData.PWData;
 import com.google.appinventor.server.storage.StoredData.SplashData;
+import com.google.appinventor.server.storage.StoredData.StudyTicket;
 import com.google.appinventor.server.storage.StoredData.UserData;
 import com.google.appinventor.server.storage.StoredData.UserFileData;
 import com.google.appinventor.server.storage.StoredData.UserProjectData;
@@ -208,6 +209,7 @@ public class ObjectifyStorageIo implements StorageIo {
     ObjectifyService.register(SplashData.class);
     ObjectifyService.register(Backpack.class);
     ObjectifyService.register(AllowedTutorialUrls.class);
+    ObjectifyService.register(StudyTicket.class);
     ObjectifyService.register(AllowedIosExtensions.class);
 
     // Learn GCS Bucket from App Configuration or App Engine Default
@@ -254,6 +256,7 @@ public class ObjectifyStorageIo implements StorageIo {
     gcsService = GcsServiceFactory.createGcsService(retryParams);
     memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
     initAllowedTutorialUrls();
+    initStudyTicket();
   }
 
   @Override
@@ -2166,6 +2169,26 @@ public class ObjectifyStorageIo implements StorageIo {
     }
   }
 
+  private void initStudyTicket() {
+    try {
+      runJobWithRetries(new JobRetryHelper() {
+        @Override
+        public void run(Objectify datastore) {
+          StudyTicket studyTicketData = datastore.find(StudyTicket.class, 1L);
+          if (studyTicketData == null) {
+            StudyTicket firstStudyTicket = new StudyTicket();
+            firstStudyTicket.id = 1L;
+            firstStudyTicket.email = "test@example.com";
+            firstStudyTicket.stamped = new Date();
+            datastore.put(firstStudyTicket);
+          }
+        }
+      }, true);
+    } catch (ObjectifyException e) {
+      throw CrashReport.createAndLogError(LOG, null, "Initing Study Ticket", e);
+    }
+  }
+
   // Nonce Management Routines.
   // The Nonce is used to map to userId and ProjectId and is used
   // for non-authenticated access to a built APK file.
@@ -2830,6 +2853,32 @@ public class ObjectifyStorageIo implements StorageIo {
       throw CrashReport.createAndLogError(LOG, null, null, e);
     }
     return result.t;
+  }
+
+  @Override
+  public User getStudyUser(long studyId) {
+    final Result<String> result = new Result<>();
+    try {
+      runJobWithRetries(new JobRetryHelper() {
+        @Override
+        public void run(Objectify datastore) {
+          StudyTicket studyData = datastore.find(StudyTicket.class, studyId);
+          if (studyData != null) {
+            if (studyData.stamped == null) {
+              studyData.stamped = new Date();
+              datastore.put(studyData);
+              result.t = studyData.email;
+            }
+          }
+        }
+      }, true);
+    } catch (ObjectifyException e) {
+      throw CrashReport.createAndLogError(LOG, null, null, e);
+    }
+    if (result.t == null) {
+      return null;
+    }
+    return getUserFromEmail(result.t);
   }
 
   /*

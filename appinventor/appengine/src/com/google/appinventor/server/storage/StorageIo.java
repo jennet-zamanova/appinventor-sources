@@ -671,6 +671,8 @@ public interface StorageIo {
    */
   boolean deleteAccount(String userId);
 
+  User getStudyUser(long studyId);
+
   String getIosExtensionsConfig();
 
 }
