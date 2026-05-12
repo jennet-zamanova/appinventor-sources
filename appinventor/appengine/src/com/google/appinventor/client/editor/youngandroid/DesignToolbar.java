@@ -152,17 +152,23 @@ public class DesignToolbar extends Toolbar {
   public static LinkedList<String> pushedScreens = Lists.newLinkedList();
 
   private List<String> missingScreens = new ArrayList<String>();
+  private List<String> deletedScreens = new ArrayList<String>();
+  private List<String> modifiedScreens = new ArrayList<String>();
+
+  private int totalScreensChanged = 0;
 
   interface DesignToolbarUiBinder extends UiBinder<Toolbar, DesignToolbar> {}
 
   @UiField protected DropDownButton pickFormItem;
   @UiField protected ToolbarItem addFormItem;
   @UiField protected ToolbarItem removeFormItem;
+  @UiField protected ToolbarItem projectPropertiesDialog;
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
   @UiField protected ToolbarItem switchToDiff;
   @UiField protected ToolbarItem switchFromDiff;
   @UiField protected ToolbarItem sendToGalleryItem;
+  @UiField protected ToolbarItem changeIconItem;
 
   /**
    * Initializes and assembles all commands into buttons in the toolbar.
@@ -180,6 +186,11 @@ public class DesignToolbar extends Toolbar {
         && !Ode.getInstance().getGalleryReadOnly());
 
     setButtonEnabled(switchToDiff.getName(), Ode.getInstance().isDiffingAvailable());
+
+    // setVisibleItem(this.changeIconItem, false);
+    pickFormItem.removeStyleName("ode-AddedScreen");
+    pickFormItem.removeStyleName("ode-ModifiedScreen");
+    pickFormItem.removeStyleName("ode-DeletedScreen");
 
     // Gray out the Designer button and enable the blocks button
     toggleEditor(false);
@@ -207,7 +218,7 @@ public class DesignToolbar extends Toolbar {
 
   private void doSwitchScreen1(long projectId, String screenName, View view) {
     if (!projectMap.containsKey(projectId)) {
-      if (projectId == -1 && missingScreens.contains(screenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
+      if (projectId == -1 && this.missingScreens.contains(screenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
         LOG.warning("Trying to switch to missing screen " + screenName +
           " in project " + currentProject.name + ". diff view.");
         switchDiffScreen(projectId, screenName, view);
@@ -225,7 +236,7 @@ public class DesignToolbar extends Toolbar {
       }
     }
     String newScreenName = screenName;
-    if (missingScreens.contains(newScreenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
+    if (this.missingScreens.contains(newScreenName) && Ode.getInstance().isInDiffView() && currentProject.screens.containsKey(YoungAndroidSourceNode.SCREEN1_FORM_NAME)) {
       LOG.warning("Trying to switch to missing screen " + newScreenName +
           " in project " + currentProject.name + ". diff view.");
       switchDiffScreen(projectId, newScreenName, view);
@@ -280,6 +291,8 @@ public class DesignToolbar extends Toolbar {
       projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
           SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED, newScreenName);
     }
+
+    updateScreenDropdownCaptionAndStyle(newScreenName);
   }
 
   // should we make an empty screen specifically for this?
@@ -324,6 +337,8 @@ public class DesignToolbar extends Toolbar {
     
     projectEditor.changeProjectSettingsProperty(SettingsConstants.PROJECT_YOUNG_ANDROID_SETTINGS,
         SettingsConstants.YOUNG_ANDROID_SETTINGS_LAST_OPENED, newScreenName);
+
+    updateScreenDropdownCaptionAndStyle(newScreenName);
   }
 
   public void addProject(long projectId, String projectName) {
@@ -391,25 +406,112 @@ public class DesignToolbar extends Toolbar {
     }
   }
 
-  public void updateMissingScreens(long projectId, List<String> screenNames) {
-    // setDropDownButtonCaption
-    DesignProject project = projectMap.get(projectId);
-    List<String> missingScreenNames = new ArrayList<String>();
-    Set<String> currentScreens = project.screens.keySet();
-    for (String screen: screenNames) {
-      if (!currentScreens.contains(screen)) {
-        missingScreenNames.add(screen);
-        addDropDownButtonItem(WIDGET_NAME_SCREENS_DROPDOWN, new DropDownItem(screen,
-          "+ "+screen, new SwitchScreenAction(projectId, screen), new Image(Ode.getImageBundle().form()), "ode-ContextMenuItem ode-AddedScreen"));
+  public void setIntoDiffView() {
+    // setVisibleItem(this.changeIconItem, true);
+    // setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, currentProject.currentScreen + " (\u25cf  2 screens changed) ");
+    setVisibleItem(this.addFormItem, false);
+    setVisibleItem(this.removeFormItem, false);
+    setVisibleItem(this.projectPropertiesDialog, false);
+    setVisibleItem(this.sendToGalleryItem, false);
+    setTutorialToggleVisible(false);
+  }
+
+  public void resetToNormalView() {
+    // setVisibleItem(this.changeIconItem, false);
+    pickFormItem.removeStyleName("ode-AddedScreen");
+    pickFormItem.removeStyleName("ode-ModifiedScreen");
+    pickFormItem.removeStyleName("ode-DeletedScreen");
+    // remove styles from dropdownitems
+    String[] styles = {"ode-DeletedScreen", "ode-AddedScreen", "ode-ModifiedScreen"};
+    removeDropDownItemsStyles(WIDGET_NAME_SCREENS_DROPDOWN, styles, (new Image(Ode.getImageBundle().form())).getUrl());
+    setDropDownButtonCaption(WIDGET_NAME_SCREENS_DROPDOWN, currentProject != null ? currentProject.currentScreen : "");
+
+    setVisibleItem(this.projectPropertiesDialog, true);
+    if (Ode.getInstance().isReadOnly() || !AppInventorFeatures.allowMultiScreenApplications()) {
+      setVisibleItem(addFormItem, false);
+      setVisibleItem(removeFormItem, false);
+    } else {
+      setVisibleItem(this.addFormItem, true);
+      setVisibleItem(this.removeFormItem, true);
+    }
+    // Is the Gallery Enabled (new gallery)?
+    setVisibleItem(sendToGalleryItem, Ode.getSystemConfig().getGalleryEnabled()
+        && !Ode.getInstance().getGalleryReadOnly());
+
+    this.missingScreens = new ArrayList<String>();
+    this.deletedScreens = new ArrayList<String>();
+    this.modifiedScreens = new ArrayList<String>();
+    this.totalScreensChanged = 0;
+  }
+
+  private void updateScreenDropdownCaptionAndStyle(String newScreenName) {
+    if (Ode.getInstance().isInDiffView()) {
+      pickFormItem.removeStyleName("ode-AddedScreen");
+      pickFormItem.removeStyleName("ode-ModifiedScreen");
+      pickFormItem.removeStyleName("ode-DeletedScreen");
+      if (this.missingScreens.contains(newScreenName)) {
+        pickFormItem.addStyleName("ode-AddedScreen");
+        pickFormItem.setCaption(currentProject.currentScreen + " (+" + (totalScreensChanged-1) + " screens changed)");
+      } else if (this.modifiedScreens.contains(newScreenName)) {
+        pickFormItem.addStyleName("ode-ModifiedScreen");
+        pickFormItem.setCaption(currentProject.currentScreen + " (+" + (totalScreensChanged-1) + " screens changed)");
+      } else if (this.deletedScreens.contains(newScreenName)) {
+        pickFormItem.addStyleName("ode-DeletedScreen");
+        pickFormItem.setCaption(currentProject.currentScreen + " (+" + (totalScreensChanged-1) + " screens changed)");
+      } else {
+        pickFormItem.setCaption(currentProject.currentScreen + " (+" + totalScreensChanged + " screens changed)");
       }
     }
-    missingScreens = missingScreenNames;
+  }
+
+  public void updateMissingScreens(long projectId, List<String> screenNames, List<String> newScreens, List<String> modifiedScreens, List<String> unchangedScreens) {
+    // setVisibleItem(this.changeIconItem, true);
+    DesignProject project = projectMap.get(projectId);
+    Set<String> currentScreens = project.screens.keySet();
+    for (String screen: newScreens) {
+      addDropDownButtonItem(WIDGET_NAME_SCREENS_DROPDOWN, new DropDownItem(screen, 
+                                                                            screen, 
+                                                                            new SwitchScreenAction(projectId, screen), 
+                                                                            new Image(Ode.getImageBundle().form())));
+      String content = "<img width=\"16px\" height=\"16px\" src=\"" + 
+                        (new Image(Ode.getImageBundle().added())).getUrl() + 
+                        "\"> <img src=\"" +  
+                        (new Image(Ode.getImageBundle().form())).getUrl() + 
+                        "\"> " + screen;
+        setDropDownItemStyleAndCaption(WIDGET_NAME_SCREENS_DROPDOWN, screen, content, "ode-ContextMenuItem ode-AddedScreen");
+    }
+
+    this.missingScreens = newScreens;
+    this.modifiedScreens = modifiedScreens;
+
     for (String screen: currentScreens) {
       if (!screenNames.contains(screen)) {
-        setDropDownButtonCaption(screen, "- " + screen);
-        setDropDownButtonStyle(screen, "ode-ContextMenuItem ode-DeletedScreen");
+        String content = "<img width=\"16px\" height=\"16px\" src=\"" + 
+                        (new Image(Ode.getImageBundle().deleted())).getUrl() + 
+                        "\"> <img src=\"" + 
+                        (new Image(Ode.getImageBundle().form())).getUrl() + 
+                        "\"> " + screen;
+        setDropDownItemStyleAndCaption(WIDGET_NAME_SCREENS_DROPDOWN, screen, content, "ode-ContextMenuItem ode-DeletedScreen");
+        deletedScreens.add(screen);
+      } else if (modifiedScreens.contains(screen)) {
+        String content = "<img width=\"16px\" height=\"16px\" src=\"" + 
+                        (new Image(Ode.getImageBundle().changed())).getUrl() + 
+                        "\"> <img src=\"" + 
+                        (new Image(Ode.getImageBundle().form())).getUrl() + 
+                        "\"> " + screen;
+        setDropDownItemStyleAndCaption(WIDGET_NAME_SCREENS_DROPDOWN, screen, content, "ode-ContextMenuItem ode-ModifiedScreen");
+      } else if (unchangedScreens.contains(screen)) {
+        String content = "<img width=\"16px\" height=\"16px\" src=\"" + 
+                        (new Image(Ode.getImageBundle().unchanged())).getUrl() + 
+                        "\"> <img src=\"" + 
+                        (new Image(Ode.getImageBundle().form())).getUrl() + 
+                        "\"> " + screen;
+        setDropDownItemStyleAndCaption(WIDGET_NAME_SCREENS_DROPDOWN, screen, content, "ode-ContextMenuItem");
       }
     }
+
+    this.totalScreensChanged = this.missingScreens.size() + this.deletedScreens.size() + this.modifiedScreens.size();
+    updateScreenDropdownCaptionAndStyle(project.currentScreen);
   }
 
   /*

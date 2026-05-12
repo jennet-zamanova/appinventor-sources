@@ -52,6 +52,9 @@ public class SwitchToDiffAction implements Command {
         // go through designer screens and save info
         HashMap<String, DiffIds> diffInfo = new HashMap<>();
         List<String> allScreens = new ArrayList<String>();
+        List<String> newScreens = new ArrayList<String>();
+        List<String> modifiedScreens = new ArrayList<String>();
+        List<String> unchangedScreens = new ArrayList<String>();
         HashMap<String, HashMap<String, List<String>>> modifiedAttributes = new HashMap<>();
 
         for (String fileName : files.keySet()) {
@@ -69,11 +72,10 @@ public class SwitchToDiffAction implements Command {
               JavaScriptObject out = SwitchToDiffAction.openDesignerDiff(correspondingJsonObject.toJson(), uploadedJsonObject.toJson());
               DiffResult diffResult = out.cast();
 
-              List<String> newIds = Arrays.asList(diffResult.getNewIds().toString().split(","));
-              List<String> deletedIds = Arrays.asList(diffResult.getRemovedIds().toString().split(","));
-              List<String> movedIds = Arrays.asList(diffResult.getMovedIds().toString().split(","));
-
-              List<String> modifiedIds = Arrays.asList(diffResult.getUpdatedIds().toString().split(","));
+              List<String> newIds = diffResult.getNewIds().toString().isEmpty() ? new ArrayList<String>() : Arrays.asList(diffResult.getNewIds().toString().split(","));
+              List<String> deletedIds = diffResult.getRemovedIds().toString().isEmpty() ? new ArrayList<String>() : Arrays.asList(diffResult.getRemovedIds().toString().split(","));
+              List<String> movedIds = diffResult.getMovedIds().toString().isEmpty() ? new ArrayList<String>() : Arrays.asList(diffResult.getMovedIds().toString().split(","));
+              List<String> modifiedIds = diffResult.getUpdatedIds().toString().isEmpty() ? new ArrayList<String>() : Arrays.asList(diffResult.getUpdatedIds().toString().split(","));
 
               DiffIds ids = new DiffIds(newIds, deletedIds, movedIds, modifiedIds);
               diffInfo.put(entityName, ids);
@@ -92,7 +94,15 @@ public class SwitchToDiffAction implements Command {
               }
 
               modifiedAttributes.put(entityName, idToAttribute);
-            } 
+              if (newIds.size() == 0 && deletedIds.size() == 0 && movedIds.size() == 0 && modifiedIds.size() == 0) {
+                unchangedScreens.add(entityName);
+              } else {
+                modifiedScreens.add(entityName);
+              } 
+            } else {
+              newScreens.add(entityName);
+            }
+
           }
         }
 
@@ -102,7 +112,8 @@ public class SwitchToDiffAction implements Command {
         Ode.getInstance().setInDiffView(true);
         Ode.getInstance().getWorkColumnsEditor().shuffleColumns(Ode.getInstance().getCurrentFileEditor());
         Ode.getInstance().getDesignToolbar().setSwitchFromDiffButtonVisible(true);
-        toolbar.updateMissingScreens(toolbar.getCurrentProject().getProjectId(), allScreens);
+        toolbar.updateMissingScreens(toolbar.getCurrentProject().getProjectId(), allScreens, newScreens, modifiedScreens, unchangedScreens);
+        toolbar.setIntoDiffView();
       }
 
       @Override

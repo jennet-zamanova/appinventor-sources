@@ -304,8 +304,12 @@ public class Toolbar extends FlowPanel {
     dropDownButtonMap.get(widgetName).setText(caption + " " + DROP_DOWN_TRIANGLE);
   }
 
-  protected void setDropDownButtonStyle(String widgetName, String style) {
-    dropDownButtonMap.get(widgetName).setStyleName(style);
+  protected void setDropDownItemStyleAndCaption(String widgetName, String itemName, String caption, String style) {
+    dropDownButtonMap.get(widgetName).setItemStyleAndCaption(itemName, style, caption);
+  }
+
+  protected void removeDropDownItemsStyles(String widgetName, String[] styles, String iconURL) {
+    dropDownButtonMap.get(widgetName).removeItemsStyles(styles, iconURL);
   }
 
   protected void setDropDownItemHtml(String dropDownName, String itemName, String newHtml) {

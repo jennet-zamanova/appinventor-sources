@@ -21,6 +21,10 @@
                     visible="false" align="center">
       <ya:ToggleTutorialAction />
     </ai:ToolbarItem>
+   <ai:ToolbarItem name="changeIcon" icon="change_history" align="center"
+                ui:field="changeIconItem" enabled="false"
+                tooltip="There was change in at least one of the screens"
+                styleName="ode-ProjectListButton inline" visible="false"/>
     <ai:DropDownButton name="ScreensDropdown" caption="{messages.screensButton}"
                        ui:field="pickFormItem" align="center" />
     <ai:ToolbarItem name="AddForm" caption="{messages.addFormButton}" ui:field="addFormItem"

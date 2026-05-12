@@ -1250,6 +1250,69 @@ function extractComponentsFromXml(xml) {
   return [...components.values()];
 }
 
+function findCommonAncestorID(blockID, mainWorkspace, secondaryWorkspace) {
+  const block = mainWorkspace.getBlockById(blockID);
+  const secondaryBlock = secondaryWorkspace.getBlockById(blockID);
+  if (!block && !secondaryBlock) {
+    return null;
+  }
+  if (block && secondaryBlock) {
+    return blockID;
+  }
+  var ancestor = block?.getParent();
+  while (ancestor) {
+    if (secondaryWorkspace.getBlockById(ancestor.id)) {
+      return ancestor.id;
+    }
+    ancestor = ancestor?.getParent();
+  }
+  return null;
+}
+
+function createChangeListener(workspace, secondaryWorkspace) {
+  const changeListener = function(e) {
+    if (e.type == Blockly.Events.CLICK && e.blockId) {
+      const block = workspace.getBlockById(e.blockId);
+      const secondaryBlock = secondaryWorkspace.getBlockById(e.blockId);
+      if (!block && !secondaryBlock) {
+        return;
+      }
+      if (!secondaryBlock) {
+        const commonAncestorID = findCommonAncestorID(e.blockId, workspace, secondaryWorkspace);
+        if (commonAncestorID) {
+          workspace.centerOnBlock(commonAncestorID);
+          secondaryWorkspace.centerOnBlock(commonAncestorID);
+        }
+        return;
+      }
+      if (!block) {
+        const commonAncestorID = findCommonAncestorID(e.blockId, secondaryWorkspace, workspace);
+        if (commonAncestorID) {
+          workspace.centerOnBlock(commonAncestorID);
+          secondaryWorkspace.centerOnBlock(commonAncestorID);
+        }
+        return;
+      }
+      workspace.centerOnBlock(e.blockId);
+      secondaryWorkspace.centerOnBlock(e.blockId);
+    }
+  };
+  return changeListener;
+}
+
+function handleBlockPanInDiff(workspace, secondaryWorkspace, removeBlockPanInDiff = false) {
+  if (this.clickDiffChangeListener && removeBlockPanInDiff) {
+    workspace.removeChangeListener(this.clickDiffChangeListener);
+    secondaryWorkspace?.removeChangeListener(this.clickDiffChangeListener);
+    this.clickDiffChangeListener = null;
+    this.clickDiffChangeListener = null;
+  } else if ((!this.clickDiffChangeListener || !workspace?.listeners?.includes(this.clickDiffChangeListener)) && !removeBlockPanInDiff) {
+    this.clickDiffChangeListener = createChangeListener(workspace, secondaryWorkspace);
+    workspace.addChangeListener(this.clickDiffChangeListener);
+    secondaryWorkspace.addChangeListener(this.clickDiffChangeListener);
+  }
+}
+
 function openSecondaryEmptyWorkspace() {
   // TODO: really hacky - need to change!!!
   var mainWs = Blockly.getMainWorkspace();
@@ -1387,6 +1450,7 @@ function openSecondaryEmptyWorkspace() {
   mainWs.addWorkspaceName("Original");
   secondaryWs.addWorkspaceName("Uploaded");
   secondaryWs.scrollCenter();
+  handleBlockPanInDiff(mainWs, secondaryWs);
 }
 
 function closeSecondaryWorkspace() {
@@ -1402,9 +1466,12 @@ function closeSecondaryWorkspace() {
   }
   mainWs.diffHandler_ = null;
   mainWs.removeWorkspaceName();
+  handleBlockPanInDiff(mainWs, window.secondaryWorkspace, true);
 
-  if (window.secondaryWorkspace && window.secondaryWorkspace.dispose) {
-    window.secondaryWorkspace.dispose();
+  if (window.secondaryWorkspace) {
+    if (window.secondaryWorkspace.dispose) {
+      window.secondaryWorkspace.dispose();
+    }
   }
   window.secondaryWorkspace = null;
 
@@ -1593,6 +1660,7 @@ function openSecondaryWorkspace(file) {
   mainWs.addWorkspaceName("Original");
   secondaryWs.addWorkspaceName("Uploaded");
   secondaryWs.scrollCenter();
+  handleBlockPanInDiff(mainWs, secondaryWs);
 }
 
 

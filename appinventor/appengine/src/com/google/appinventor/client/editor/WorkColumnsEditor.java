@@ -241,10 +241,20 @@ public class WorkColumnsEditor extends Composite {
         propertiesBox.setVisible(visible);
     }
 
+    public final void resetToBlocksNormalView() {
+        WorkColumnsEditor.closeSecondaryWorkspace();
+    }
+
     public final void resetToDesignerNormalView() {
         Ode.getInstance().getDesignToolbar().setSwitchFromDiffButtonVisible(false);
         structureAndAssets.insert(sourceStructureBox, 0);
-        Widget[] widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), viewerBox, structureAndAssets, propertiesBox};
+        Widget[] widgetsToShow;
+        if (Ode.getUserNewLayout()) {
+            widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), viewerBox, structureAndAssets, propertiesBox};
+        } else {
+            widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), viewerBox, structureAndAssets, propertiesBox};
+        }
+        // Widget[] widgetsToShow = new Widget[]{PaletteBox.getPaletteBox(), viewerBox, structureAndAssets, propertiesBox};
         workColumns.clear();
         for (Widget w : widgetsToShow) {
             workColumns.add(w);
@@ -253,6 +263,7 @@ public class WorkColumnsEditor extends Composite {
         missingScreenLabel.setVisible(false);
         missingUploadedScreenLabel.setVisible(false);
         WorkColumnsEditor.closeSecondaryWorkspace();
+        designToolbar.resetToNormalView();
     }
 
     public final void shuffleColumnsMissingScreen(FileEditor fileEditor, FileEditor screen1Editor) {

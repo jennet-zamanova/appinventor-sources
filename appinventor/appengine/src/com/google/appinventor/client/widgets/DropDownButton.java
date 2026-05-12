@@ -6,6 +6,7 @@
 package com.google.appinventor.client.widgets;
 
 import com.google.appinventor.client.components.Icon;
+import com.google.appinventor.client.editor.youngandroid.DesignToolbar;
 import com.google.appinventor.client.utils.PZAwarePositionCallback;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -31,6 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+
 
 /**
  * Class representing a drop-down button with its associated menu. Note
@@ -40,6 +43,7 @@ import java.util.Map;
 @ElementParserToUse(className = "com.google.appinventor.client.widgets.DropDownButtonParser")
 public class DropDownButton extends TextButton {
 
+  private static final Logger LOG = Logger.getLogger(DesignToolbar.class.getName());
   private String name = "";
   private final ContextMenu menu = new ContextMenu();
   private final Map<String, MenuItem> itemsById = new HashMap<>();
@@ -263,6 +267,29 @@ public class DropDownButton extends TextButton {
       itemsById.put(item.getName(), menuItem);
       items.add(menuItem);
       allItems.add(menuItem);
+    }
+  }
+
+  public void setItemStyleAndCaption(String itemName, String style, String caption) {
+    for (MenuItem item : items) {
+      String strippedItemText = item.getText().replaceAll("^\\s+", "");
+      if (strippedItemText.equals(itemName)) {
+        item.setStyleName(style);
+        item.setHTML(caption);
+        break;
+      }
+    }
+  }
+
+  public void removeItemsStyles(String[] styles, String url) {
+    for (MenuItem item : items) {
+      String strippedItemText = item.getText().replaceAll("^\\s+", "");
+      LOG.info("text is : " + strippedItemText);
+      for (String style: styles) {
+        item.removeStyleName(style);
+      }
+      String content = "<img src=\"" + url + "\">&nbsp;" + strippedItemText;
+      item.setHTML(content);
     }
   }
 

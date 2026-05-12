@@ -927,6 +927,43 @@ div.StatusPanel {
   background-color: #f5b8b8;
 }
 
+.ode-ModifiedScreen {
+  background-color: #e8d43c;
+}
+
+.ode-TextButton.ode-AddedScreen.ode-TextButton-up,
+.ode-ProjectListButton.ode-AddedScreen.ode-ProjectListButton-up {
+  background: #a1dba1;
+}
+
+.ode-TextButton.ode-DeletedScreen.ode-TextButton-up,
+.ode-ProjectListButton.ode-DeletedScreen.ode-ProjectListButton-up {
+  background: #f5b8b8;
+}
+
+.ode-TextButton.ode-ModifiedScreen.ode-TextButton-up,
+.ode-ProjectListButton.ode-ModifiedScreen.ode-ProjectListButton-up {
+  background: #e8d43c;
+}
+
+.ode-TextButton.ode-AddedScreen.ode-TextButton-up-hovering,
+.ode-ProjectListButton.ode-AddedScreen.ode-ProjectListButton-up-hovering,
+.gwt-Button-up-hovering:hover {
+  background-color: #8ec18e;
+}
+
+.ode-TextButton.ode-DeletedScreen.ode-TextButton-up-hovering,
+.ode-ProjectListButton.ode-DeletedScreen.ode-ProjectListButton-up-hovering,
+.gwt-Button-up-hovering:hover {
+  background-color: #daa4a4;
+}
+
+.ode-TextButton.ode-ModifiedScreen.ode-TextButton-up-hovering,
+.ode-ProjectListButton.ode-ModifiedScreen.ode-ProjectListButton-up-hovering,
+.gwt-Button-up-hovering:hover {
+  background-color: #d8c538;
+}
+
 .gwt-Tree .gwt-TreeItem-updated span {
   background-color: #e8d43c;
 }
@@ -1549,7 +1586,7 @@ span.ode-SimpleMockComponent.gwt-TreeItem-DiffView.ode-SimpleMockComponent-selec
 }
 
 .ode-SimpleMockComponent.gwt-TreeItem-updated {
-  border: 2px solid #e8d43c;;
+  border: 2px solid #e8d43c;
 }
 
 .ode-SimpleMockComponent.gwt-TreeItem-moved {
@@ -3477,6 +3514,7 @@ div.dropdiv p {
 .ya-Toolbar .center {
   text-align: center;
   min-width: fit-content;
+  display: flex;
 }
 
 .ya-Toolbar>div>div {

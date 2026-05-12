@@ -459,6 +459,7 @@ public class Ode implements EntryPoint {
     // We may need to pass the code below as a runnable to
     // screenShotMaybe() so build the runnable now
     hideChaff();
+    workColumnsEditor.resetToBlocksNormalView();
     hideTutorials();
     inDiffView = false;
     Runnable next = new Runnable() {

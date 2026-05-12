@@ -22,11 +22,13 @@ public class DesignToolbarNeo extends DesignToolbar {
   @UiField protected DropDownButton pickFormItem;
   @UiField protected ToolbarItem addFormItem;
   @UiField protected ToolbarItem removeFormItem;
+  @UiField protected ToolbarItem projectPropertiesDialog;
   @UiField protected ToolbarItem switchToDesign;
   @UiField protected ToolbarItem switchToBlocks;
   @UiField protected ToolbarItem switchToDiff;
   @UiField protected ToolbarItem switchFromDiff;
   @UiField protected ToolbarItem sendToGalleryItem;
+  @UiField protected ToolbarItem changeIconItem;
 
   @Override
   public void bindUI() {
@@ -40,5 +42,7 @@ public class DesignToolbarNeo extends DesignToolbar {
     super.switchToDiff = switchToDiff;
     super.switchFromDiff = switchFromDiff;
     super.sendToGalleryItem = sendToGalleryItem;
+    super.changeIconItem = changeIconItem;
+    super.projectPropertiesDialog = projectPropertiesDialog;
   }
 }

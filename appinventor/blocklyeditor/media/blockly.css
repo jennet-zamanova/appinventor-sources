@@ -311,18 +311,12 @@
   filter: brightness(1.2);
 }
 
-.diffBlock.blocklySelected.movedBlock>g>.blocklyText {
+.diffBlock.blocklySelected.movedBlock>g>.blocklyText, .diffBlock.movedBlock>g>.blocklyText, 
+.diffBlock.blocklySelected.modifiedBlock>g>.blocklyText, diffBlock.modifiedBlock>g>.blocklyText {
   fill: rgb(44 44 44);
 }
 
-.diffBlock.blocklySelected.addedBlock>g>.blocklyText {
-  fill: rgb(101, 101, 101);
-}
-
-.diffBlock.blocklySelected.modifiedBlock>g>.blocklyText {
-  fill: rgb(44 44 44);
-}
-
-.diffBlock.blocklySelected.deletedBlock>g>.blocklyText {
+.diffBlock.blocklySelected.addedBlock>g>.blocklyText, .diffBlock.addedBlock>g>.blocklyText
+.diffBlock.blocklySelected.deletedBlock>g>.blocklyText, .diffBlock.deletedBlock>g>.blocklyText {
   fill: rgb(101, 101, 101);
 }

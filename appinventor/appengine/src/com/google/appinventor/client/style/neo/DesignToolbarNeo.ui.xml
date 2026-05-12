@@ -20,6 +20,10 @@
     <g:Label ui:field="projectNameLabel" styleName="ya-ProjectName"/>
 
     <ai:ToolbarItem styleName="ya-ProjectName" caption="Screens: " align="center" enabled="false"/>
+   <ai:ToolbarItem name="changeIcon" icon="change_history" align="center"
+                ui:field="changeIconItem" enabled="false"
+                tooltip="There was change in at least one of the screens"
+                styleName="ode-ProjectListButton inline" visible="false"/>
     <ai:DropDownButton name="ScreensDropdown" caption="{messages.screensButton}"
                        ui:field="pickFormItem" align="center" styleName="ode-ProjectListButton inline bleft primary"/>
     <ai:ToolbarItem name="AddForm" icon="add" ui:field="addFormItem"
@@ -39,7 +43,7 @@
     </ai:ToolbarItem>
 
     <ai:ToolbarItem name="ProjectPropertiesDialog" icon="manufacturing"
-        tooltip="{messages.projectPropertiesText}" align="center" styleName="ode-ProjectListButton inline left-spacer">
+        tooltip="{messages.projectPropertiesText}" align="center" ui:field="projectPropertiesDialog" styleName="ode-ProjectListButton inline left-spacer">
       <ya:ProjectPropertiesAction />
     </ai:ToolbarItem>
 
@@ -48,11 +52,11 @@
       <ca:SendToGalleryAction/>
     </ai:ToolbarItem>
 
-    <ai:ToolbarItem name="diff" caption="Compare Projects"
+    <ai:ToolbarItem name="switchToDiff" caption="Compare Projects"
                     ui:field="switchToDiff" align="right">
       <ya:SwitchToDiffAction />
     </ai:ToolbarItem>
-    <ai:ToolbarItem name="diff" caption="Stop Comparing Projects"
+    <ai:ToolbarItem name="switchFromDiff" caption="Stop Comparing Projects"
                     ui:field="switchFromDiff" align="right" visible="false">
       <ya:SwitchFromDiffAction />
     </ai:ToolbarItem>

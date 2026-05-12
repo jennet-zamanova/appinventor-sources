@@ -131,6 +131,9 @@ public class WorkColumnsEditorNeo extends WorkColumnsEditor {
     super.diffViewerBox = diffViewerBox;
     super.diffAssetListBox = diffAssetListBox;
     super.diffPropertiesBox = diffPropertiesBox;
+
+    super.missingScreenLabel = missingScreenLabel;
+    super.missingUploadedScreenLabel = missingUploadedScreenLabel;
     
   }
 }
